@@ -239,8 +239,13 @@
   }
 
   function setupRolesAndPin(){
-    const roles = StorageService.get('presencia_roles', { role: 'admin', pin: '', blocks: {} });
+    const roles = StorageService.get('presencia_roles', { role: 'admin', pin: '', blocks: {}, remoteUnaffected: true });
     const card = addConfigCard('👥 Roles y bloqueo por PIN', `
+      <div style="font-size:12px;color:var(--text-dim);line-height:1.5;margin-bottom:10px;">
+        El PIN protege módulos del <strong style="color:var(--text)">panel</strong>.
+
+        <strong style="color:var(--accent)">Importante:</strong> por defecto <u>no bloquea el control remoto</u>.
+      </div>
       <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:8px;">
         <select id="roleSelect" style="background:var(--bg-input);color:var(--text);border:1px solid var(--border);padding:8px;border-radius:6px;">
           <option value="admin">Admin</option>
@@ -251,41 +256,56 @@
         <input id="rolePin" type="password" placeholder="PIN (opcional)" style="max-width:160px;">
         <button class="btn btn-secondary" style="padding:8px 12px;" onclick="window.saveRoleConfig()">Guardar</button>
       </div>
-      <div style="display:flex;gap:8px;flex-wrap:wrap;font-size:12px;color:var(--text-dim);">
-        <label><input type="checkbox" id="blkAudio"> Bloquear Audio</label>
-        <label><input type="checkbox" id="blkConfig"> Bloquear Config</label>
+      <div style="display:flex;gap:8px;flex-wrap:wrap;font-size:12px;color:var(--text-dim);margin-bottom:8px;">
+        <label><input type="checkbox" id="blkConfig"> Bloquear Configuración (incluye Audio)</label>
         <label><input type="checkbox" id="blkAnuncios"> Bloquear Anuncios</label>
       </div>
+      <label style="font-size:12px;color:var(--text-dim);display:flex;gap:8px;align-items:center;">
+        <input type="checkbox" id="lockRemoteWithPin"> Aplicar PIN también a comandos remotos críticos
+      </label>
     `);
     if (!card) return;
+
+    function readCfg(){
+      return StorageService.get('presencia_roles', { role: 'admin', pin: '', blocks: {}, remoteUnaffected: true });
+    }
+
+    function isBlocked(moduleId){
+      const cfg = readCfg();
+      return !!(cfg.blocks && cfg.blocks[moduleId]);
+    }
+
+    window.isRoleModuleBlocked = isBlocked;
+
     document.getElementById('roleSelect').value = roles.role;
     document.getElementById('rolePin').value = roles.pin || '';
-    document.getElementById('blkAudio').checked = !!roles.blocks.audio;
     document.getElementById('blkConfig').checked = !!roles.blocks.config;
     document.getElementById('blkAnuncios').checked = !!roles.blocks.anuncios;
+    document.getElementById('lockRemoteWithPin').checked = !roles.remoteUnaffected;
 
     window.saveRoleConfig = function(){
       const cfg = {
         role: document.getElementById('roleSelect').value,
         pin: document.getElementById('rolePin').value.trim(),
         blocks: {
-          audio: document.getElementById('blkAudio').checked,
           config: document.getElementById('blkConfig').checked,
           anuncios: document.getElementById('blkAnuncios').checked
-        }
+        },
+        remoteUnaffected: !document.getElementById('lockRemoteWithPin').checked
       };
       StorageService.set('presencia_roles', cfg);
-      Logger.info('Roles actualizados', cfg.role);
+      Logger.info('Roles actualizados', cfg);
       alert('Configuración de roles guardada.');
     };
 
     const originalSwitchModule = window.switchModule;
     window.switchModule = function(id, el){
-      const cfg = StorageService.get('presencia_roles', { role: 'admin', pin: '', blocks: {} });
-      if (cfg.blocks && cfg.blocks[id]) {
+      const cfg = readCfg();
+      if (isBlocked(id)) {
         const entered = prompt('Módulo protegido. Ingresa PIN:');
         if (!entered || entered !== cfg.pin) {
           Logger.warn('Acceso denegado a módulo ' + id);
+          if (typeof window.showToast === 'function') window.showToast('Módulo protegido por PIN','warn');
           return;
         }
       }
@@ -297,6 +317,21 @@
       if (ccModulo) ccModulo.textContent = id;
       return originalSwitchModule(id, el);
     };
+
+    // Control explícito de impacto en remoto
+    if (typeof window.procesarComandoRemoto === 'function') {
+      const originalRemote = window.procesarComandoRemoto;
+      window.procesarComandoRemoto = function(data){
+        const cfg = readCfg();
+        const critical = ['negro','limpiar','proyectar','texto','fuente-up','fuente-down'];
+        if (!cfg.remoteUnaffected && critical.includes(data?.cmd)) {
+          Logger.warn('Comando remoto bloqueado por política PIN', data?.cmd);
+          if (typeof window.showToast === 'function') window.showToast('Comando remoto bloqueado por política PIN','warn');
+          return;
+        }
+        return originalRemote(data);
+      };
+    }
   }
 
   function setupScenes(){

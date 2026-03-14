@@ -84,6 +84,7 @@ Se añadieron capacidades avanzadas para evolución y operación:
 - **Resiliencia bíblica** con reintentos y caché local de consultas.
 - **Centro de control en vivo** con estado consolidado + botón global de pánico.
 - **Roles y bloqueo por PIN** de módulos sensibles.
+  - Nota: por defecto el bloqueo aplica al panel del operador; el control remoto no se bloquea, salvo que se active la opción para restringir comandos remotos críticos.
 - **Escenas/plantillas** guardables y aplicables en un clic.
 - **Paquete de culto** para backup/restauración integral.
 - **Teleprompter** (`teleprompter.html`) con control de velocidad desde panel.
