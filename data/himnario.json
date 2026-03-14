@@ -1,1 +1,182 @@
-
+[
+  {
+    "numero": 1,
+    "titulo": "En un aposento alto",
+    "estrofas": [
+      "En un aposento alto,\ncon los doce reunidos,\nmanifestóse el Espíritu\na sus siervos escogidos.",
+      "En un soplo de vida,\nen lenguas de fuego,\nse cumplió la promesa\ndel Padre en el cielo.",
+      "En el nombre de Cristo\nsanamos los enfermos,\ny predicamos su gracia\na los pueblos del suelo."
+    ],
+    "coro": "¡Es el Espíritu Santo!\n¡Gloriosa llenura!\n¡Fuego, fuego! ¡Santo fuego!\n¡Bendita unción!"
+  },
+  {
+    "numero": 4,
+    "titulo": "Dulce comunión",
+    "estrofas": [
+      "Dulce comunión la que gozo ya,\ncaminando con mi Dios;\nEn su Santa luz cada día voy,\ny su voz oigo en mi interior.",
+      "Solo él puede así consolarme aquí,\ncuando triste y abatido estoy;\nÉl es mi poder, él es mi sostén,\nél es todo para mí.",
+      "Ya la noche umbría nunca temo más,\npues que Dios está a mi lado;\nPorque me guiará con su santa luz,\nhasta el fin del camino."
+    ],
+    "coro": "Andando con Jesús, andando con Jesús,\nhay paz en mi corazón;\nAndando con Jesús, andando con Jesús,\nhay paz en mi corazón."
+  },
+  {
+    "numero": 7,
+    "titulo": "Santo, santo, santo",
+    "estrofas": [
+      "Santo, santo, santo,\nSeñor Omnipotente,\nsiempre el labio mío\nloores te dará.",
+      "Santo, santo, santo,\nen numerosa hueste,\nen tus obras todas\ntus pies adorarán.",
+      "Santo, santo, santo,\nSeñor Omnipotente,\nen tierra, en cielo y mar\ntu gloria brillará."
+    ],
+    "coro": ""
+  },
+  {
+    "numero": 18,
+    "titulo": "Cristo me ama",
+    "estrofas": [
+      "Cristo me ama, bien lo sé,\nsu palabra me hace ver\nque los niños son de aquel\nque es nuestro amigo fiel.",
+      "Cristo me ama, pues murió\ny el cielo me abrió;\nÉl mis culpas limpió\ny al cielo me llevó.",
+      "Cristo me ama, me guiará\nen el cielo moraré;\nen su reino estaré\ny su gloria yo veré."
+    ],
+    "coro": "Sí, Cristo me ama,\nsí, Cristo me ama,\nsí, Cristo me ama,\nla Biblia dice así."
+  },
+  {
+    "numero": 25,
+    "titulo": "Cuán grande es Él",
+    "estrofas": [
+      "Señor mi Dios, al contemplar los cielos,\nel firmamento y las estrellas mil;\ncuando escucho el trueno poderoso\ny oigo al bosque y brisa susurrar.",
+      "Al recorrer los montes y los valles,\ny ver las flores, ríos al pasar;\nal escuchar el canto de las aves\ny el suave murmullo del raudal.",
+      "Cuando recuerdo que de amor profundo\nJesús murió en la cruz por ti y por mí;\ny que al morir venció el poder del mundo\ny que entre muertos se levantó por fin."
+    ],
+    "coro": "Entonces prorrumpe mi alma en alabanzas,\n¡Cuán grande es Él, cuán grande es Él!\nEntonces prorrumpe mi alma en alabanzas,\n¡Cuán grande es Él, cuán grande es Él!"
+  },
+  {
+    "numero": 32,
+    "titulo": "Sublime gracia",
+    "estrofas": [
+      "Sublime gracia del Señor\nque a un infeliz salvó;\nFui ciego mas hoy veo yo,\nperdido y Él me halló.",
+      "Su gracia me enseñó a temer,\nmis dudas ahuyentó;\n¡Oh cuán precioso fue a mi ser\ncuando Él me transformó!",
+      "Y cuando en Sión por siglos mil\nbrillando esté cual sol,\nyo cantaré por siempre aquí\nsu amor que me salvó."
+    ],
+    "coro": ""
+  },
+  {
+    "numero": 40,
+    "titulo": "Firmes y adelante",
+    "estrofas": [
+      "Firmes y adelante, huestes de la fe,\nsin temor alguno que Jesús nos ve;\nJefe es el el Cristo que venció al morir,\nal seguir su enseña, Id al porvenir.",
+      "Al sagrado nombre de nuestro Señor\ntiemblan y se rinden fuerzas del error;\nfuerza hay en su nombre para dominar,\nfuerza en la batalla y para triunfar.",
+      "Juntos en combate, juntos en la fe,\nhermanos marchemos donde Él nos lleve;\nunidos en filas no habrá división,\nmarchad todos juntos en su dirección."
+    ],
+    "coro": "Firmes y adelante, huestes de la fe,\nsin temor alguno que Jesús nos ve."
+  },
+  {
+    "numero": 55,
+    "titulo": "A ti, oh Dios",
+    "estrofas": [
+      "A ti, oh Dios, mi corazón\nentrego con amor;\nte doy mi vida, mi canción,\nmi todo en derredor.",
+      "A ti, oh Cristo, Salvador,\nmi vida ofrezco hoy;\ntu sangre me dio el perdón\ny tuyo siempre soy.",
+      "A ti, Espíritu de Dios,\nme rindo en oración;\nllena mi ser de tu poder\ny dame tu unción."
+    ],
+    "coro": "A ti, Señor, a ti, Señor,\nmi alma canta a ti;\nRecibe pues mi corazón,\nvive siempre en mí."
+  },
+  {
+    "numero": 78,
+    "titulo": "Al mundo paz",
+    "estrofas": [
+      "Al mundo paz, nació Jesús,\nvenid, adoradle;\nal Rey de reyes recibid,\nvenid, adoradle.",
+      "Al mundo paz, el Salvador\nya reina en los corazones;\ny lleva su amor eterno\na todas las naciones.",
+      "Al mundo paz, con gratitud\ncantemos al Señor;\npor su misericordia\nsu nombre alabemos hoy."
+    ],
+    "coro": "Venid, adoradle, venid, adoradle,\nvenid, adoradle a Cristo el Rey."
+  },
+  {
+    "numero": 85,
+    "titulo": "Oh amor que no me dejarás",
+    "estrofas": [
+      "¡Oh amor que no me dejarás!\ndescansa el alma mía en ti;\nes tuya y tú la guardarás\ny en ti más rica ha de ser.",
+      "¡Oh luz que en mi sendero vas!\nmi antorcha en ti apagué;\nmas en tu esplendor me envolverás\ny bella ha de amanecer.",
+      "¡Oh gozo que a buscarme vas!\nla cruz me sostiene a mí;\ny de esa cruz mi gozo más\nflotando al cielo ya se fue."
+    ],
+    "coro": ""
+  },
+  {
+    "numero": 100,
+    "titulo": "Gracias, oh Dios",
+    "estrofas": [
+      "Gracias, oh Dios, gracias,\npor tu gran amor;\ngracias por la sangre\nde tu Hijo el Señor.",
+      "Gracias porque un día\ntú me redimiste;\ngracias porque vida\nnueva tú me diste.",
+      "Gracias porque al cielo\nme has de llevar;\ngracias porque un día\nte podré contemplar."
+    ],
+    "coro": "Gracias, gracias,\nte doy mi Señor;\ngracias, gracias\npor tu eterno amor."
+  },
+  {
+    "numero": 110,
+    "titulo": "Yo tengo gozo",
+    "estrofas": [
+      "Yo tengo gozo, gozo, gozo\nen mi alma, en mi alma;\nyo tengo gozo, gozo, gozo\nen mi alma, en mi ser.",
+      "Yo tengo paz, paz, paz\nen mi alma, en mi alma;\nyo tengo paz, paz, paz\nen mi alma, en mi ser.",
+      "Yo tengo amor, amor, amor\nen mi alma, en mi alma;\nyo tengo amor, amor, amor\nen mi alma, en mi ser."
+    ],
+    "coro": "El Espíritu que mora\nen mi alma hoy,\nes el gozo más profundo\nque en la tierra hay."
+  },
+  {
+    "numero": 135,
+    "titulo": "Hay poder en Cristo",
+    "estrofas": [
+      "¿Quieres ser libre de orgullo y pasión?\n¡Hay poder en Cristo Señor!\n¿Quieres vencer en la cruel tentación?\n¡Hay poder en Cristo Señor!",
+      "¿Quieres servir a tu amante Jesús?\n¡Hay poder en Cristo Señor!\n¿Quieres brillar para él como la luz?\n¡Hay poder en Cristo Señor!",
+      "¿Quieres librarte del yugo del mal?\n¡Hay poder en Cristo Señor!\n¿Quieres tener vida eterna e inmortal?\n¡Hay poder en Cristo Señor!"
+    ],
+    "coro": "¡Hay poder, poder, sin igual poder,\nen Jesús quien murió!\n¡Hay poder, poder, sin igual poder,\nen la sangre que él vertió!"
+  },
+  {
+    "numero": 150,
+    "titulo": "En la cruz",
+    "estrofas": [
+      "En la cruz, en la cruz,\ndo primero vi la luz,\ny las manchas de mi alma yo lavé;\nfue allí por fe do vi a Jesús,\ny siempre feliz con él seré.",
+      "De mi cargo y pesadumbre\nfui a Jesús y hallé en él;\nlibertad, paz y alegría,\nqué reposo tan fiel.",
+      "Fue allí donde mi alma angustiada\nhallé el más sublime bien;\ncuando al pie de la cruz me postré\nllanto y sangre vi también."
+    ],
+    "coro": "En la cruz, en la cruz,\ndo primero vi la luz,\ny las manchas de mi alma yo lavé;\nfue allí por fe do vi a Jesús,\ny siempre feliz con él seré."
+  },
+  {
+    "numero": 175,
+    "titulo": "Castillo fuerte es nuestro Dios",
+    "estrofas": [
+      "Castillo fuerte es nuestro Dios,\ndefensa y buen escudo;\ncon su poder nos librará\nen este trance agudo.",
+      "Con furia y con afán\nel mundo busca al fiel;\npor Cristo el Hijo de Dios\nes nuestro defensor.",
+      "El mundo con sus males\njamás nos vencerá;\nla fuerza de su Cristo\ntriunfante lucirá."
+    ],
+    "coro": ""
+  },
+  {
+    "numero": 245,
+    "titulo": "Más santidad dame",
+    "estrofas": [
+      "Más santidad dame,\nmás odio al mal;\nmás calma en las penas,\nmás alto en lo andar.",
+      "Más fe en mi Maestro,\nmás consagración;\nmás celo en servirle,\nmás fervor y unción.",
+      "Más pureza dame,\nmás fuerza y valor;\nmás dones del cielo\ny más de tu amor."
+    ],
+    "coro": ""
+  },
+  {
+    "numero": 280,
+    "titulo": "Oh qué amigo nos es Cristo",
+    "estrofas": [
+      "¡Oh, qué amigo nos es Cristo!\nÉl llevó nuestro dolor,\ny nos manda que llevemos\ntodo a Dios en oración.",
+      "¿Vive el hombre desprovisto\nde paz, gozo y santo amor?\nEsto es porque no llevamos\ntodo a Dios en oración.",
+      "¿Eres débil y cargado,\ncansado de duro afán?\nA Jesús tu refugio eterno,\ndile todo en oración."
+    ],
+    "coro": "¡Oh qué amigo nos es Cristo!\nÉl llevó nuestro dolor;\nen sus brazos nos llevará\na la vida y al amor."
+  },
+  {
+    "numero": 329,
+    "titulo": "Cuando allá se pase lista",
+    "estrofas": [
+      "Cuando la trompeta suene\nen aquel día final,\ny que el alba eterna rompa\nen la mañana eternal;\ncuando las naciones salvas\na su gloria lleguen ya\ny que sea pasada lista,\nallí estaré.",
+      "En el trono de los siglos\ncuando estén los redimidos\ny al que a todos nos salvó\nle cantemos agradecidos;\ncuando al Rey el resultado\nnuestros siervos presentemos,\ncuando sea pasada lista,\nallí estaré.",
+      "Cuando los que aquí sembramos\ncon paciencia y con dolor\nrecojamos la cosecha\nen el campo del Señor;\ncuando veamos lo que hemos\ntrabajado con ardor\ny que sea pasada lista,\nallí estaré."
+    ],
+    "coro": "Cuando allá se pase lista,\ncuando allá se pase lista,\ncuando allá se pase lista,\na mi nombre yo feliz responderé."
+  }
+]
