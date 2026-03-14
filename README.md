@@ -44,16 +44,20 @@ Base de datos con los himnos más usados del Himnario de Gloria (329 himnos en t
 Crea y gestiona tu propia biblioteca de alabanzas y adoraciones. Cada canción puede tener múltiples estrofas, coro y puente. Búsqueda por título, autor o letra. Exportación e importación en formato JSON para respaldo.
 
 ### 📖 Biblia
-Acceso a 5 versiones en español mediante la API de bible-api.deno.dev:
+Acceso a 6 versiones en español mediante la API de bible-api.deno.dev:
 - **RVR 1960** — Reina Valera 1960
 - **RVR 1995** — Reina Valera 1995
 - **NVI** — Nueva Versión Internacional
 - **DHH** — Dios Habla Hoy
+- **TLA** — Traducción en Lenguaje Actual
 - **PDT** — Palabra de Dios para Todos
 
 Búsqueda rápida por referencia (`Juan 3:16`), navegación por libro/capítulo/versículo, carga de capítulo completo y versículos favoritos guardados localmente.
 
-> ⚠️ Requiere conexión a internet.
+> ⚠️ Requiere conexión a internet para consultas no cacheadas.
+
+> ✅ Modo offline: puedes descargar capítulos completos para **RVR60, TLA y DHH** desde el módulo Biblia.
+Cuando no haya internet, la app usa automáticamente la copia local guardada (IndexedDB).
 
 ### 📅 Orden del Culto
 Planifica la secuencia completa del servicio antes de comenzar. Combina himnos, canciones, versículos, textos y secciones en cualquier orden. Modo presentación con botones Anterior/Siguiente. Los órdenes se guardan y pueden reutilizarse en cultos futuros.
@@ -74,6 +78,21 @@ Reproduce archivos de audio (MP3, WAV, OGG) directamente desde el navegador. Pla
 
 ### 📱 Control remoto
 Controla el panel desde un celular u otro dispositivo en la misma red. Funciones disponibles desde el celular: Anterior/Siguiente en el Orden del Culto, Pantalla negra, Limpiar, Proyectar texto, Escribir texto directamente y controlar el tamaño de fuente.
+
+### 🆕 Plataforma Extendida (v11)
+Se añadieron capacidades avanzadas para evolución y operación:
+
+- **Storage versionado + migraciones** (`schemaVersion`) y recuperación segura de datos.
+- **IndexedDB para medios** de anuncios (imágenes), reduciendo presión en `localStorage`.
+- **Diagnóstico y observabilidad** (niveles de log y panel de eventos).
+- **Resiliencia bíblica** con reintentos y caché local de consultas.
+- **Centro de control en vivo** con estado consolidado + botón global de pánico.
+- **Roles y bloqueo por PIN** de módulos sensibles.
+  - Nota: por defecto el bloqueo aplica al panel del operador; el control remoto no se bloquea, salvo que se active la opción para restringir comandos remotos críticos.
+- **Escenas/plantillas** guardables y aplicables en un clic.
+- **Paquete de culto** para backup/restauración integral.
+- **Teleprompter** (`teleprompter.html`) con control de velocidad desde panel.
+- **Métricas operativas locales** (sesiones, proyecciones, módulos usados).
 
 ---
 

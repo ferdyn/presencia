@@ -10,6 +10,22 @@
     "coro": "¡Es el Espíritu Santo!\n¡Gloriosa llenura!\n¡Fuego, fuego! ¡Santo fuego!\n¡Bendita unción!"
   },
   {
+    "numero": 2,
+    "titulo": "Himno 2",
+    "estrofas": [
+      "[Letra pendiente de cargar para el himno 2]"
+    ],
+    "coro": ""
+  },
+  {
+    "numero": 3,
+    "titulo": "Himno 3",
+    "estrofas": [
+      "[Letra pendiente de cargar para el himno 3]"
+    ],
+    "coro": ""
+  },
+  {
     "numero": 4,
     "titulo": "Dulce comunión",
     "estrofas": [
@@ -20,12 +36,108 @@
     "coro": "Andando con Jesús, andando con Jesús,\nhay paz en mi corazón;\nAndando con Jesús, andando con Jesús,\nhay paz en mi corazón."
   },
   {
+    "numero": 5,
+    "titulo": "Himno 5",
+    "estrofas": [
+      "[Letra pendiente de cargar para el himno 5]"
+    ],
+    "coro": ""
+  },
+  {
+    "numero": 6,
+    "titulo": "Himno 6",
+    "estrofas": [
+      "[Letra pendiente de cargar para el himno 6]"
+    ],
+    "coro": ""
+  },
+  {
     "numero": 7,
     "titulo": "Santo, santo, santo",
     "estrofas": [
       "Santo, santo, santo,\nSeñor Omnipotente,\nsiempre el labio mío\nloores te dará.",
       "Santo, santo, santo,\nen numerosa hueste,\nen tus obras todas\ntus pies adorarán.",
       "Santo, santo, santo,\nSeñor Omnipotente,\nen tierra, en cielo y mar\ntu gloria brillará."
+    ],
+    "coro": ""
+  },
+  {
+    "numero": 8,
+    "titulo": "Himno 8",
+    "estrofas": [
+      "[Letra pendiente de cargar para el himno 8]"
+    ],
+    "coro": ""
+  },
+  {
+    "numero": 9,
+    "titulo": "Himno 9",
+    "estrofas": [
+      "[Letra pendiente de cargar para el himno 9]"
+    ],
+    "coro": ""
+  },
+  {
+    "numero": 10,
+    "titulo": "Himno 10",
+    "estrofas": [
+      "[Letra pendiente de cargar para el himno 10]"
+    ],
+    "coro": ""
+  },
+  {
+    "numero": 11,
+    "titulo": "Himno 11",
+    "estrofas": [
+      "[Letra pendiente de cargar para el himno 11]"
+    ],
+    "coro": ""
+  },
+  {
+    "numero": 12,
+    "titulo": "Himno 12",
+    "estrofas": [
+      "[Letra pendiente de cargar para el himno 12]"
+    ],
+    "coro": ""
+  },
+  {
+    "numero": 13,
+    "titulo": "Himno 13",
+    "estrofas": [
+      "[Letra pendiente de cargar para el himno 13]"
+    ],
+    "coro": ""
+  },
+  {
+    "numero": 14,
+    "titulo": "Himno 14",
+    "estrofas": [
+      "[Letra pendiente de cargar para el himno 14]"
+    ],
+    "coro": ""
+  },
+  {
+    "numero": 15,
+    "titulo": "Himno 15",
+    "estrofas": [
+      "[Letra pendiente de cargar para el himno 15]"
+    ],
+    "coro": ""
+  },
+  {
+    "numero": 16,
+    "titulo": "Himno 16",
+    "estrofas": [
+      "[Letra pendiente de cargar para el himno 16]"
+    ],
+    "coro": ""
+  },
+  {
+    "numero": 17,
+    "titulo": "Himno 17",
+    "estrofas": [
+      "[Letra pendiente de cargar para el himno 17]"
     ],
     "coro": ""
   },
@@ -40,6 +152,54 @@
     "coro": "Sí, Cristo me ama,\nsí, Cristo me ama,\nsí, Cristo me ama,\nla Biblia dice así."
   },
   {
+    "numero": 19,
+    "titulo": "Himno 19",
+    "estrofas": [
+      "[Letra pendiente de cargar para el himno 19]"
+    ],
+    "coro": ""
+  },
+  {
+    "numero": 20,
+    "titulo": "Himno 20",
+    "estrofas": [
+      "[Letra pendiente de cargar para el himno 20]"
+    ],
+    "coro": ""
+  },
+  {
+    "numero": 21,
+    "titulo": "Himno 21",
+    "estrofas": [
+      "[Letra pendiente de cargar para el himno 21]"
+    ],
+    "coro": ""
+  },
+  {
+    "numero": 22,
+    "titulo": "Himno 22",
+    "estrofas": [
+      "[Letra pendiente de cargar para el himno 22]"
+    ],
+    "coro": ""
+  },
+  {
+    "numero": 23,
+    "titulo": "Himno 23",
+    "estrofas": [
+      "[Letra pendiente de cargar para el himno 23]"
+    ],
+    "coro": ""
+  },
+  {
+    "numero": 24,
+    "titulo": "Himno 24",
+    "estrofas": [
+      "[Letra pendiente de cargar para el himno 24]"
+    ],
+    "coro": ""
+  },
+  {
     "numero": 25,
     "titulo": "Cuán grande es Él",
     "estrofas": [
@@ -50,12 +210,116 @@
     "coro": "Entonces prorrumpe mi alma en alabanzas,\n¡Cuán grande es Él, cuán grande es Él!\nEntonces prorrumpe mi alma en alabanzas,\n¡Cuán grande es Él, cuán grande es Él!"
   },
   {
+    "numero": 26,
+    "titulo": "Himno 26",
+    "estrofas": [
+      "[Letra pendiente de cargar para el himno 26]"
+    ],
+    "coro": ""
+  },
+  {
+    "numero": 27,
+    "titulo": "Himno 27",
+    "estrofas": [
+      "[Letra pendiente de cargar para el himno 27]"
+    ],
+    "coro": ""
+  },
+  {
+    "numero": 28,
+    "titulo": "Himno 28",
+    "estrofas": [
+      "[Letra pendiente de cargar para el himno 28]"
+    ],
+    "coro": ""
+  },
+  {
+    "numero": 29,
+    "titulo": "Himno 29",
+    "estrofas": [
+      "[Letra pendiente de cargar para el himno 29]"
+    ],
+    "coro": ""
+  },
+  {
+    "numero": 30,
+    "titulo": "Himno 30",
+    "estrofas": [
+      "[Letra pendiente de cargar para el himno 30]"
+    ],
+    "coro": ""
+  },
+  {
+    "numero": 31,
+    "titulo": "Himno 31",
+    "estrofas": [
+      "[Letra pendiente de cargar para el himno 31]"
+    ],
+    "coro": ""
+  },
+  {
     "numero": 32,
     "titulo": "Sublime gracia",
     "estrofas": [
       "Sublime gracia del Señor\nque a un infeliz salvó;\nFui ciego mas hoy veo yo,\nperdido y Él me halló.",
       "Su gracia me enseñó a temer,\nmis dudas ahuyentó;\n¡Oh cuán precioso fue a mi ser\ncuando Él me transformó!",
       "Y cuando en Sión por siglos mil\nbrillando esté cual sol,\nyo cantaré por siempre aquí\nsu amor que me salvó."
+    ],
+    "coro": ""
+  },
+  {
+    "numero": 33,
+    "titulo": "Himno 33",
+    "estrofas": [
+      "[Letra pendiente de cargar para el himno 33]"
+    ],
+    "coro": ""
+  },
+  {
+    "numero": 34,
+    "titulo": "Himno 34",
+    "estrofas": [
+      "[Letra pendiente de cargar para el himno 34]"
+    ],
+    "coro": ""
+  },
+  {
+    "numero": 35,
+    "titulo": "Himno 35",
+    "estrofas": [
+      "[Letra pendiente de cargar para el himno 35]"
+    ],
+    "coro": ""
+  },
+  {
+    "numero": 36,
+    "titulo": "Himno 36",
+    "estrofas": [
+      "[Letra pendiente de cargar para el himno 36]"
+    ],
+    "coro": ""
+  },
+  {
+    "numero": 37,
+    "titulo": "Himno 37",
+    "estrofas": [
+      "[Letra pendiente de cargar para el himno 37]"
+    ],
+    "coro": ""
+  },
+  {
+    "numero": 38,
+    "titulo": "Himno 38",
+    "estrofas": [
+      "[Letra pendiente de cargar para el himno 38]"
+    ],
+    "coro": ""
+  },
+  {
+    "numero": 39,
+    "titulo": "Himno 39",
+    "estrofas": [
+      "[Letra pendiente de cargar para el himno 39]"
     ],
     "coro": ""
   },
@@ -70,6 +334,118 @@
     "coro": "Firmes y adelante, huestes de la fe,\nsin temor alguno que Jesús nos ve."
   },
   {
+    "numero": 41,
+    "titulo": "Himno 41",
+    "estrofas": [
+      "[Letra pendiente de cargar para el himno 41]"
+    ],
+    "coro": ""
+  },
+  {
+    "numero": 42,
+    "titulo": "Himno 42",
+    "estrofas": [
+      "[Letra pendiente de cargar para el himno 42]"
+    ],
+    "coro": ""
+  },
+  {
+    "numero": 43,
+    "titulo": "Himno 43",
+    "estrofas": [
+      "[Letra pendiente de cargar para el himno 43]"
+    ],
+    "coro": ""
+  },
+  {
+    "numero": 44,
+    "titulo": "Himno 44",
+    "estrofas": [
+      "[Letra pendiente de cargar para el himno 44]"
+    ],
+    "coro": ""
+  },
+  {
+    "numero": 45,
+    "titulo": "Himno 45",
+    "estrofas": [
+      "[Letra pendiente de cargar para el himno 45]"
+    ],
+    "coro": ""
+  },
+  {
+    "numero": 46,
+    "titulo": "Himno 46",
+    "estrofas": [
+      "[Letra pendiente de cargar para el himno 46]"
+    ],
+    "coro": ""
+  },
+  {
+    "numero": 47,
+    "titulo": "Himno 47",
+    "estrofas": [
+      "[Letra pendiente de cargar para el himno 47]"
+    ],
+    "coro": ""
+  },
+  {
+    "numero": 48,
+    "titulo": "Himno 48",
+    "estrofas": [
+      "[Letra pendiente de cargar para el himno 48]"
+    ],
+    "coro": ""
+  },
+  {
+    "numero": 49,
+    "titulo": "Himno 49",
+    "estrofas": [
+      "[Letra pendiente de cargar para el himno 49]"
+    ],
+    "coro": ""
+  },
+  {
+    "numero": 50,
+    "titulo": "Himno 50",
+    "estrofas": [
+      "[Letra pendiente de cargar para el himno 50]"
+    ],
+    "coro": ""
+  },
+  {
+    "numero": 51,
+    "titulo": "Himno 51",
+    "estrofas": [
+      "[Letra pendiente de cargar para el himno 51]"
+    ],
+    "coro": ""
+  },
+  {
+    "numero": 52,
+    "titulo": "Himno 52",
+    "estrofas": [
+      "[Letra pendiente de cargar para el himno 52]"
+    ],
+    "coro": ""
+  },
+  {
+    "numero": 53,
+    "titulo": "Himno 53",
+    "estrofas": [
+      "[Letra pendiente de cargar para el himno 53]"
+    ],
+    "coro": ""
+  },
+  {
+    "numero": 54,
+    "titulo": "Himno 54",
+    "estrofas": [
+      "[Letra pendiente de cargar para el himno 54]"
+    ],
+    "coro": ""
+  },
+  {
     "numero": 55,
     "titulo": "A ti, oh Dios",
     "estrofas": [
@@ -78,6 +454,182 @@
       "A ti, Espíritu de Dios,\nme rindo en oración;\nllena mi ser de tu poder\ny dame tu unción."
     ],
     "coro": "A ti, Señor, a ti, Señor,\nmi alma canta a ti;\nRecibe pues mi corazón,\nvive siempre en mí."
+  },
+  {
+    "numero": 56,
+    "titulo": "Himno 56",
+    "estrofas": [
+      "[Letra pendiente de cargar para el himno 56]"
+    ],
+    "coro": ""
+  },
+  {
+    "numero": 57,
+    "titulo": "Himno 57",
+    "estrofas": [
+      "[Letra pendiente de cargar para el himno 57]"
+    ],
+    "coro": ""
+  },
+  {
+    "numero": 58,
+    "titulo": "Himno 58",
+    "estrofas": [
+      "[Letra pendiente de cargar para el himno 58]"
+    ],
+    "coro": ""
+  },
+  {
+    "numero": 59,
+    "titulo": "Himno 59",
+    "estrofas": [
+      "[Letra pendiente de cargar para el himno 59]"
+    ],
+    "coro": ""
+  },
+  {
+    "numero": 60,
+    "titulo": "Himno 60",
+    "estrofas": [
+      "[Letra pendiente de cargar para el himno 60]"
+    ],
+    "coro": ""
+  },
+  {
+    "numero": 61,
+    "titulo": "Himno 61",
+    "estrofas": [
+      "[Letra pendiente de cargar para el himno 61]"
+    ],
+    "coro": ""
+  },
+  {
+    "numero": 62,
+    "titulo": "Himno 62",
+    "estrofas": [
+      "[Letra pendiente de cargar para el himno 62]"
+    ],
+    "coro": ""
+  },
+  {
+    "numero": 63,
+    "titulo": "Himno 63",
+    "estrofas": [
+      "[Letra pendiente de cargar para el himno 63]"
+    ],
+    "coro": ""
+  },
+  {
+    "numero": 64,
+    "titulo": "Himno 64",
+    "estrofas": [
+      "[Letra pendiente de cargar para el himno 64]"
+    ],
+    "coro": ""
+  },
+  {
+    "numero": 65,
+    "titulo": "Himno 65",
+    "estrofas": [
+      "[Letra pendiente de cargar para el himno 65]"
+    ],
+    "coro": ""
+  },
+  {
+    "numero": 66,
+    "titulo": "Himno 66",
+    "estrofas": [
+      "[Letra pendiente de cargar para el himno 66]"
+    ],
+    "coro": ""
+  },
+  {
+    "numero": 67,
+    "titulo": "Himno 67",
+    "estrofas": [
+      "[Letra pendiente de cargar para el himno 67]"
+    ],
+    "coro": ""
+  },
+  {
+    "numero": 68,
+    "titulo": "Himno 68",
+    "estrofas": [
+      "[Letra pendiente de cargar para el himno 68]"
+    ],
+    "coro": ""
+  },
+  {
+    "numero": 69,
+    "titulo": "Himno 69",
+    "estrofas": [
+      "[Letra pendiente de cargar para el himno 69]"
+    ],
+    "coro": ""
+  },
+  {
+    "numero": 70,
+    "titulo": "Himno 70",
+    "estrofas": [
+      "[Letra pendiente de cargar para el himno 70]"
+    ],
+    "coro": ""
+  },
+  {
+    "numero": 71,
+    "titulo": "Himno 71",
+    "estrofas": [
+      "[Letra pendiente de cargar para el himno 71]"
+    ],
+    "coro": ""
+  },
+  {
+    "numero": 72,
+    "titulo": "Himno 72",
+    "estrofas": [
+      "[Letra pendiente de cargar para el himno 72]"
+    ],
+    "coro": ""
+  },
+  {
+    "numero": 73,
+    "titulo": "Himno 73",
+    "estrofas": [
+      "[Letra pendiente de cargar para el himno 73]"
+    ],
+    "coro": ""
+  },
+  {
+    "numero": 74,
+    "titulo": "Himno 74",
+    "estrofas": [
+      "[Letra pendiente de cargar para el himno 74]"
+    ],
+    "coro": ""
+  },
+  {
+    "numero": 75,
+    "titulo": "Himno 75",
+    "estrofas": [
+      "[Letra pendiente de cargar para el himno 75]"
+    ],
+    "coro": ""
+  },
+  {
+    "numero": 76,
+    "titulo": "Himno 76",
+    "estrofas": [
+      "[Letra pendiente de cargar para el himno 76]"
+    ],
+    "coro": ""
+  },
+  {
+    "numero": 77,
+    "titulo": "Himno 77",
+    "estrofas": [
+      "[Letra pendiente de cargar para el himno 77]"
+    ],
+    "coro": ""
   },
   {
     "numero": 78,
@@ -90,12 +642,172 @@
     "coro": "Venid, adoradle, venid, adoradle,\nvenid, adoradle a Cristo el Rey."
   },
   {
+    "numero": 79,
+    "titulo": "Himno 79",
+    "estrofas": [
+      "[Letra pendiente de cargar para el himno 79]"
+    ],
+    "coro": ""
+  },
+  {
+    "numero": 80,
+    "titulo": "Himno 80",
+    "estrofas": [
+      "[Letra pendiente de cargar para el himno 80]"
+    ],
+    "coro": ""
+  },
+  {
+    "numero": 81,
+    "titulo": "Himno 81",
+    "estrofas": [
+      "[Letra pendiente de cargar para el himno 81]"
+    ],
+    "coro": ""
+  },
+  {
+    "numero": 82,
+    "titulo": "Himno 82",
+    "estrofas": [
+      "[Letra pendiente de cargar para el himno 82]"
+    ],
+    "coro": ""
+  },
+  {
+    "numero": 83,
+    "titulo": "Himno 83",
+    "estrofas": [
+      "[Letra pendiente de cargar para el himno 83]"
+    ],
+    "coro": ""
+  },
+  {
+    "numero": 84,
+    "titulo": "Himno 84",
+    "estrofas": [
+      "[Letra pendiente de cargar para el himno 84]"
+    ],
+    "coro": ""
+  },
+  {
     "numero": 85,
     "titulo": "Oh amor que no me dejarás",
     "estrofas": [
       "¡Oh amor que no me dejarás!\ndescansa el alma mía en ti;\nes tuya y tú la guardarás\ny en ti más rica ha de ser.",
       "¡Oh luz que en mi sendero vas!\nmi antorcha en ti apagué;\nmas en tu esplendor me envolverás\ny bella ha de amanecer.",
       "¡Oh gozo que a buscarme vas!\nla cruz me sostiene a mí;\ny de esa cruz mi gozo más\nflotando al cielo ya se fue."
+    ],
+    "coro": ""
+  },
+  {
+    "numero": 86,
+    "titulo": "Himno 86",
+    "estrofas": [
+      "[Letra pendiente de cargar para el himno 86]"
+    ],
+    "coro": ""
+  },
+  {
+    "numero": 87,
+    "titulo": "Himno 87",
+    "estrofas": [
+      "[Letra pendiente de cargar para el himno 87]"
+    ],
+    "coro": ""
+  },
+  {
+    "numero": 88,
+    "titulo": "Himno 88",
+    "estrofas": [
+      "[Letra pendiente de cargar para el himno 88]"
+    ],
+    "coro": ""
+  },
+  {
+    "numero": 89,
+    "titulo": "Himno 89",
+    "estrofas": [
+      "[Letra pendiente de cargar para el himno 89]"
+    ],
+    "coro": ""
+  },
+  {
+    "numero": 90,
+    "titulo": "Himno 90",
+    "estrofas": [
+      "[Letra pendiente de cargar para el himno 90]"
+    ],
+    "coro": ""
+  },
+  {
+    "numero": 91,
+    "titulo": "Himno 91",
+    "estrofas": [
+      "[Letra pendiente de cargar para el himno 91]"
+    ],
+    "coro": ""
+  },
+  {
+    "numero": 92,
+    "titulo": "Himno 92",
+    "estrofas": [
+      "[Letra pendiente de cargar para el himno 92]"
+    ],
+    "coro": ""
+  },
+  {
+    "numero": 93,
+    "titulo": "Himno 93",
+    "estrofas": [
+      "[Letra pendiente de cargar para el himno 93]"
+    ],
+    "coro": ""
+  },
+  {
+    "numero": 94,
+    "titulo": "Himno 94",
+    "estrofas": [
+      "[Letra pendiente de cargar para el himno 94]"
+    ],
+    "coro": ""
+  },
+  {
+    "numero": 95,
+    "titulo": "Himno 95",
+    "estrofas": [
+      "[Letra pendiente de cargar para el himno 95]"
+    ],
+    "coro": ""
+  },
+  {
+    "numero": 96,
+    "titulo": "Himno 96",
+    "estrofas": [
+      "[Letra pendiente de cargar para el himno 96]"
+    ],
+    "coro": ""
+  },
+  {
+    "numero": 97,
+    "titulo": "Himno 97",
+    "estrofas": [
+      "[Letra pendiente de cargar para el himno 97]"
+    ],
+    "coro": ""
+  },
+  {
+    "numero": 98,
+    "titulo": "Himno 98",
+    "estrofas": [
+      "[Letra pendiente de cargar para el himno 98]"
+    ],
+    "coro": ""
+  },
+  {
+    "numero": 99,
+    "titulo": "Himno 99",
+    "estrofas": [
+      "[Letra pendiente de cargar para el himno 99]"
     ],
     "coro": ""
   },
@@ -110,6 +822,78 @@
     "coro": "Gracias, gracias,\nte doy mi Señor;\ngracias, gracias\npor tu eterno amor."
   },
   {
+    "numero": 101,
+    "titulo": "Himno 101",
+    "estrofas": [
+      "[Letra pendiente de cargar para el himno 101]"
+    ],
+    "coro": ""
+  },
+  {
+    "numero": 102,
+    "titulo": "Himno 102",
+    "estrofas": [
+      "[Letra pendiente de cargar para el himno 102]"
+    ],
+    "coro": ""
+  },
+  {
+    "numero": 103,
+    "titulo": "Himno 103",
+    "estrofas": [
+      "[Letra pendiente de cargar para el himno 103]"
+    ],
+    "coro": ""
+  },
+  {
+    "numero": 104,
+    "titulo": "Himno 104",
+    "estrofas": [
+      "[Letra pendiente de cargar para el himno 104]"
+    ],
+    "coro": ""
+  },
+  {
+    "numero": 105,
+    "titulo": "Himno 105",
+    "estrofas": [
+      "[Letra pendiente de cargar para el himno 105]"
+    ],
+    "coro": ""
+  },
+  {
+    "numero": 106,
+    "titulo": "Himno 106",
+    "estrofas": [
+      "[Letra pendiente de cargar para el himno 106]"
+    ],
+    "coro": ""
+  },
+  {
+    "numero": 107,
+    "titulo": "Himno 107",
+    "estrofas": [
+      "[Letra pendiente de cargar para el himno 107]"
+    ],
+    "coro": ""
+  },
+  {
+    "numero": 108,
+    "titulo": "Himno 108",
+    "estrofas": [
+      "[Letra pendiente de cargar para el himno 108]"
+    ],
+    "coro": ""
+  },
+  {
+    "numero": 109,
+    "titulo": "Himno 109",
+    "estrofas": [
+      "[Letra pendiente de cargar para el himno 109]"
+    ],
+    "coro": ""
+  },
+  {
     "numero": 110,
     "titulo": "Yo tengo gozo",
     "estrofas": [
@@ -118,6 +902,198 @@
       "Yo tengo amor, amor, amor\nen mi alma, en mi alma;\nyo tengo amor, amor, amor\nen mi alma, en mi ser."
     ],
     "coro": "El Espíritu que mora\nen mi alma hoy,\nes el gozo más profundo\nque en la tierra hay."
+  },
+  {
+    "numero": 111,
+    "titulo": "Himno 111",
+    "estrofas": [
+      "[Letra pendiente de cargar para el himno 111]"
+    ],
+    "coro": ""
+  },
+  {
+    "numero": 112,
+    "titulo": "Himno 112",
+    "estrofas": [
+      "[Letra pendiente de cargar para el himno 112]"
+    ],
+    "coro": ""
+  },
+  {
+    "numero": 113,
+    "titulo": "Himno 113",
+    "estrofas": [
+      "[Letra pendiente de cargar para el himno 113]"
+    ],
+    "coro": ""
+  },
+  {
+    "numero": 114,
+    "titulo": "Himno 114",
+    "estrofas": [
+      "[Letra pendiente de cargar para el himno 114]"
+    ],
+    "coro": ""
+  },
+  {
+    "numero": 115,
+    "titulo": "Himno 115",
+    "estrofas": [
+      "[Letra pendiente de cargar para el himno 115]"
+    ],
+    "coro": ""
+  },
+  {
+    "numero": 116,
+    "titulo": "Himno 116",
+    "estrofas": [
+      "[Letra pendiente de cargar para el himno 116]"
+    ],
+    "coro": ""
+  },
+  {
+    "numero": 117,
+    "titulo": "Himno 117",
+    "estrofas": [
+      "[Letra pendiente de cargar para el himno 117]"
+    ],
+    "coro": ""
+  },
+  {
+    "numero": 118,
+    "titulo": "Himno 118",
+    "estrofas": [
+      "[Letra pendiente de cargar para el himno 118]"
+    ],
+    "coro": ""
+  },
+  {
+    "numero": 119,
+    "titulo": "Himno 119",
+    "estrofas": [
+      "[Letra pendiente de cargar para el himno 119]"
+    ],
+    "coro": ""
+  },
+  {
+    "numero": 120,
+    "titulo": "Himno 120",
+    "estrofas": [
+      "[Letra pendiente de cargar para el himno 120]"
+    ],
+    "coro": ""
+  },
+  {
+    "numero": 121,
+    "titulo": "Himno 121",
+    "estrofas": [
+      "[Letra pendiente de cargar para el himno 121]"
+    ],
+    "coro": ""
+  },
+  {
+    "numero": 122,
+    "titulo": "Himno 122",
+    "estrofas": [
+      "[Letra pendiente de cargar para el himno 122]"
+    ],
+    "coro": ""
+  },
+  {
+    "numero": 123,
+    "titulo": "Himno 123",
+    "estrofas": [
+      "[Letra pendiente de cargar para el himno 123]"
+    ],
+    "coro": ""
+  },
+  {
+    "numero": 124,
+    "titulo": "Himno 124",
+    "estrofas": [
+      "[Letra pendiente de cargar para el himno 124]"
+    ],
+    "coro": ""
+  },
+  {
+    "numero": 125,
+    "titulo": "Himno 125",
+    "estrofas": [
+      "[Letra pendiente de cargar para el himno 125]"
+    ],
+    "coro": ""
+  },
+  {
+    "numero": 126,
+    "titulo": "Himno 126",
+    "estrofas": [
+      "[Letra pendiente de cargar para el himno 126]"
+    ],
+    "coro": ""
+  },
+  {
+    "numero": 127,
+    "titulo": "Himno 127",
+    "estrofas": [
+      "[Letra pendiente de cargar para el himno 127]"
+    ],
+    "coro": ""
+  },
+  {
+    "numero": 128,
+    "titulo": "Himno 128",
+    "estrofas": [
+      "[Letra pendiente de cargar para el himno 128]"
+    ],
+    "coro": ""
+  },
+  {
+    "numero": 129,
+    "titulo": "Himno 129",
+    "estrofas": [
+      "[Letra pendiente de cargar para el himno 129]"
+    ],
+    "coro": ""
+  },
+  {
+    "numero": 130,
+    "titulo": "Himno 130",
+    "estrofas": [
+      "[Letra pendiente de cargar para el himno 130]"
+    ],
+    "coro": ""
+  },
+  {
+    "numero": 131,
+    "titulo": "Himno 131",
+    "estrofas": [
+      "[Letra pendiente de cargar para el himno 131]"
+    ],
+    "coro": ""
+  },
+  {
+    "numero": 132,
+    "titulo": "Himno 132",
+    "estrofas": [
+      "[Letra pendiente de cargar para el himno 132]"
+    ],
+    "coro": ""
+  },
+  {
+    "numero": 133,
+    "titulo": "Himno 133",
+    "estrofas": [
+      "[Letra pendiente de cargar para el himno 133]"
+    ],
+    "coro": ""
+  },
+  {
+    "numero": 134,
+    "titulo": "Himno 134",
+    "estrofas": [
+      "[Letra pendiente de cargar para el himno 134]"
+    ],
+    "coro": ""
   },
   {
     "numero": 135,
@@ -130,6 +1106,118 @@
     "coro": "¡Hay poder, poder, sin igual poder,\nen Jesús quien murió!\n¡Hay poder, poder, sin igual poder,\nen la sangre que él vertió!"
   },
   {
+    "numero": 136,
+    "titulo": "Himno 136",
+    "estrofas": [
+      "[Letra pendiente de cargar para el himno 136]"
+    ],
+    "coro": ""
+  },
+  {
+    "numero": 137,
+    "titulo": "Himno 137",
+    "estrofas": [
+      "[Letra pendiente de cargar para el himno 137]"
+    ],
+    "coro": ""
+  },
+  {
+    "numero": 138,
+    "titulo": "Himno 138",
+    "estrofas": [
+      "[Letra pendiente de cargar para el himno 138]"
+    ],
+    "coro": ""
+  },
+  {
+    "numero": 139,
+    "titulo": "Himno 139",
+    "estrofas": [
+      "[Letra pendiente de cargar para el himno 139]"
+    ],
+    "coro": ""
+  },
+  {
+    "numero": 140,
+    "titulo": "Himno 140",
+    "estrofas": [
+      "[Letra pendiente de cargar para el himno 140]"
+    ],
+    "coro": ""
+  },
+  {
+    "numero": 141,
+    "titulo": "Himno 141",
+    "estrofas": [
+      "[Letra pendiente de cargar para el himno 141]"
+    ],
+    "coro": ""
+  },
+  {
+    "numero": 142,
+    "titulo": "Himno 142",
+    "estrofas": [
+      "[Letra pendiente de cargar para el himno 142]"
+    ],
+    "coro": ""
+  },
+  {
+    "numero": 143,
+    "titulo": "Himno 143",
+    "estrofas": [
+      "[Letra pendiente de cargar para el himno 143]"
+    ],
+    "coro": ""
+  },
+  {
+    "numero": 144,
+    "titulo": "Himno 144",
+    "estrofas": [
+      "[Letra pendiente de cargar para el himno 144]"
+    ],
+    "coro": ""
+  },
+  {
+    "numero": 145,
+    "titulo": "Himno 145",
+    "estrofas": [
+      "[Letra pendiente de cargar para el himno 145]"
+    ],
+    "coro": ""
+  },
+  {
+    "numero": 146,
+    "titulo": "Himno 146",
+    "estrofas": [
+      "[Letra pendiente de cargar para el himno 146]"
+    ],
+    "coro": ""
+  },
+  {
+    "numero": 147,
+    "titulo": "Himno 147",
+    "estrofas": [
+      "[Letra pendiente de cargar para el himno 147]"
+    ],
+    "coro": ""
+  },
+  {
+    "numero": 148,
+    "titulo": "Himno 148",
+    "estrofas": [
+      "[Letra pendiente de cargar para el himno 148]"
+    ],
+    "coro": ""
+  },
+  {
+    "numero": 149,
+    "titulo": "Himno 149",
+    "estrofas": [
+      "[Letra pendiente de cargar para el himno 149]"
+    ],
+    "coro": ""
+  },
+  {
     "numero": 150,
     "titulo": "En la cruz",
     "estrofas": [
@@ -140,12 +1228,756 @@
     "coro": "En la cruz, en la cruz,\ndo primero vi la luz,\ny las manchas de mi alma yo lavé;\nfue allí por fe do vi a Jesús,\ny siempre feliz con él seré."
   },
   {
+    "numero": 151,
+    "titulo": "Himno 151",
+    "estrofas": [
+      "[Letra pendiente de cargar para el himno 151]"
+    ],
+    "coro": ""
+  },
+  {
+    "numero": 152,
+    "titulo": "Himno 152",
+    "estrofas": [
+      "[Letra pendiente de cargar para el himno 152]"
+    ],
+    "coro": ""
+  },
+  {
+    "numero": 153,
+    "titulo": "Himno 153",
+    "estrofas": [
+      "[Letra pendiente de cargar para el himno 153]"
+    ],
+    "coro": ""
+  },
+  {
+    "numero": 154,
+    "titulo": "Himno 154",
+    "estrofas": [
+      "[Letra pendiente de cargar para el himno 154]"
+    ],
+    "coro": ""
+  },
+  {
+    "numero": 155,
+    "titulo": "Himno 155",
+    "estrofas": [
+      "[Letra pendiente de cargar para el himno 155]"
+    ],
+    "coro": ""
+  },
+  {
+    "numero": 156,
+    "titulo": "Himno 156",
+    "estrofas": [
+      "[Letra pendiente de cargar para el himno 156]"
+    ],
+    "coro": ""
+  },
+  {
+    "numero": 157,
+    "titulo": "Himno 157",
+    "estrofas": [
+      "[Letra pendiente de cargar para el himno 157]"
+    ],
+    "coro": ""
+  },
+  {
+    "numero": 158,
+    "titulo": "Himno 158",
+    "estrofas": [
+      "[Letra pendiente de cargar para el himno 158]"
+    ],
+    "coro": ""
+  },
+  {
+    "numero": 159,
+    "titulo": "Himno 159",
+    "estrofas": [
+      "[Letra pendiente de cargar para el himno 159]"
+    ],
+    "coro": ""
+  },
+  {
+    "numero": 160,
+    "titulo": "Himno 160",
+    "estrofas": [
+      "[Letra pendiente de cargar para el himno 160]"
+    ],
+    "coro": ""
+  },
+  {
+    "numero": 161,
+    "titulo": "Himno 161",
+    "estrofas": [
+      "[Letra pendiente de cargar para el himno 161]"
+    ],
+    "coro": ""
+  },
+  {
+    "numero": 162,
+    "titulo": "Himno 162",
+    "estrofas": [
+      "[Letra pendiente de cargar para el himno 162]"
+    ],
+    "coro": ""
+  },
+  {
+    "numero": 163,
+    "titulo": "Himno 163",
+    "estrofas": [
+      "[Letra pendiente de cargar para el himno 163]"
+    ],
+    "coro": ""
+  },
+  {
+    "numero": 164,
+    "titulo": "Himno 164",
+    "estrofas": [
+      "[Letra pendiente de cargar para el himno 164]"
+    ],
+    "coro": ""
+  },
+  {
+    "numero": 165,
+    "titulo": "Himno 165",
+    "estrofas": [
+      "[Letra pendiente de cargar para el himno 165]"
+    ],
+    "coro": ""
+  },
+  {
+    "numero": 166,
+    "titulo": "Himno 166",
+    "estrofas": [
+      "[Letra pendiente de cargar para el himno 166]"
+    ],
+    "coro": ""
+  },
+  {
+    "numero": 167,
+    "titulo": "Himno 167",
+    "estrofas": [
+      "[Letra pendiente de cargar para el himno 167]"
+    ],
+    "coro": ""
+  },
+  {
+    "numero": 168,
+    "titulo": "Himno 168",
+    "estrofas": [
+      "[Letra pendiente de cargar para el himno 168]"
+    ],
+    "coro": ""
+  },
+  {
+    "numero": 169,
+    "titulo": "Himno 169",
+    "estrofas": [
+      "[Letra pendiente de cargar para el himno 169]"
+    ],
+    "coro": ""
+  },
+  {
+    "numero": 170,
+    "titulo": "Himno 170",
+    "estrofas": [
+      "[Letra pendiente de cargar para el himno 170]"
+    ],
+    "coro": ""
+  },
+  {
+    "numero": 171,
+    "titulo": "Himno 171",
+    "estrofas": [
+      "[Letra pendiente de cargar para el himno 171]"
+    ],
+    "coro": ""
+  },
+  {
+    "numero": 172,
+    "titulo": "Himno 172",
+    "estrofas": [
+      "[Letra pendiente de cargar para el himno 172]"
+    ],
+    "coro": ""
+  },
+  {
+    "numero": 173,
+    "titulo": "Himno 173",
+    "estrofas": [
+      "[Letra pendiente de cargar para el himno 173]"
+    ],
+    "coro": ""
+  },
+  {
+    "numero": 174,
+    "titulo": "Himno 174",
+    "estrofas": [
+      "[Letra pendiente de cargar para el himno 174]"
+    ],
+    "coro": ""
+  },
+  {
     "numero": 175,
     "titulo": "Castillo fuerte es nuestro Dios",
     "estrofas": [
       "Castillo fuerte es nuestro Dios,\ndefensa y buen escudo;\ncon su poder nos librará\nen este trance agudo.",
       "Con furia y con afán\nel mundo busca al fiel;\npor Cristo el Hijo de Dios\nes nuestro defensor.",
       "El mundo con sus males\njamás nos vencerá;\nla fuerza de su Cristo\ntriunfante lucirá."
+    ],
+    "coro": ""
+  },
+  {
+    "numero": 176,
+    "titulo": "Himno 176",
+    "estrofas": [
+      "[Letra pendiente de cargar para el himno 176]"
+    ],
+    "coro": ""
+  },
+  {
+    "numero": 177,
+    "titulo": "Himno 177",
+    "estrofas": [
+      "[Letra pendiente de cargar para el himno 177]"
+    ],
+    "coro": ""
+  },
+  {
+    "numero": 178,
+    "titulo": "Himno 178",
+    "estrofas": [
+      "[Letra pendiente de cargar para el himno 178]"
+    ],
+    "coro": ""
+  },
+  {
+    "numero": 179,
+    "titulo": "Himno 179",
+    "estrofas": [
+      "[Letra pendiente de cargar para el himno 179]"
+    ],
+    "coro": ""
+  },
+  {
+    "numero": 180,
+    "titulo": "Himno 180",
+    "estrofas": [
+      "[Letra pendiente de cargar para el himno 180]"
+    ],
+    "coro": ""
+  },
+  {
+    "numero": 181,
+    "titulo": "Himno 181",
+    "estrofas": [
+      "[Letra pendiente de cargar para el himno 181]"
+    ],
+    "coro": ""
+  },
+  {
+    "numero": 182,
+    "titulo": "Himno 182",
+    "estrofas": [
+      "[Letra pendiente de cargar para el himno 182]"
+    ],
+    "coro": ""
+  },
+  {
+    "numero": 183,
+    "titulo": "Himno 183",
+    "estrofas": [
+      "[Letra pendiente de cargar para el himno 183]"
+    ],
+    "coro": ""
+  },
+  {
+    "numero": 184,
+    "titulo": "Himno 184",
+    "estrofas": [
+      "[Letra pendiente de cargar para el himno 184]"
+    ],
+    "coro": ""
+  },
+  {
+    "numero": 185,
+    "titulo": "Himno 185",
+    "estrofas": [
+      "[Letra pendiente de cargar para el himno 185]"
+    ],
+    "coro": ""
+  },
+  {
+    "numero": 186,
+    "titulo": "Himno 186",
+    "estrofas": [
+      "[Letra pendiente de cargar para el himno 186]"
+    ],
+    "coro": ""
+  },
+  {
+    "numero": 187,
+    "titulo": "Himno 187",
+    "estrofas": [
+      "[Letra pendiente de cargar para el himno 187]"
+    ],
+    "coro": ""
+  },
+  {
+    "numero": 188,
+    "titulo": "Himno 188",
+    "estrofas": [
+      "[Letra pendiente de cargar para el himno 188]"
+    ],
+    "coro": ""
+  },
+  {
+    "numero": 189,
+    "titulo": "Himno 189",
+    "estrofas": [
+      "[Letra pendiente de cargar para el himno 189]"
+    ],
+    "coro": ""
+  },
+  {
+    "numero": 190,
+    "titulo": "Himno 190",
+    "estrofas": [
+      "[Letra pendiente de cargar para el himno 190]"
+    ],
+    "coro": ""
+  },
+  {
+    "numero": 191,
+    "titulo": "Himno 191",
+    "estrofas": [
+      "[Letra pendiente de cargar para el himno 191]"
+    ],
+    "coro": ""
+  },
+  {
+    "numero": 192,
+    "titulo": "Himno 192",
+    "estrofas": [
+      "[Letra pendiente de cargar para el himno 192]"
+    ],
+    "coro": ""
+  },
+  {
+    "numero": 193,
+    "titulo": "Himno 193",
+    "estrofas": [
+      "[Letra pendiente de cargar para el himno 193]"
+    ],
+    "coro": ""
+  },
+  {
+    "numero": 194,
+    "titulo": "Himno 194",
+    "estrofas": [
+      "[Letra pendiente de cargar para el himno 194]"
+    ],
+    "coro": ""
+  },
+  {
+    "numero": 195,
+    "titulo": "Himno 195",
+    "estrofas": [
+      "[Letra pendiente de cargar para el himno 195]"
+    ],
+    "coro": ""
+  },
+  {
+    "numero": 196,
+    "titulo": "Himno 196",
+    "estrofas": [
+      "[Letra pendiente de cargar para el himno 196]"
+    ],
+    "coro": ""
+  },
+  {
+    "numero": 197,
+    "titulo": "Himno 197",
+    "estrofas": [
+      "[Letra pendiente de cargar para el himno 197]"
+    ],
+    "coro": ""
+  },
+  {
+    "numero": 198,
+    "titulo": "Himno 198",
+    "estrofas": [
+      "[Letra pendiente de cargar para el himno 198]"
+    ],
+    "coro": ""
+  },
+  {
+    "numero": 199,
+    "titulo": "Himno 199",
+    "estrofas": [
+      "[Letra pendiente de cargar para el himno 199]"
+    ],
+    "coro": ""
+  },
+  {
+    "numero": 200,
+    "titulo": "Himno 200",
+    "estrofas": [
+      "[Letra pendiente de cargar para el himno 200]"
+    ],
+    "coro": ""
+  },
+  {
+    "numero": 201,
+    "titulo": "Himno 201",
+    "estrofas": [
+      "[Letra pendiente de cargar para el himno 201]"
+    ],
+    "coro": ""
+  },
+  {
+    "numero": 202,
+    "titulo": "Himno 202",
+    "estrofas": [
+      "[Letra pendiente de cargar para el himno 202]"
+    ],
+    "coro": ""
+  },
+  {
+    "numero": 203,
+    "titulo": "Himno 203",
+    "estrofas": [
+      "[Letra pendiente de cargar para el himno 203]"
+    ],
+    "coro": ""
+  },
+  {
+    "numero": 204,
+    "titulo": "Himno 204",
+    "estrofas": [
+      "[Letra pendiente de cargar para el himno 204]"
+    ],
+    "coro": ""
+  },
+  {
+    "numero": 205,
+    "titulo": "Himno 205",
+    "estrofas": [
+      "[Letra pendiente de cargar para el himno 205]"
+    ],
+    "coro": ""
+  },
+  {
+    "numero": 206,
+    "titulo": "Himno 206",
+    "estrofas": [
+      "[Letra pendiente de cargar para el himno 206]"
+    ],
+    "coro": ""
+  },
+  {
+    "numero": 207,
+    "titulo": "Himno 207",
+    "estrofas": [
+      "[Letra pendiente de cargar para el himno 207]"
+    ],
+    "coro": ""
+  },
+  {
+    "numero": 208,
+    "titulo": "Himno 208",
+    "estrofas": [
+      "[Letra pendiente de cargar para el himno 208]"
+    ],
+    "coro": ""
+  },
+  {
+    "numero": 209,
+    "titulo": "Himno 209",
+    "estrofas": [
+      "[Letra pendiente de cargar para el himno 209]"
+    ],
+    "coro": ""
+  },
+  {
+    "numero": 210,
+    "titulo": "Himno 210",
+    "estrofas": [
+      "[Letra pendiente de cargar para el himno 210]"
+    ],
+    "coro": ""
+  },
+  {
+    "numero": 211,
+    "titulo": "Himno 211",
+    "estrofas": [
+      "[Letra pendiente de cargar para el himno 211]"
+    ],
+    "coro": ""
+  },
+  {
+    "numero": 212,
+    "titulo": "Himno 212",
+    "estrofas": [
+      "[Letra pendiente de cargar para el himno 212]"
+    ],
+    "coro": ""
+  },
+  {
+    "numero": 213,
+    "titulo": "Himno 213",
+    "estrofas": [
+      "[Letra pendiente de cargar para el himno 213]"
+    ],
+    "coro": ""
+  },
+  {
+    "numero": 214,
+    "titulo": "Himno 214",
+    "estrofas": [
+      "[Letra pendiente de cargar para el himno 214]"
+    ],
+    "coro": ""
+  },
+  {
+    "numero": 215,
+    "titulo": "Himno 215",
+    "estrofas": [
+      "[Letra pendiente de cargar para el himno 215]"
+    ],
+    "coro": ""
+  },
+  {
+    "numero": 216,
+    "titulo": "Himno 216",
+    "estrofas": [
+      "[Letra pendiente de cargar para el himno 216]"
+    ],
+    "coro": ""
+  },
+  {
+    "numero": 217,
+    "titulo": "Himno 217",
+    "estrofas": [
+      "[Letra pendiente de cargar para el himno 217]"
+    ],
+    "coro": ""
+  },
+  {
+    "numero": 218,
+    "titulo": "Himno 218",
+    "estrofas": [
+      "[Letra pendiente de cargar para el himno 218]"
+    ],
+    "coro": ""
+  },
+  {
+    "numero": 219,
+    "titulo": "Himno 219",
+    "estrofas": [
+      "[Letra pendiente de cargar para el himno 219]"
+    ],
+    "coro": ""
+  },
+  {
+    "numero": 220,
+    "titulo": "Himno 220",
+    "estrofas": [
+      "[Letra pendiente de cargar para el himno 220]"
+    ],
+    "coro": ""
+  },
+  {
+    "numero": 221,
+    "titulo": "Himno 221",
+    "estrofas": [
+      "[Letra pendiente de cargar para el himno 221]"
+    ],
+    "coro": ""
+  },
+  {
+    "numero": 222,
+    "titulo": "Himno 222",
+    "estrofas": [
+      "[Letra pendiente de cargar para el himno 222]"
+    ],
+    "coro": ""
+  },
+  {
+    "numero": 223,
+    "titulo": "Himno 223",
+    "estrofas": [
+      "[Letra pendiente de cargar para el himno 223]"
+    ],
+    "coro": ""
+  },
+  {
+    "numero": 224,
+    "titulo": "Himno 224",
+    "estrofas": [
+      "[Letra pendiente de cargar para el himno 224]"
+    ],
+    "coro": ""
+  },
+  {
+    "numero": 225,
+    "titulo": "Himno 225",
+    "estrofas": [
+      "[Letra pendiente de cargar para el himno 225]"
+    ],
+    "coro": ""
+  },
+  {
+    "numero": 226,
+    "titulo": "Himno 226",
+    "estrofas": [
+      "[Letra pendiente de cargar para el himno 226]"
+    ],
+    "coro": ""
+  },
+  {
+    "numero": 227,
+    "titulo": "Himno 227",
+    "estrofas": [
+      "[Letra pendiente de cargar para el himno 227]"
+    ],
+    "coro": ""
+  },
+  {
+    "numero": 228,
+    "titulo": "Himno 228",
+    "estrofas": [
+      "[Letra pendiente de cargar para el himno 228]"
+    ],
+    "coro": ""
+  },
+  {
+    "numero": 229,
+    "titulo": "Himno 229",
+    "estrofas": [
+      "[Letra pendiente de cargar para el himno 229]"
+    ],
+    "coro": ""
+  },
+  {
+    "numero": 230,
+    "titulo": "Himno 230",
+    "estrofas": [
+      "[Letra pendiente de cargar para el himno 230]"
+    ],
+    "coro": ""
+  },
+  {
+    "numero": 231,
+    "titulo": "Himno 231",
+    "estrofas": [
+      "[Letra pendiente de cargar para el himno 231]"
+    ],
+    "coro": ""
+  },
+  {
+    "numero": 232,
+    "titulo": "Himno 232",
+    "estrofas": [
+      "[Letra pendiente de cargar para el himno 232]"
+    ],
+    "coro": ""
+  },
+  {
+    "numero": 233,
+    "titulo": "Himno 233",
+    "estrofas": [
+      "[Letra pendiente de cargar para el himno 233]"
+    ],
+    "coro": ""
+  },
+  {
+    "numero": 234,
+    "titulo": "Himno 234",
+    "estrofas": [
+      "[Letra pendiente de cargar para el himno 234]"
+    ],
+    "coro": ""
+  },
+  {
+    "numero": 235,
+    "titulo": "Himno 235",
+    "estrofas": [
+      "[Letra pendiente de cargar para el himno 235]"
+    ],
+    "coro": ""
+  },
+  {
+    "numero": 236,
+    "titulo": "Himno 236",
+    "estrofas": [
+      "[Letra pendiente de cargar para el himno 236]"
+    ],
+    "coro": ""
+  },
+  {
+    "numero": 237,
+    "titulo": "Himno 237",
+    "estrofas": [
+      "[Letra pendiente de cargar para el himno 237]"
+    ],
+    "coro": ""
+  },
+  {
+    "numero": 238,
+    "titulo": "Himno 238",
+    "estrofas": [
+      "[Letra pendiente de cargar para el himno 238]"
+    ],
+    "coro": ""
+  },
+  {
+    "numero": 239,
+    "titulo": "Himno 239",
+    "estrofas": [
+      "[Letra pendiente de cargar para el himno 239]"
+    ],
+    "coro": ""
+  },
+  {
+    "numero": 240,
+    "titulo": "Himno 240",
+    "estrofas": [
+      "[Letra pendiente de cargar para el himno 240]"
+    ],
+    "coro": ""
+  },
+  {
+    "numero": 241,
+    "titulo": "Himno 241",
+    "estrofas": [
+      "[Letra pendiente de cargar para el himno 241]"
+    ],
+    "coro": ""
+  },
+  {
+    "numero": 242,
+    "titulo": "Himno 242",
+    "estrofas": [
+      "[Letra pendiente de cargar para el himno 242]"
+    ],
+    "coro": ""
+  },
+  {
+    "numero": 243,
+    "titulo": "Himno 243",
+    "estrofas": [
+      "[Letra pendiente de cargar para el himno 243]"
+    ],
+    "coro": ""
+  },
+  {
+    "numero": 244,
+    "titulo": "Himno 244",
+    "estrofas": [
+      "[Letra pendiente de cargar para el himno 244]"
     ],
     "coro": ""
   },
@@ -160,6 +1992,278 @@
     "coro": ""
   },
   {
+    "numero": 246,
+    "titulo": "Himno 246",
+    "estrofas": [
+      "[Letra pendiente de cargar para el himno 246]"
+    ],
+    "coro": ""
+  },
+  {
+    "numero": 247,
+    "titulo": "Himno 247",
+    "estrofas": [
+      "[Letra pendiente de cargar para el himno 247]"
+    ],
+    "coro": ""
+  },
+  {
+    "numero": 248,
+    "titulo": "Himno 248",
+    "estrofas": [
+      "[Letra pendiente de cargar para el himno 248]"
+    ],
+    "coro": ""
+  },
+  {
+    "numero": 249,
+    "titulo": "Himno 249",
+    "estrofas": [
+      "[Letra pendiente de cargar para el himno 249]"
+    ],
+    "coro": ""
+  },
+  {
+    "numero": 250,
+    "titulo": "Himno 250",
+    "estrofas": [
+      "[Letra pendiente de cargar para el himno 250]"
+    ],
+    "coro": ""
+  },
+  {
+    "numero": 251,
+    "titulo": "Himno 251",
+    "estrofas": [
+      "[Letra pendiente de cargar para el himno 251]"
+    ],
+    "coro": ""
+  },
+  {
+    "numero": 252,
+    "titulo": "Himno 252",
+    "estrofas": [
+      "[Letra pendiente de cargar para el himno 252]"
+    ],
+    "coro": ""
+  },
+  {
+    "numero": 253,
+    "titulo": "Himno 253",
+    "estrofas": [
+      "[Letra pendiente de cargar para el himno 253]"
+    ],
+    "coro": ""
+  },
+  {
+    "numero": 254,
+    "titulo": "Himno 254",
+    "estrofas": [
+      "[Letra pendiente de cargar para el himno 254]"
+    ],
+    "coro": ""
+  },
+  {
+    "numero": 255,
+    "titulo": "Himno 255",
+    "estrofas": [
+      "[Letra pendiente de cargar para el himno 255]"
+    ],
+    "coro": ""
+  },
+  {
+    "numero": 256,
+    "titulo": "Himno 256",
+    "estrofas": [
+      "[Letra pendiente de cargar para el himno 256]"
+    ],
+    "coro": ""
+  },
+  {
+    "numero": 257,
+    "titulo": "Himno 257",
+    "estrofas": [
+      "[Letra pendiente de cargar para el himno 257]"
+    ],
+    "coro": ""
+  },
+  {
+    "numero": 258,
+    "titulo": "Himno 258",
+    "estrofas": [
+      "[Letra pendiente de cargar para el himno 258]"
+    ],
+    "coro": ""
+  },
+  {
+    "numero": 259,
+    "titulo": "Himno 259",
+    "estrofas": [
+      "[Letra pendiente de cargar para el himno 259]"
+    ],
+    "coro": ""
+  },
+  {
+    "numero": 260,
+    "titulo": "Himno 260",
+    "estrofas": [
+      "[Letra pendiente de cargar para el himno 260]"
+    ],
+    "coro": ""
+  },
+  {
+    "numero": 261,
+    "titulo": "Himno 261",
+    "estrofas": [
+      "[Letra pendiente de cargar para el himno 261]"
+    ],
+    "coro": ""
+  },
+  {
+    "numero": 262,
+    "titulo": "Himno 262",
+    "estrofas": [
+      "[Letra pendiente de cargar para el himno 262]"
+    ],
+    "coro": ""
+  },
+  {
+    "numero": 263,
+    "titulo": "Himno 263",
+    "estrofas": [
+      "[Letra pendiente de cargar para el himno 263]"
+    ],
+    "coro": ""
+  },
+  {
+    "numero": 264,
+    "titulo": "Himno 264",
+    "estrofas": [
+      "[Letra pendiente de cargar para el himno 264]"
+    ],
+    "coro": ""
+  },
+  {
+    "numero": 265,
+    "titulo": "Himno 265",
+    "estrofas": [
+      "[Letra pendiente de cargar para el himno 265]"
+    ],
+    "coro": ""
+  },
+  {
+    "numero": 266,
+    "titulo": "Himno 266",
+    "estrofas": [
+      "[Letra pendiente de cargar para el himno 266]"
+    ],
+    "coro": ""
+  },
+  {
+    "numero": 267,
+    "titulo": "Himno 267",
+    "estrofas": [
+      "[Letra pendiente de cargar para el himno 267]"
+    ],
+    "coro": ""
+  },
+  {
+    "numero": 268,
+    "titulo": "Himno 268",
+    "estrofas": [
+      "[Letra pendiente de cargar para el himno 268]"
+    ],
+    "coro": ""
+  },
+  {
+    "numero": 269,
+    "titulo": "Himno 269",
+    "estrofas": [
+      "[Letra pendiente de cargar para el himno 269]"
+    ],
+    "coro": ""
+  },
+  {
+    "numero": 270,
+    "titulo": "Himno 270",
+    "estrofas": [
+      "[Letra pendiente de cargar para el himno 270]"
+    ],
+    "coro": ""
+  },
+  {
+    "numero": 271,
+    "titulo": "Himno 271",
+    "estrofas": [
+      "[Letra pendiente de cargar para el himno 271]"
+    ],
+    "coro": ""
+  },
+  {
+    "numero": 272,
+    "titulo": "Himno 272",
+    "estrofas": [
+      "[Letra pendiente de cargar para el himno 272]"
+    ],
+    "coro": ""
+  },
+  {
+    "numero": 273,
+    "titulo": "Himno 273",
+    "estrofas": [
+      "[Letra pendiente de cargar para el himno 273]"
+    ],
+    "coro": ""
+  },
+  {
+    "numero": 274,
+    "titulo": "Himno 274",
+    "estrofas": [
+      "[Letra pendiente de cargar para el himno 274]"
+    ],
+    "coro": ""
+  },
+  {
+    "numero": 275,
+    "titulo": "Himno 275",
+    "estrofas": [
+      "[Letra pendiente de cargar para el himno 275]"
+    ],
+    "coro": ""
+  },
+  {
+    "numero": 276,
+    "titulo": "Himno 276",
+    "estrofas": [
+      "[Letra pendiente de cargar para el himno 276]"
+    ],
+    "coro": ""
+  },
+  {
+    "numero": 277,
+    "titulo": "Himno 277",
+    "estrofas": [
+      "[Letra pendiente de cargar para el himno 277]"
+    ],
+    "coro": ""
+  },
+  {
+    "numero": 278,
+    "titulo": "Himno 278",
+    "estrofas": [
+      "[Letra pendiente de cargar para el himno 278]"
+    ],
+    "coro": ""
+  },
+  {
+    "numero": 279,
+    "titulo": "Himno 279",
+    "estrofas": [
+      "[Letra pendiente de cargar para el himno 279]"
+    ],
+    "coro": ""
+  },
+  {
     "numero": 280,
     "titulo": "Oh qué amigo nos es Cristo",
     "estrofas": [
@@ -168,6 +2272,390 @@
       "¿Eres débil y cargado,\ncansado de duro afán?\nA Jesús tu refugio eterno,\ndile todo en oración."
     ],
     "coro": "¡Oh qué amigo nos es Cristo!\nÉl llevó nuestro dolor;\nen sus brazos nos llevará\na la vida y al amor."
+  },
+  {
+    "numero": 281,
+    "titulo": "Himno 281",
+    "estrofas": [
+      "[Letra pendiente de cargar para el himno 281]"
+    ],
+    "coro": ""
+  },
+  {
+    "numero": 282,
+    "titulo": "Himno 282",
+    "estrofas": [
+      "[Letra pendiente de cargar para el himno 282]"
+    ],
+    "coro": ""
+  },
+  {
+    "numero": 283,
+    "titulo": "Himno 283",
+    "estrofas": [
+      "[Letra pendiente de cargar para el himno 283]"
+    ],
+    "coro": ""
+  },
+  {
+    "numero": 284,
+    "titulo": "Himno 284",
+    "estrofas": [
+      "[Letra pendiente de cargar para el himno 284]"
+    ],
+    "coro": ""
+  },
+  {
+    "numero": 285,
+    "titulo": "Himno 285",
+    "estrofas": [
+      "[Letra pendiente de cargar para el himno 285]"
+    ],
+    "coro": ""
+  },
+  {
+    "numero": 286,
+    "titulo": "Himno 286",
+    "estrofas": [
+      "[Letra pendiente de cargar para el himno 286]"
+    ],
+    "coro": ""
+  },
+  {
+    "numero": 287,
+    "titulo": "Himno 287",
+    "estrofas": [
+      "[Letra pendiente de cargar para el himno 287]"
+    ],
+    "coro": ""
+  },
+  {
+    "numero": 288,
+    "titulo": "Himno 288",
+    "estrofas": [
+      "[Letra pendiente de cargar para el himno 288]"
+    ],
+    "coro": ""
+  },
+  {
+    "numero": 289,
+    "titulo": "Himno 289",
+    "estrofas": [
+      "[Letra pendiente de cargar para el himno 289]"
+    ],
+    "coro": ""
+  },
+  {
+    "numero": 290,
+    "titulo": "Himno 290",
+    "estrofas": [
+      "[Letra pendiente de cargar para el himno 290]"
+    ],
+    "coro": ""
+  },
+  {
+    "numero": 291,
+    "titulo": "Himno 291",
+    "estrofas": [
+      "[Letra pendiente de cargar para el himno 291]"
+    ],
+    "coro": ""
+  },
+  {
+    "numero": 292,
+    "titulo": "Himno 292",
+    "estrofas": [
+      "[Letra pendiente de cargar para el himno 292]"
+    ],
+    "coro": ""
+  },
+  {
+    "numero": 293,
+    "titulo": "Himno 293",
+    "estrofas": [
+      "[Letra pendiente de cargar para el himno 293]"
+    ],
+    "coro": ""
+  },
+  {
+    "numero": 294,
+    "titulo": "Himno 294",
+    "estrofas": [
+      "[Letra pendiente de cargar para el himno 294]"
+    ],
+    "coro": ""
+  },
+  {
+    "numero": 295,
+    "titulo": "Himno 295",
+    "estrofas": [
+      "[Letra pendiente de cargar para el himno 295]"
+    ],
+    "coro": ""
+  },
+  {
+    "numero": 296,
+    "titulo": "Himno 296",
+    "estrofas": [
+      "[Letra pendiente de cargar para el himno 296]"
+    ],
+    "coro": ""
+  },
+  {
+    "numero": 297,
+    "titulo": "Himno 297",
+    "estrofas": [
+      "[Letra pendiente de cargar para el himno 297]"
+    ],
+    "coro": ""
+  },
+  {
+    "numero": 298,
+    "titulo": "Himno 298",
+    "estrofas": [
+      "[Letra pendiente de cargar para el himno 298]"
+    ],
+    "coro": ""
+  },
+  {
+    "numero": 299,
+    "titulo": "Himno 299",
+    "estrofas": [
+      "[Letra pendiente de cargar para el himno 299]"
+    ],
+    "coro": ""
+  },
+  {
+    "numero": 300,
+    "titulo": "Himno 300",
+    "estrofas": [
+      "[Letra pendiente de cargar para el himno 300]"
+    ],
+    "coro": ""
+  },
+  {
+    "numero": 301,
+    "titulo": "Himno 301",
+    "estrofas": [
+      "[Letra pendiente de cargar para el himno 301]"
+    ],
+    "coro": ""
+  },
+  {
+    "numero": 302,
+    "titulo": "Himno 302",
+    "estrofas": [
+      "[Letra pendiente de cargar para el himno 302]"
+    ],
+    "coro": ""
+  },
+  {
+    "numero": 303,
+    "titulo": "Himno 303",
+    "estrofas": [
+      "[Letra pendiente de cargar para el himno 303]"
+    ],
+    "coro": ""
+  },
+  {
+    "numero": 304,
+    "titulo": "Himno 304",
+    "estrofas": [
+      "[Letra pendiente de cargar para el himno 304]"
+    ],
+    "coro": ""
+  },
+  {
+    "numero": 305,
+    "titulo": "Himno 305",
+    "estrofas": [
+      "[Letra pendiente de cargar para el himno 305]"
+    ],
+    "coro": ""
+  },
+  {
+    "numero": 306,
+    "titulo": "Himno 306",
+    "estrofas": [
+      "[Letra pendiente de cargar para el himno 306]"
+    ],
+    "coro": ""
+  },
+  {
+    "numero": 307,
+    "titulo": "Himno 307",
+    "estrofas": [
+      "[Letra pendiente de cargar para el himno 307]"
+    ],
+    "coro": ""
+  },
+  {
+    "numero": 308,
+    "titulo": "Himno 308",
+    "estrofas": [
+      "[Letra pendiente de cargar para el himno 308]"
+    ],
+    "coro": ""
+  },
+  {
+    "numero": 309,
+    "titulo": "Himno 309",
+    "estrofas": [
+      "[Letra pendiente de cargar para el himno 309]"
+    ],
+    "coro": ""
+  },
+  {
+    "numero": 310,
+    "titulo": "Himno 310",
+    "estrofas": [
+      "[Letra pendiente de cargar para el himno 310]"
+    ],
+    "coro": ""
+  },
+  {
+    "numero": 311,
+    "titulo": "Himno 311",
+    "estrofas": [
+      "[Letra pendiente de cargar para el himno 311]"
+    ],
+    "coro": ""
+  },
+  {
+    "numero": 312,
+    "titulo": "Himno 312",
+    "estrofas": [
+      "[Letra pendiente de cargar para el himno 312]"
+    ],
+    "coro": ""
+  },
+  {
+    "numero": 313,
+    "titulo": "Himno 313",
+    "estrofas": [
+      "[Letra pendiente de cargar para el himno 313]"
+    ],
+    "coro": ""
+  },
+  {
+    "numero": 314,
+    "titulo": "Himno 314",
+    "estrofas": [
+      "[Letra pendiente de cargar para el himno 314]"
+    ],
+    "coro": ""
+  },
+  {
+    "numero": 315,
+    "titulo": "Himno 315",
+    "estrofas": [
+      "[Letra pendiente de cargar para el himno 315]"
+    ],
+    "coro": ""
+  },
+  {
+    "numero": 316,
+    "titulo": "Himno 316",
+    "estrofas": [
+      "[Letra pendiente de cargar para el himno 316]"
+    ],
+    "coro": ""
+  },
+  {
+    "numero": 317,
+    "titulo": "Himno 317",
+    "estrofas": [
+      "[Letra pendiente de cargar para el himno 317]"
+    ],
+    "coro": ""
+  },
+  {
+    "numero": 318,
+    "titulo": "Himno 318",
+    "estrofas": [
+      "[Letra pendiente de cargar para el himno 318]"
+    ],
+    "coro": ""
+  },
+  {
+    "numero": 319,
+    "titulo": "Himno 319",
+    "estrofas": [
+      "[Letra pendiente de cargar para el himno 319]"
+    ],
+    "coro": ""
+  },
+  {
+    "numero": 320,
+    "titulo": "Himno 320",
+    "estrofas": [
+      "[Letra pendiente de cargar para el himno 320]"
+    ],
+    "coro": ""
+  },
+  {
+    "numero": 321,
+    "titulo": "Himno 321",
+    "estrofas": [
+      "[Letra pendiente de cargar para el himno 321]"
+    ],
+    "coro": ""
+  },
+  {
+    "numero": 322,
+    "titulo": "Himno 322",
+    "estrofas": [
+      "[Letra pendiente de cargar para el himno 322]"
+    ],
+    "coro": ""
+  },
+  {
+    "numero": 323,
+    "titulo": "Himno 323",
+    "estrofas": [
+      "[Letra pendiente de cargar para el himno 323]"
+    ],
+    "coro": ""
+  },
+  {
+    "numero": 324,
+    "titulo": "Himno 324",
+    "estrofas": [
+      "[Letra pendiente de cargar para el himno 324]"
+    ],
+    "coro": ""
+  },
+  {
+    "numero": 325,
+    "titulo": "Himno 325",
+    "estrofas": [
+      "[Letra pendiente de cargar para el himno 325]"
+    ],
+    "coro": ""
+  },
+  {
+    "numero": 326,
+    "titulo": "Himno 326",
+    "estrofas": [
+      "[Letra pendiente de cargar para el himno 326]"
+    ],
+    "coro": ""
+  },
+  {
+    "numero": 327,
+    "titulo": "Himno 327",
+    "estrofas": [
+      "[Letra pendiente de cargar para el himno 327]"
+    ],
+    "coro": ""
+  },
+  {
+    "numero": 328,
+    "titulo": "Himno 328",
+    "estrofas": [
+      "[Letra pendiente de cargar para el himno 328]"
+    ],
+    "coro": ""
   },
   {
     "numero": 329,
