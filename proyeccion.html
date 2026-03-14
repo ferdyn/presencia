@@ -195,6 +195,24 @@
       z-index: 20;
       transition: opacity .3s;
     }
+  
+
+    /* V12 — PRO LOOK */
+    #stage{padding:72px 110px;}
+    #mainText{max-width:1200px;background:linear-gradient(180deg,rgba(0,0,0,.28),rgba(0,0,0,.15));padding:18px 24px;border-radius:18px;backdrop-filter:blur(2px);} 
+    #subtitle{background:rgba(0,0,0,.25);padding:8px 14px;border-radius:999px;letter-spacing:2px;}
+    #deco-line{height:2px;opacity:.8;}
+    #typeBadge,#watermark{background:rgba(0,0,0,.25);padding:6px 10px;border-radius:999px;backdrop-filter:blur(4px);} 
+    #watermark{right:18px;bottom:18px;}
+    #stageHint{position:fixed;top:18px;right:18px;z-index:22;color:rgba(255,255,255,.5);font-family:'Cinzel',serif;font-size:10px;letter-spacing:1.5px;background:rgba(0,0,0,.25);border:1px solid rgba(255,255,255,.1);border-radius:999px;padding:6px 10px;}
+
+    @media (max-width:900px){
+      #stage{padding:36px 20px;}
+      #mainText{padding:12px 14px;border-radius:12px;font-size:44px!important;}
+      #subtitle{font-size:14px;letter-spacing:1.2px;}
+      #stageHint{display:none;}
+    }
+
   </style>
 </head>
 <body>
@@ -221,6 +239,7 @@
 
   <div id="typeBadge"></div>
   <div id="watermark">Presencia</div>
+  <div id="stageHint">F: pantalla completa · Esc: salir</div>
 
 <script>
   const canal = new BroadcastChannel('presencia-channel');

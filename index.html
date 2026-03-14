@@ -324,6 +324,37 @@
     /* La quick-bar flotante se oculta en desktop */
     .quick-bar { display:none; }
 
+  
+
+    /* ══════════════════════════════════════
+       V12 — PROFESSIONAL POLISH
+    ══════════════════════════════════════ */
+    :focus-visible{outline:2px solid var(--accent);outline-offset:2px;border-radius:8px;}
+    header{backdrop-filter:blur(8px);box-shadow:0 6px 24px rgba(0,0,0,.25);} 
+    .sidebar{background:linear-gradient(180deg,#121620,#0f1218);} 
+    .nav-item{border-radius:0 12px 12px 0;margin-right:10px;position:relative;}
+    .nav-item.active{box-shadow:inset 0 0 0 1px rgba(201,168,76,.2),0 8px 18px rgba(0,0,0,.2);} 
+    .module-header{background:linear-gradient(180deg,rgba(255,255,255,.02),transparent);} 
+    .card{border-radius:14px;box-shadow:0 10px 22px rgba(0,0,0,.20);}
+    textarea,input[type="text"],input[type="number"],select{border-radius:10px;}
+    .btn{border-radius:10px;box-shadow:0 3px 10px rgba(0,0,0,.16);} 
+    .btn:active{transform:translateY(1px) scale(.99);} 
+    .preview-panel{background:linear-gradient(180deg,#131824,#0f131d);} 
+    .preview-screen{border-radius:12px;box-shadow:0 12px 30px rgba(0,0,0,.35);} 
+    .open-btn{box-shadow:0 8px 18px rgba(201,168,76,.12);} 
+    .card-title{display:flex;align-items:center;gap:8px;}
+
+    .toast-stack{position:fixed;right:18px;bottom:18px;display:flex;flex-direction:column;gap:8px;z-index:9999;pointer-events:none;}
+    .toast{background:#121723;border:1px solid var(--border);color:var(--text);padding:10px 12px;border-radius:10px;font-size:13px;box-shadow:0 8px 20px rgba(0,0,0,.28);opacity:0;transform:translateY(8px);transition:all .25s ease;max-width:300px;}
+    .toast.show{opacity:1;transform:translateY(0);} 
+    .toast.ok{border-color:rgba(76,175,128,.45);} .toast.warn{border-color:rgba(240,168,48,.45);} .toast.err{border-color:rgba(201,76,76,.45);} 
+
+    @media (max-width:768px){
+      .toast-stack{left:10px;right:10px;bottom:74px;}
+      .toast{max-width:none;}
+      .card{padding:14px;border-radius:12px;}
+    }
+
   </style>
 </head>
 <body>
@@ -355,6 +386,7 @@
   <button class="qbar-btn" onclick="limpiarPantalla()" title="Limpiar">🗑</button>
   <button class="qbar-btn" onclick="abrirProyeccion()" title="Proyección">🖥️</button>
 </div>
+<div class="toast-stack" id="toastStack" aria-live="polite"></div>
 
 <div class="app">
   <nav class="sidebar">
@@ -933,7 +965,7 @@
           <div class="card-title">Acerca de Presencia</div>
           <p style="font-size:14px;color:var(--text-dim);line-height:1.8;">
             <strong style="color:var(--text)">Presencia</strong> — Sistema de Presentación para Cultos<br>
-            Versión 10.0 — Todas las fases completadas<br>
+            Versión 11.0 — Plataforma extendida<br>
             <span style="color:var(--text-muted)">Desarrollado con ❤️ para el servicio</span>
           </p>
         </div>
@@ -1101,8 +1133,23 @@ function actualizarPreview(texto){
 // ══════════════════════════════════════════
 // HIMNARIO
 // ══════════════════════════════════════════
-function cargarHimnario(){
+async function cargarHimnario(){
+  // 1) Intentar cargar catálogo completo desde data/himnario.json
+  try {
+    const resp = await fetch('data/himnario.json', { cache:'no-store' });
+    if (resp.ok) {
+      const data = await resp.json();
+      if (Array.isArray(data) && data.length) {
+        himnarioBase = data;
+      }
+    }
+  } catch (e) {
+    console.warn('No se pudo cargar data/himnario.json, usando base embebida.', e);
+  }
+
+  // 2) Cargar himnos extra locales
   try{himnarioExtra=JSON.parse(localStorage.getItem('presencia_himnos_extra')||'[]');}catch(e){himnarioExtra=[];}
+
   fusionarHimnario();
   renderizarLista(himnarioCompleto);
   const el=document.getElementById('totalHimnos');
@@ -1731,8 +1778,8 @@ function eliminarOrdenGuardado(id,e){
 // ══════════════════════════════════════════
 setInterval(()=>{if(proyeccionAbierta)canal.postMessage({type:'heartbeat'});},3000);
 
-document.addEventListener('DOMContentLoaded', ()=>{
-  cargarHimnario();
+document.addEventListener('DOMContentLoaded', async ()=>{
+  await cargarHimnario();
   iniciarCanciones();
   iniciarBiblia();
   iniciarOrden();
@@ -2352,7 +2399,49 @@ function generarQR(codigo) {
     </div>`;
 }
 
+
+// ══════════════════════════════════════════
+// UX MEJORADO — TOASTS Y ATAJOS
+// ══════════════════════════════════════════
+function showToast(msg,tipo='ok'){
+  const stack=document.getElementById('toastStack');
+  if(!stack)return;
+  const t=document.createElement('div');
+  t.className='toast '+tipo;
+  t.textContent=msg;
+  stack.appendChild(t);
+  requestAnimationFrame(()=>t.classList.add('show'));
+  setTimeout(()=>{t.classList.remove('show');setTimeout(()=>t.remove(),220);},2200);
+}
+
+(function setupUsabilityEnhancements(){
+  const _proyectarTexto = window.proyectarTexto;
+  window.proyectarTexto = function(){ _proyectarTexto(); showToast('Contenido proyectado','ok'); };
+
+  const _toggleBlackScreen = window.toggleBlackScreen;
+  window.toggleBlackScreen = function(){ _toggleBlackScreen(); showToast('Pantalla negra '+(document.getElementById('btnBlack')?.classList.contains('active-black')?'activada':'desactivada'),'warn'); };
+
+  const _limpiarPantalla = window.limpiarPantalla;
+  window.limpiarPantalla = function(){ _limpiarPantalla(); showToast('Pantalla limpiada','ok'); };
+
+  const _switchModule = window.switchModule;
+  window.switchModule = function(id,el){ _switchModule(id,el); showToast('Módulo: '+id,'ok'); };
+
+  document.addEventListener('keydown',(e)=>{
+    if(e.target && ['INPUT','TEXTAREA'].includes(e.target.tagName) && !(e.ctrlKey && e.key==='Enter')) return;
+    if(e.ctrlKey && e.key==='Enter'){ e.preventDefault(); if(typeof proyectarTexto==='function')proyectarTexto(); }
+    if(e.ctrlKey && (e.key==='b' || e.key==='B')){ e.preventDefault(); if(typeof toggleBlackScreen==='function')toggleBlackScreen(); }
+    if(e.ctrlKey && (e.key==='l' || e.key==='L')){ e.preventDefault(); if(typeof limpiarPantalla==='function')limpiarPantalla(); }
+    if(e.ctrlKey && (e.key==='p' || e.key==='P')){ e.preventDefault(); if(typeof abrirProyeccion==='function')abrirProyeccion(); showToast('Abriendo proyección…','ok'); }
+    if(e.key==='/' && !e.ctrlKey){
+      const input=document.querySelector('#mod-himnario.active #buscarTitulo, #mod-canciones.active #buscarCancion, #mod-biblia.active #bibliaRef');
+      if(input){ e.preventDefault(); input.focus(); }
+    }
+  });
+})();
+
 </script>
+<script src="enhancements.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/peerjs/1.5.2/peerjs.min.js"></script>
 </body>
 </html>

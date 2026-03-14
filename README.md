@@ -75,6 +75,21 @@ Reproduce archivos de audio (MP3, WAV, OGG) directamente desde el navegador. Pla
 ### 📱 Control remoto
 Controla el panel desde un celular u otro dispositivo en la misma red. Funciones disponibles desde el celular: Anterior/Siguiente en el Orden del Culto, Pantalla negra, Limpiar, Proyectar texto, Escribir texto directamente y controlar el tamaño de fuente.
 
+### 🆕 Plataforma Extendida (v11)
+Se añadieron capacidades avanzadas para evolución y operación:
+
+- **Storage versionado + migraciones** (`schemaVersion`) y recuperación segura de datos.
+- **IndexedDB para medios** de anuncios (imágenes), reduciendo presión en `localStorage`.
+- **Diagnóstico y observabilidad** (niveles de log y panel de eventos).
+- **Resiliencia bíblica** con reintentos y caché local de consultas.
+- **Centro de control en vivo** con estado consolidado + botón global de pánico.
+- **Roles y bloqueo por PIN** de módulos sensibles.
+  - Nota: por defecto el bloqueo aplica al panel del operador; el control remoto no se bloquea, salvo que se active la opción para restringir comandos remotos críticos.
+- **Escenas/plantillas** guardables y aplicables en un clic.
+- **Paquete de culto** para backup/restauración integral.
+- **Teleprompter** (`teleprompter.html`) con control de velocidad desde panel.
+- **Métricas operativas locales** (sesiones, proyecciones, módulos usados).
+
 ---
 
 ## 💾 Almacenamiento de datos
