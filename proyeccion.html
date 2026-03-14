@@ -1,0 +1,425 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Presencia — Proyección</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&family=Crimson+Pro:ital,wght@0,300;0,400;0,600;1,300;1,400&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --accent: #c9a84c;
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    html, body {
+      width: 100%;
+      height: 100%;
+      background: #000;
+      overflow: hidden;
+    }
+
+    /* ── FONDO ── */
+    #background {
+      position: fixed;
+      inset: 0;
+      background: radial-gradient(ellipse at 30% 40%, #0d1520 0%, #000 65%);
+      transition: opacity 1s ease;
+    }
+
+    /* Partículas decorativas */
+    #background::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background-image:
+        radial-gradient(1px 1px at 20% 30%, rgba(201,168,76,0.15) 0%, transparent 100%),
+        radial-gradient(1px 1px at 80% 70%, rgba(201,168,76,0.1) 0%, transparent 100%),
+        radial-gradient(1px 1px at 50% 50%, rgba(255,255,255,0.05) 0%, transparent 100%);
+    }
+
+    /* ── PANTALLA NEGRA overlay ── */
+    #blackOverlay {
+      position: fixed;
+      inset: 0;
+      background: #000;
+      z-index: 50;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity .5s ease;
+    }
+    #blackOverlay.active {
+      opacity: 1;
+      pointer-events: all;
+    }
+
+    /* ── CONTENEDOR PRINCIPAL ── */
+    #stage {
+      position: fixed;
+      inset: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 60px 80px;
+      z-index: 10;
+    }
+
+    /* ── TEXTO PRINCIPAL ── */
+    #mainText {
+      color: #fff;
+      font-family: 'Crimson Pro', serif;
+      font-size: 60px;
+      font-weight: 400;
+      line-height: 1.4;
+      text-align: center;
+      text-shadow:
+        0 2px 20px rgba(0,0,0,0.8),
+        0 0 60px rgba(201,168,76,0.15);
+      letter-spacing: 1px;
+      max-width: 1100px;
+      transition: all .4s ease;
+      word-break: break-word;
+
+      /* Animación de entrada */
+      opacity: 0;
+      transform: translateY(16px);
+    }
+
+    #mainText.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    /* ── SUBTÍTULO / REFERENCIA ── */
+    #subtitle {
+      color: rgba(201,168,76,0.7);
+      font-family: 'Cinzel', serif;
+      font-size: 18px;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      margin-top: 28px;
+      opacity: 0;
+      transform: translateY(8px);
+      transition: all .4s ease .15s;
+    }
+
+    #subtitle.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    /* ── DECORACIÓN — línea dorada ── */
+    #deco-line {
+      width: 0;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, var(--accent), transparent);
+      margin-top: 24px;
+      transition: width 1s ease .3s;
+    }
+    #deco-line.visible { width: 300px; }
+
+    /* ── LOGO WATERMARK ── */
+    #watermark {
+      position: fixed;
+      bottom: 24px;
+      right: 30px;
+      font-family: 'Cinzel', serif;
+      font-size: 12px;
+      letter-spacing: 3px;
+      color: rgba(201,168,76,0.2);
+      text-transform: uppercase;
+      z-index: 20;
+    }
+
+    /* ── ESTADO — esperando ── */
+    #waiting {
+      position: fixed;
+      inset: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 20px;
+      z-index: 5;
+      transition: opacity .5s;
+    }
+
+    #waiting.hidden { opacity: 0; pointer-events: none; }
+
+    .waiting-icon {
+      width: 60px;
+      height: 60px;
+      opacity: .2;
+    }
+
+    .waiting-text {
+      font-family: 'Cinzel', serif;
+      font-size: 13px;
+      letter-spacing: 3px;
+      color: rgba(255,255,255,0.15);
+      text-transform: uppercase;
+    }
+
+    /* Pulso suave en el ícono */
+    @keyframes pulse {
+      0%, 100% { opacity: .1; transform: scale(1); }
+      50% { opacity: .25; transform: scale(1.05); }
+    }
+    .waiting-icon { animation: pulse 3s ease-in-out infinite; }
+
+    /* ── IMAGEN DE FONDO ── */
+    #bgImage {
+      position: fixed;
+      inset: 0;
+      background-size: cover;
+      background-position: center;
+      background-repeat: no-repeat;
+      opacity: 0;
+      transition: opacity 1s ease;
+      z-index: 2;
+    }
+    #bgImage.visible { opacity: .35; }
+
+    /* ── TIPO BADGE ── */
+    #typeBadge {
+      position: fixed;
+      top: 20px;
+      left: 24px;
+      font-family: 'Cinzel', serif;
+      font-size: 10px;
+      letter-spacing: 2px;
+      color: rgba(201,168,76,0.3);
+      text-transform: uppercase;
+      z-index: 20;
+      transition: opacity .3s;
+    }
+  </style>
+</head>
+<body>
+
+  <div id="background"></div>
+  <div id="bgImage"></div>
+  <div id="blackOverlay"></div>
+
+  <div id="waiting">
+    <svg class="waiting-icon" viewBox="0 0 60 60" fill="none">
+      <path d="M30 5 L30 55" stroke="#c9a84c" stroke-width="2" stroke-linecap="round"/>
+      <path d="M16 16 L30 5 L44 16" stroke="#c9a84c" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+      <ellipse cx="30" cy="38" rx="16" ry="9" stroke="#c9a84c" stroke-width="1" fill="none" opacity=".5"/>
+      <circle cx="30" cy="38" r="4" fill="#c9a84c" opacity=".6"/>
+    </svg>
+    <div class="waiting-text">Presencia — En espera</div>
+  </div>
+
+  <div id="stage">
+    <div id="mainText"></div>
+    <div id="subtitle"></div>
+    <div id="deco-line"></div>
+  </div>
+
+  <div id="typeBadge"></div>
+  <div id="watermark">Presencia</div>
+
+<script>
+  const canal = new BroadcastChannel('presencia-channel');
+
+  const mainText   = document.getElementById('mainText');
+  const subtitle   = document.getElementById('subtitle');
+  const decoLine   = document.getElementById('deco-line');
+  const waiting    = document.getElementById('waiting');
+  const blackOv    = document.getElementById('blackOverlay');
+  const typeBadge  = document.getElementById('typeBadge');
+  const bgImage    = document.getElementById('bgImage');
+
+  let currentFontSize = 60;
+  let currentAlign = 'center';
+  let hasContent = false;
+
+  // Avisar al panel que estamos listos
+  canal.postMessage({ type: 'ping' });
+  setInterval(() => canal.postMessage({ type: 'ping' }), 2000);
+
+  // Avisar al cerrar
+  window.addEventListener('beforeunload', () => {
+    canal.postMessage({ type: 'closed' });
+  });
+
+  // ── RECIBIR MENSAJES ──
+  canal.onmessage = (e) => {
+    const msg = e.data;
+
+    switch (msg.type) {
+
+      case 'content':
+        if (msg.contentType === 'anuncio') {
+          mostrarAnuncio(msg);
+        } else {
+          mostrarContenido(msg);
+          bgImage.style.backgroundImage = '';
+          bgImage.classList.remove('visible');
+        }
+        break;
+
+      case 'tema':
+        if (msg.tema) {
+          document.getElementById('background').style.background = msg.tema.bg;
+          mainText.style.color = msg.tema.text;
+          subtitle.style.color = msg.tema.accent || 'rgba(201,168,76,0.7)';
+        }
+        break;
+
+      case 'textoColor':
+        mainText.style.color = msg.color;
+        break;
+
+      case 'fondoOpacidad':
+        document.getElementById('background').style.opacity = msg.value;
+        break;
+
+      case 'black':
+        if (msg.black) {
+          blackOv.classList.add('active');
+        } else {
+          blackOv.classList.remove('active');
+        }
+        break;
+
+      case 'clear':
+        limpiarPantalla();
+        break;
+
+      case 'fontSize':
+        currentFontSize = msg.value;
+        mainText.style.fontSize = msg.value + 'px';
+        break;
+
+      case 'align':
+        currentAlign = msg.value;
+        mainText.style.textAlign = msg.value;
+        subtitle.style.textAlign = msg.value;
+        break;
+    }
+  };
+
+  function mostrarContenido(msg) {
+    // Ocultar "en espera"
+    waiting.classList.add('hidden');
+    hasContent = true;
+
+    // Ocultar pantalla negra si estaba activa
+    blackOv.classList.remove('active');
+
+    // Animación de salida
+    mainText.classList.remove('visible');
+    subtitle.classList.remove('visible');
+    decoLine.classList.remove('visible');
+
+    setTimeout(() => {
+      // Aplicar texto
+      if (msg.text) {
+        mainText.textContent = msg.text;
+      }
+
+      // Fuente y alineación
+      mainText.style.fontSize = (msg.fontSize || currentFontSize) + 'px';
+      mainText.style.textAlign = msg.align || currentAlign;
+
+      // Subtítulo (referencia bíblica, número de himno, etc.)
+      if (msg.subtitle) {
+        subtitle.textContent = msg.subtitle;
+        subtitle.style.display = '';
+      } else {
+        subtitle.textContent = '';
+        subtitle.style.display = 'none';
+      }
+
+      // Badge de tipo
+      typeBadge.textContent = msg.label || '';
+
+      // Animación de entrada
+      requestAnimationFrame(() => {
+        mainText.classList.add('visible');
+        subtitle.classList.add('visible');
+        decoLine.classList.add('visible');
+      });
+
+    }, 200);
+  }
+
+  function limpiarPantalla() {
+    mainText.classList.remove('visible');
+    subtitle.classList.remove('visible');
+    decoLine.classList.remove('visible');
+    blackOv.classList.remove('active');
+    typeBadge.textContent = '';
+    hasContent = false;
+
+    setTimeout(() => {
+      mainText.textContent = '';
+      subtitle.textContent = '';
+      waiting.classList.remove('hidden');
+    }, 400);
+  }
+
+  function mostrarAnuncio(msg) {
+    waiting.classList.add('hidden');
+    blackOv.classList.remove('active');
+    mainText.classList.remove('visible');
+    subtitle.classList.remove('visible');
+    decoLine.classList.remove('visible');
+
+    setTimeout(() => {
+      // Aplicar fondo de color
+      if (msg.fondo) {
+        document.getElementById('background').style.background = msg.fondo.bg;
+        mainText.style.color = msg.fondo.text;
+        subtitle.style.color = msg.fondo.sub || 'rgba(201,168,76,0.6)';
+      }
+
+      // Mostrar imagen de fondo si hay
+      if (msg.imagen) {
+        bgImage.style.backgroundImage = `url('${msg.imagen}')`;
+        bgImage.classList.add('visible');
+        bgImage.style.opacity = msg.text ? '0.4' : '0.95';
+      } else {
+        bgImage.style.backgroundImage = '';
+        bgImage.classList.remove('visible');
+      }
+
+      // Texto encima
+      if (msg.text) {
+        mainText.textContent = msg.text;
+        mainText.style.fontSize = (msg.fontSize || 55) + 'px';
+        mainText.style.textAlign = 'center';
+      } else {
+        mainText.textContent = '';
+      }
+
+      subtitle.textContent = '';
+      typeBadge.textContent = '🖼️';
+
+      requestAnimationFrame(() => {
+        mainText.classList.add('visible');
+        decoLine.classList.add('visible');
+      });
+    }, 200);
+  }
+
+  // Tecla F para pantalla completa
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'f' || e.key === 'F') {
+      if (!document.fullscreenElement) {
+        document.documentElement.requestFullscreen();
+      } else {
+        document.exitFullscreen();
+      }
+    }
+    if (e.key === 'Escape' && document.fullscreenElement) {
+      document.exitFullscreen();
+    }
+  });
+</script>
+</body>
+</html>

@@ -1,0 +1,323 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+  <title>Presencia — Control Remoto</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&family=Crimson+Pro:wght@300;400;600&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg:#0a0c10; --panel:#111318; --card:#181c24; --input:#1e2330;
+      --border:#2a3045; --accent:#c9a84c; --text:#e8e2d5;
+      --text-dim:#7a7468; --text-muted:#4a4840;
+      --success:#4caf80; --danger:#c94c4c;
+    }
+    *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
+    html,body{background:var(--bg);color:var(--text);font-family:'Crimson Pro',serif;height:100%;overflow:hidden;}
+
+    /* ── HEADER ── */
+    header{background:linear-gradient(135deg,#0e1018,#151a24);border-bottom:1px solid var(--border);padding:12px 20px;display:flex;align-items:center;justify-content:space-between;}
+    .logo{display:flex;align-items:center;gap:10px;}
+    .logo svg{width:28px;height:28px;}
+    .logo-text{font-family:'Cinzel',serif;font-size:16px;font-weight:700;letter-spacing:3px;color:var(--accent);}
+    .logo-sub{font-size:9px;color:var(--text-muted);letter-spacing:2px;text-transform:uppercase;}
+    .conn-badge{display:flex;align-items:center;gap:6px;font-size:11px;color:var(--text-dim);}
+    .conn-dot{width:8px;height:8px;border-radius:50%;background:var(--text-muted);transition:all .3s;}
+    .conn-dot.ok{background:var(--success);box-shadow:0 0 6px var(--success);}
+    .conn-dot.err{background:var(--danger);}
+
+    /* ── PANTALLA PRINCIPAL ── */
+    .screen{height:calc(100vh - 60px);display:flex;flex-direction:column;overflow:hidden;}
+
+    /* ── CONECTAR ── */
+    #vistaConectar{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:24px;gap:16px;text-align:center;}
+    #vistaConectar h2{font-family:'Cinzel',serif;font-size:18px;color:var(--text);letter-spacing:1px;}
+    #vistaConectar p{font-size:14px;color:var(--text-dim);line-height:1.7;max-width:280px;}
+    .codigo-input{background:var(--input);border:1px solid var(--border);border-radius:10px;color:var(--text);font-family:'Cinzel',serif;font-size:24px;letter-spacing:6px;text-align:center;padding:14px 20px;width:100%;max-width:280px;outline:none;text-transform:uppercase;}
+    .codigo-input:focus{border-color:var(--accent);}
+    .btn-conectar{background:linear-gradient(135deg,var(--accent),#dbb85a);color:#0a0c10;border:none;border-radius:10px;font-family:'Cinzel',serif;font-size:14px;font-weight:700;letter-spacing:2px;padding:16px 32px;cursor:pointer;width:100%;max-width:280px;text-transform:uppercase;transition:all .2s;}
+    .btn-conectar:active{transform:scale(.97);}
+
+    /* ── CONTROL REMOTO ── */
+    #vistaControl{flex:1;display:none;flex-direction:column;padding:16px;gap:12px;overflow-y:auto;}
+
+    /* Diapositiva actual */
+    .current-display{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:14px 16px;text-align:center;}
+    .current-label{font-family:'Cinzel',serif;font-size:9px;letter-spacing:2px;color:var(--text-muted);text-transform:uppercase;margin-bottom:6px;}
+    .current-text{font-size:15px;color:var(--text);line-height:1.5;min-height:40px;max-height:80px;overflow:hidden;}
+
+    /* Botones de navegación grandes */
+    .nav-row{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
+    .nav-btn{background:var(--card);border:1px solid var(--border);border-radius:14px;color:var(--text);font-family:'Cinzel',serif;font-size:13px;letter-spacing:1px;padding:22px 10px;cursor:pointer;text-align:center;transition:all .15s;text-transform:uppercase;display:flex;flex-direction:column;align-items:center;gap:6px;}
+    .nav-btn:active{transform:scale(.95);background:rgba(201,168,76,.08);border-color:var(--accent);}
+    .nav-btn .nav-icon{font-size:28px;}
+
+    /* Botones de control rápido */
+    .control-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
+    .ctrl-btn{border:1px solid var(--border);border-radius:12px;padding:18px 10px;cursor:pointer;font-family:'Cinzel',serif;font-size:11px;letter-spacing:1px;text-align:center;transition:all .15s;text-transform:uppercase;display:flex;flex-direction:column;align-items:center;gap:6px;}
+    .ctrl-btn:active{transform:scale(.95);}
+    .ctrl-btn .ci{font-size:24px;}
+    .ctrl-negro{background:rgba(0,0,0,.4);color:var(--text-dim);}
+    .ctrl-negro.activo{background:rgba(201,76,76,.15);border-color:var(--danger);color:var(--danger);}
+    .ctrl-limpiar{background:var(--card);color:var(--text-dim);}
+    .ctrl-proyectar{background:rgba(201,168,76,.08);border-color:rgba(201,168,76,.3);color:var(--accent);}
+    .ctrl-texto{background:var(--card);color:var(--text-dim);}
+
+    /* Texto rápido */
+    .texto-rapido{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:14px;}
+    .texto-rapido textarea{width:100%;background:var(--input);border:1px solid var(--border);border-radius:8px;color:var(--text);font-family:'Crimson Pro',serif;font-size:16px;padding:10px 12px;resize:none;height:70px;outline:none;}
+    .texto-rapido textarea:focus{border-color:var(--accent);}
+    .texto-rapido button{width:100%;margin-top:8px;background:var(--accent);color:#0a0c10;border:none;border-radius:8px;font-family:'Cinzel',serif;font-size:12px;font-weight:700;letter-spacing:1px;padding:12px;cursor:pointer;text-transform:uppercase;}
+    .texto-rapido button:active{transform:scale(.98);}
+
+    /* Sección title */
+    .sec-title{font-family:'Cinzel',serif;font-size:10px;letter-spacing:2px;color:var(--text-muted);text-transform:uppercase;margin-bottom:4px;}
+
+    /* Desconectar */
+    .btn-desconectar{background:rgba(201,76,76,.1);border:1px solid rgba(201,76,76,.3);border-radius:10px;color:var(--danger);font-family:'Cinzel',serif;font-size:11px;letter-spacing:1px;padding:12px;cursor:pointer;text-align:center;text-transform:uppercase;margin-top:4px;}
+    .btn-desconectar:active{background:rgba(201,76,76,.2);}
+
+    /* VIBRACIÓN feedback */
+    @keyframes pulse-border {
+      0%{box-shadow:0 0 0 0 rgba(201,168,76,.4)}
+      70%{box-shadow:0 0 0 10px rgba(201,168,76,0)}
+      100%{box-shadow:0 0 0 0 rgba(201,168,76,0)}
+    }
+    .nav-btn:active{animation:pulse-border .3s ease;}
+  </style>
+</head>
+<body>
+
+<header>
+  <div class="logo">
+    <svg viewBox="0 0 36 36" fill="none">
+      <path d="M18 3 L18 33" stroke="#c9a84c" stroke-width="2.5" stroke-linecap="round"/>
+      <path d="M10 10 L18 3 L26 10" stroke="#c9a84c" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+      <ellipse cx="18" cy="20" rx="10" ry="6" stroke="#c9a84c" stroke-width="1.5" fill="none" opacity=".5"/>
+      <circle cx="18" cy="20" r="3" fill="#c9a84c" opacity=".8"/>
+    </svg>
+    <div>
+      <div class="logo-text">Presencia</div>
+      <div class="logo-sub">Control Remoto</div>
+    </div>
+  </div>
+  <div class="conn-badge">
+    <div class="conn-dot" id="connDot"></div>
+    <span id="connLabel">Desconectado</span>
+  </div>
+</header>
+
+<div class="screen">
+
+  <!-- VISTA: CONECTAR -->
+  <div id="vistaConectar">
+    <svg width="60" height="60" viewBox="0 0 36 36" fill="none" style="opacity:.3;">
+      <path d="M18 3 L18 33" stroke="#c9a84c" stroke-width="2.5" stroke-linecap="round"/>
+      <path d="M10 10 L18 3 L26 10" stroke="#c9a84c" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+      <ellipse cx="18" cy="20" rx="10" ry="6" stroke="#c9a84c" stroke-width="1.5" fill="none" opacity=".5"/>
+      <circle cx="18" cy="20" r="3" fill="#c9a84c" opacity=".8"/>
+    </svg>
+    <h2>Conectar al panel</h2>
+    <p>Ingresa el código de 6 dígitos que aparece en el panel de control de Presencia.</p>
+    <input class="codigo-input" id="codigoInput" type="text" maxlength="6" placeholder="XXXXXX" autocomplete="off" autocorrect="off" spellcheck="false">
+    <button class="btn-conectar" onclick="conectar()">Conectar</button>
+    <div id="errConectar" style="color:var(--danger);font-size:13px;display:none;">Código incorrecto o sin conexión.</div>
+  </div>
+
+  <!-- VISTA: CONTROL -->
+  <div id="vistaControl">
+
+    <!-- Diapositiva actual -->
+    <div class="current-display">
+      <div class="current-label">Proyectando ahora</div>
+      <div class="current-text" id="remoteCurrentText">— Pantalla vacía —</div>
+    </div>
+
+    <!-- Navegación -->
+    <div>
+      <div class="sec-title">Orden del culto</div>
+      <div class="nav-row">
+        <button class="nav-btn" onclick="enviar('anterior')">
+          <span class="nav-icon">⬅</span>
+          Anterior
+        </button>
+        <button class="nav-btn" onclick="enviar('siguiente')">
+          <span class="nav-icon">➡</span>
+          Siguiente
+        </button>
+      </div>
+    </div>
+
+    <!-- Controles rápidos -->
+    <div>
+      <div class="sec-title">Control rápido</div>
+      <div class="control-grid">
+        <button class="ctrl-btn ctrl-negro" id="btnNegroRemote" onclick="enviar('negro')">
+          <span class="ci">⬛</span>
+          Pantalla negra
+        </button>
+        <button class="ctrl-btn ctrl-limpiar" onclick="enviar('limpiar')">
+          <span class="ci">🗑</span>
+          Limpiar
+        </button>
+        <button class="ctrl-btn ctrl-proyectar" onclick="enviar('proyectar')">
+          <span class="ci">⚡</span>
+          Proyectar texto
+        </button>
+        <button class="ctrl-btn ctrl-texto" onclick="toggleTextoRapido()">
+          <span class="ci">✏️</span>
+          Texto rápido
+        </button>
+      </div>
+    </div>
+
+    <!-- Texto rápido -->
+    <div class="texto-rapido" id="textoRapidoPanel" style="display:none;">
+      <div class="sec-title">Enviar texto</div>
+      <textarea id="textoRapidoInput" placeholder="Escribe el texto a proyectar..."></textarea>
+      <button onclick="enviarTexto()">⚡ Proyectar</button>
+    </div>
+
+    <!-- Tamaño de fuente remoto -->
+    <div style="background:var(--card);border:1px solid var(--border);border-radius:12px;padding:14px;">
+      <div class="sec-title" style="margin-bottom:10px;">Tamaño de texto</div>
+      <div style="display:flex;align-items:center;gap:12px;">
+        <button onclick="enviar('fuente-down')" style="background:var(--input);border:1px solid var(--border);border-radius:8px;color:var(--text);font-size:20px;padding:8px 16px;cursor:pointer;">−</button>
+        <span id="remoteFontSize" style="font-family:'Cinzel',serif;font-size:18px;color:var(--accent);flex:1;text-align:center;">60</span>
+        <button onclick="enviar('fuente-up')" style="background:var(--input);border:1px solid var(--border);border-radius:8px;color:var(--text);font-size:20px;padding:8px 16px;cursor:pointer;">+</button>
+      </div>
+    </div>
+
+    <button class="btn-desconectar" onclick="desconectar()">✕ Desconectar</button>
+
+  </div>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/peerjs/1.5.2/peerjs.min.js"></script>
+<script>
+let peer = null;
+let conn = null;
+let pantallaNegraActiva = false;
+let remoteFontSize = 60;
+
+// ── CONECTAR ──
+function conectar() {
+  const codigo = document.getElementById('codigoInput').value.trim().toUpperCase();
+  if (codigo.length < 4) { mostrarError(); return; }
+
+  const hostId = 'presencia-' + codigo;
+  document.getElementById('errConectar').style.display = 'none';
+
+  if (peer) peer.destroy();
+  peer = new Peer();
+
+  peer.on('open', () => {
+    conn = peer.connect(hostId, { reliable: true });
+
+    conn.on('open', () => {
+      setConectado(true);
+      mostrarControl();
+      conn.send({ type: 'hello' });
+    });
+
+    conn.on('data', (data) => {
+      recibirDatos(data);
+    });
+
+    conn.on('close', () => { setConectado(false); });
+    conn.on('error', () => { setConectado(false); mostrarError(); });
+  });
+
+  peer.on('error', () => { setConectado(false); mostrarError(); });
+
+  // Timeout si no conecta en 8 segundos
+  setTimeout(() => {
+    if (!conn || !conn.open) { mostrarError(); }
+  }, 8000);
+}
+
+function desconectar() {
+  if (conn) conn.close();
+  if (peer) peer.destroy();
+  peer = null; conn = null;
+  setConectado(false);
+  document.getElementById('vistaControl').style.display = 'none';
+  document.getElementById('vistaConectar').style.display = 'flex';
+}
+
+function setConectado(ok) {
+  document.getElementById('connDot').className = 'conn-dot' + (ok ? ' ok' : '');
+  document.getElementById('connLabel').textContent = ok ? 'Conectado' : 'Desconectado';
+}
+
+function mostrarControl() {
+  document.getElementById('vistaConectar').style.display = 'none';
+  document.getElementById('vistaControl').style.display = 'flex';
+}
+
+function mostrarError() {
+  const el = document.getElementById('errConectar');
+  el.style.display = 'block';
+  el.textContent = 'No se pudo conectar. Verifica el código e intenta de nuevo.';
+}
+
+// ── ENVIAR COMANDO ──
+function enviar(cmd) {
+  if (!conn || !conn.open) { setConectado(false); return; }
+
+  // Vibración táctil
+  if (navigator.vibrate) navigator.vibrate(30);
+
+  if (cmd === 'negro') {
+    pantallaNegraActiva = !pantallaNegraActiva;
+    document.getElementById('btnNegroRemote').classList.toggle('activo', pantallaNegraActiva);
+  }
+
+  if (cmd === 'fuente-up') {
+    remoteFontSize = Math.min(120, remoteFontSize + 5);
+    document.getElementById('remoteFontSize').textContent = remoteFontSize;
+  }
+  if (cmd === 'fuente-down') {
+    remoteFontSize = Math.max(20, remoteFontSize - 5);
+    document.getElementById('remoteFontSize').textContent = remoteFontSize;
+  }
+
+  conn.send({ type: 'cmd', cmd, fontSize: remoteFontSize });
+}
+
+function enviarTexto() {
+  const texto = document.getElementById('textoRapidoInput').value.trim();
+  if (!texto || !conn || !conn.open) return;
+  if (navigator.vibrate) navigator.vibrate(40);
+  conn.send({ type: 'cmd', cmd: 'texto', text: texto, fontSize: remoteFontSize });
+  document.getElementById('textoRapidoInput').value = '';
+  document.getElementById('textoRapidoPanel').style.display = 'none';
+}
+
+function toggleTextoRapido() {
+  const panel = document.getElementById('textoRapidoPanel');
+  panel.style.display = panel.style.display === 'none' ? 'block' : 'none';
+}
+
+// ── RECIBIR DATOS DEL PANEL ──
+function recibirDatos(data) {
+  if (data.type === 'estado') {
+    const el = document.getElementById('remoteCurrentText');
+    el.textContent = data.texto || '— Pantalla vacía —';
+    if (data.fontSize) {
+      remoteFontSize = data.fontSize;
+      document.getElementById('remoteFontSize').textContent = data.fontSize;
+    }
+    pantallaNegraActiva = !!data.pantallaOscura;
+    document.getElementById('btnNegroRemote').classList.toggle('activo', pantallaNegraActiva);
+  }
+}
+
+// Mantener conexión viva
+setInterval(() => {
+  if (conn && conn.open) conn.send({ type: 'ping' });
+}, 5000);
+</script>
+</body>
+</html>

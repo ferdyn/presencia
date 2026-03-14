@@ -1,0 +1,2358 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Presencia — Panel de Control</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&family=Crimson+Pro:ital,wght@0,300;0,400;0,600;1,300;1,400&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg-deep:#0a0c10; --bg-panel:#111318; --bg-card:#181c24; --bg-input:#1e2330;
+      --border:#2a3045; --accent:#c9a84c; --accent-dim:#8a6e2f;
+      --text:#e8e2d5; --text-dim:#7a7468; --text-muted:#4a4840;
+      --success:#4caf80; --danger:#c94c4c;
+    }
+    *{margin:0;padding:0;box-sizing:border-box;}
+    body{background:var(--bg-deep);color:var(--text);font-family:'Crimson Pro',serif;font-size:16px;min-height:100vh;overflow-x:hidden;}
+    header{background:linear-gradient(135deg,#0e1018,#151a24);border-bottom:1px solid var(--border);padding:14px 28px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100;}
+    .logo{display:flex;align-items:center;gap:12px;}
+    .logo-icon{width:36px;height:36px;}
+    .logo-icon svg{width:100%;height:100%;}
+    .logo-text{font-family:'Cinzel',serif;font-size:22px;font-weight:700;letter-spacing:4px;color:var(--accent);text-transform:uppercase;}
+    .logo-sub{font-size:10px;color:var(--text-dim);letter-spacing:2px;text-transform:uppercase;margin-top:1px;}
+    .header-actions{display:flex;gap:10px;align-items:center;}
+    .status-dot{width:8px;height:8px;border-radius:50%;background:var(--text-muted);transition:all .3s;}
+    .status-dot.connected{background:var(--success);box-shadow:0 0 8px var(--success);}
+    .status-label{font-size:12px;color:var(--text-dim);letter-spacing:1px;}
+    .app{display:grid;grid-template-columns:260px 1fr 300px;height:calc(100vh - 65px);}
+    .sidebar{background:var(--bg-panel);border-right:1px solid var(--border);display:flex;flex-direction:column;padding:20px 0;overflow-y:auto;}
+    .sidebar-section{padding:6px 16px;font-size:10px;letter-spacing:2px;color:var(--text-muted);text-transform:uppercase;margin-top:12px;font-family:'Cinzel',serif;}
+    .nav-item{display:flex;align-items:center;gap:12px;padding:11px 20px;cursor:pointer;transition:all .2s;border-left:3px solid transparent;font-size:15px;color:var(--text-dim);user-select:none;}
+    .nav-item:hover{background:var(--bg-card);color:var(--text);}
+    .nav-item.active{background:rgba(201,168,76,.08);border-left-color:var(--accent);color:var(--accent);}
+    .nav-item .nav-icon{font-size:18px;width:22px;text-align:center;}
+    .nav-item .nav-badge{margin-left:auto;background:var(--accent);color:var(--bg-deep);font-size:10px;font-weight:700;padding:2px 6px;border-radius:10px;font-family:'Cinzel',serif;}
+    .nav-item .badge-nuevo{margin-left:auto;background:var(--success);color:#000;font-size:9px;font-family:'Cinzel',serif;font-weight:700;padding:2px 6px;border-radius:8px;}
+    .main{background:var(--bg-deep);overflow-y:auto;display:flex;flex-direction:column;}
+    .module-header{padding:24px 28px 16px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:14px;}
+    .module-icon{font-size:24px;}
+    .module-title{font-family:'Cinzel',serif;font-size:18px;font-weight:600;color:var(--text);letter-spacing:1px;}
+    .module-desc{font-size:13px;color:var(--text-dim);margin-top:2px;}
+    .module-body{padding:24px 28px;flex:1;}
+    .card{background:var(--bg-card);border:1px solid var(--border);border-radius:10px;padding:20px;margin-bottom:16px;animation:fadeIn .3s ease;}
+    .card-title{font-family:'Cinzel',serif;font-size:13px;letter-spacing:1.5px;color:var(--accent);text-transform:uppercase;margin-bottom:14px;}
+    textarea,input[type="text"],input[type="number"]{width:100%;background:var(--bg-input);border:1px solid var(--border);border-radius:8px;color:var(--text);font-family:'Crimson Pro',serif;font-size:17px;padding:14px 16px;resize:vertical;transition:border-color .2s;outline:none;}
+    textarea:focus,input[type="text"]:focus,input[type="number"]:focus{border-color:var(--accent);box-shadow:0 0 0 3px rgba(201,168,76,.1);}
+    textarea{min-height:80px;}
+    .btn{display:inline-flex;align-items:center;gap:8px;padding:10px 20px;border-radius:8px;border:none;cursor:pointer;font-family:'Cinzel',serif;font-size:13px;font-weight:600;letter-spacing:1px;transition:all .2s;text-transform:uppercase;}
+    .btn-primary{background:var(--accent);color:var(--bg-deep);}
+    .btn-primary:hover{background:#dbb85a;transform:translateY(-1px);}
+    .btn-secondary{background:var(--bg-input);color:var(--text);border:1px solid var(--border);}
+    .btn-secondary:hover{border-color:var(--accent);color:var(--accent);}
+    .btn-full{width:100%;justify-content:center;}
+    .btn-row{display:flex;gap:10px;margin-top:14px;flex-wrap:wrap;}
+    .font-control{display:flex;align-items:center;gap:12px;background:var(--bg-input);border:1px solid var(--border);border-radius:8px;padding:8px 14px;}
+    .font-control label{font-size:12px;color:var(--text-dim);letter-spacing:1px;white-space:nowrap;}
+    .font-control input[type="range"]{flex:1;accent-color:var(--accent);background:none;border:none;padding:0;}
+    .font-size-val{font-family:'Cinzel',serif;font-size:14px;color:var(--accent);min-width:36px;text-align:right;}
+    .preview-panel{background:var(--bg-panel);border-left:1px solid var(--border);display:flex;flex-direction:column;padding:20px;overflow-y:auto;}
+    .preview-title{font-family:'Cinzel',serif;font-size:11px;letter-spacing:2px;color:var(--text-muted);text-transform:uppercase;margin-bottom:14px;}
+    .preview-screen{background:#000;border-radius:8px;border:2px solid var(--border);aspect-ratio:16/9;display:flex;align-items:center;justify-content:center;padding:14px;position:relative;overflow:hidden;margin-bottom:16px;}
+    .preview-screen.black-screen::after{content:'';position:absolute;inset:0;background:#000;z-index:2;}
+    .preview-text{color:#fff;text-align:center;font-family:'Crimson Pro',serif;font-size:13px;line-height:1.6;word-break:break-word;}
+    .preview-label{position:absolute;bottom:6px;right:8px;font-size:9px;color:rgba(255,255,255,.2);letter-spacing:1px;font-family:'Cinzel',serif;}
+    .quick-controls{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:auto;}
+    .qbtn{padding:12px 8px;border-radius:8px;border:1px solid var(--border);background:var(--bg-card);color:var(--text-dim);cursor:pointer;font-family:'Cinzel',serif;font-size:10px;letter-spacing:1px;text-align:center;transition:all .2s;text-transform:uppercase;}
+    .qbtn:hover{border-color:var(--accent);color:var(--accent);}
+    .qbtn.active-black{background:rgba(201,76,76,.1);border-color:var(--danger);color:var(--danger);}
+    .open-btn{display:flex;align-items:center;gap:8px;background:linear-gradient(135deg,var(--accent),#dbb85a);color:var(--bg-deep);border:none;border-radius:8px;padding:12px 16px;width:100%;justify-content:center;cursor:pointer;font-family:'Cinzel',serif;font-size:12px;font-weight:700;letter-spacing:1.5px;margin-bottom:16px;transition:all .2s;text-transform:uppercase;}
+    .open-btn:hover{transform:translateY(-1px);box-shadow:0 4px 20px rgba(201,168,76,.3);}
+    .current-slide{background:var(--bg-card);border:1px solid var(--border);border-radius:8px;padding:12px;margin-bottom:12px;}
+    .current-slide .cs-label{color:var(--text-muted);font-size:10px;letter-spacing:1.5px;text-transform:uppercase;font-family:'Cinzel',serif;margin-bottom:6px;}
+    .current-slide .cs-content{color:var(--text);font-size:14px;line-height:1.5;max-height:60px;overflow:hidden;}
+    .module-view{display:none;}
+    .module-view.active{display:flex;flex-direction:column;flex:1;}
+    .coming-soon{display:flex;flex-direction:column;align-items:center;justify-content:center;flex:1;color:var(--text-muted);gap:12px;padding:60px;text-align:center;}
+    .coming-soon .cs-icon{font-size:48px;opacity:.4;}
+    .coming-soon .cs-text{font-family:'Cinzel',serif;font-size:14px;letter-spacing:2px;text-transform:uppercase;}
+    .coming-soon .cs-sub{font-size:13px;color:var(--text-muted);max-width:280px;line-height:1.6;}
+    /* HIMNARIO */
+    .search-row{display:flex;gap:10px;margin-bottom:16px;}
+    .search-row input{flex:1;}
+    .search-row input[type="number"]{width:80px;flex:none;}
+    .himno-lista{display:flex;flex-direction:column;gap:6px;max-height:260px;overflow-y:auto;}
+    .himno-item{background:var(--bg-input);border:1px solid var(--border);border-radius:8px;padding:12px 16px;cursor:pointer;transition:all .2s;display:flex;align-items:center;gap:12px;}
+    .himno-item:hover{border-color:var(--accent);background:rgba(201,168,76,.05);}
+    .himno-item.selected{border-color:var(--accent);background:rgba(201,168,76,.1);}
+    .himno-num{font-family:'Cinzel',serif;font-size:13px;color:var(--accent);min-width:32px;font-weight:700;}
+    .himno-titulo{font-size:15px;color:var(--text);}
+    .estrofa-nav{display:flex;flex-direction:column;gap:8px;}
+    .estrofa-btn{background:var(--bg-input);border:1px solid var(--border);border-radius:8px;padding:14px 16px;cursor:pointer;transition:all .2s;text-align:left;color:var(--text);font-family:'Crimson Pro',serif;font-size:14px;line-height:1.5;white-space:pre-wrap;}
+    .estrofa-btn:hover{border-color:var(--accent);}
+    .estrofa-btn.proyectada{border-color:var(--success);background:rgba(76,175,128,.08);}
+    .estrofa-label{font-family:'Cinzel',serif;font-size:10px;color:var(--accent);letter-spacing:1.5px;text-transform:uppercase;margin-bottom:4px;}
+    .coro-btn{background:rgba(201,168,76,.06);border:1px solid rgba(201,168,76,.25);}
+    .coro-btn:hover{border-color:var(--accent);background:rgba(201,168,76,.12);}
+    .himno-activo-info{background:rgba(201,168,76,.08);border:1px solid rgba(201,168,76,.2);border-radius:8px;padding:10px 14px;margin-bottom:14px;display:flex;align-items:center;justify-content:space-between;}
+    .himno-activo-titulo{font-family:'Cinzel',serif;font-size:14px;color:var(--accent);}
+    .himno-activo-num{font-size:12px;color:var(--text-dim);}
+    .divider{height:1px;background:var(--border);margin:16px 0;}
+    /* BIBLIA */
+    .btn-ver{padding:8px 16px;border-radius:20px;border:1px solid var(--border);background:var(--bg-input);color:var(--text-dim);cursor:pointer;font-family:'Cinzel',serif;font-size:11px;letter-spacing:1px;transition:all .2s;text-transform:uppercase;}
+    .btn-ver:hover{border-color:var(--accent);color:var(--accent);}
+    .btn-ver.active-ver{background:rgba(201,168,76,.12);border-color:var(--accent);color:var(--accent);}
+    .versiculo-item{background:var(--bg-input);border:1px solid var(--border);border-radius:8px;padding:12px 14px;cursor:pointer;transition:all .2s;display:flex;align-items:flex-start;gap:10px;}
+    .versiculo-item:hover{border-color:var(--accent);background:rgba(201,168,76,.05);}
+    .versiculo-item.proyectado{border-color:var(--success);background:rgba(76,175,128,.08);}
+    .ver-num{font-family:'Cinzel',serif;font-size:11px;color:var(--accent);min-width:22px;padding-top:3px;font-weight:700;}
+    .ver-texto{font-size:15px;color:var(--text);line-height:1.6;flex:1;}
+    .ver-fav{background:none;border:none;cursor:pointer;font-size:14px;padding:2px 4px;opacity:.4;transition:opacity .2s;flex-shrink:0;}
+    .ver-fav:hover,.ver-fav.activo{opacity:1;}
+    .fav-item{background:var(--bg-input);border:1px solid var(--border);border-radius:8px;padding:10px 12px;cursor:pointer;transition:all .2s;display:flex;align-items:flex-start;gap:8px;}
+    .fav-item:hover{border-color:var(--accent);}
+    .fav-ref{font-family:'Cinzel',serif;font-size:10px;color:var(--accent);min-width:80px;padding-top:2px;letter-spacing:.5px;}
+    .fav-txt{font-size:13px;color:var(--text-dim);line-height:1.5;flex:1;overflow:hidden;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;}
+    .fav-del{background:none;border:none;cursor:pointer;color:var(--text-muted);font-size:13px;padding:2px 4px;flex-shrink:0;}
+    .fav-del:hover{color:var(--danger);}
+    /* ORDEN DEL CULTO */
+    .btn-tipo{padding:8px 14px;border-radius:20px;border:1px solid var(--border);background:var(--bg-input);color:var(--text-dim);cursor:pointer;font-family:'Cinzel',serif;font-size:11px;letter-spacing:1px;transition:all .2s;text-transform:uppercase;}
+    .btn-tipo:hover{border-color:var(--accent);color:var(--accent);}
+    .btn-tipo.active-tipo{background:rgba(201,168,76,.12);border-color:var(--accent);color:var(--accent);}
+    .orden-item{background:var(--bg-input);border:1px solid var(--border);border-radius:8px;padding:12px 14px;display:flex;align-items:center;gap:10px;transition:all .2s;}
+    .orden-item.activo-pres{border-color:var(--success);background:rgba(76,175,128,.08);}
+    .orden-item.es-seccion{background:rgba(201,168,76,.05);border-color:rgba(201,168,76,.2);}
+    .orden-drag{cursor:grab;color:var(--text-muted);font-size:16px;padding:2px 4px;}
+    .orden-icono{font-size:18px;width:24px;text-align:center;flex-shrink:0;}
+    .orden-info{flex:1;}
+    .orden-etiqueta{font-family:'Cinzel',serif;font-size:11px;color:var(--accent);letter-spacing:1px;text-transform:uppercase;}
+    .orden-detalle{font-size:14px;color:var(--text);margin-top:2px;line-height:1.4;}
+    .orden-acciones{display:flex;gap:4px;flex-shrink:0;}
+    .orden-btn{background:none;border:1px solid var(--border);border-radius:6px;color:var(--text-muted);cursor:pointer;padding:4px 8px;font-size:12px;transition:all .2s;}
+    .orden-btn:hover{border-color:var(--accent);color:var(--accent);}
+    .orden-btn.del:hover{border-color:var(--danger);color:var(--danger);}
+    .orden-saved{background:var(--bg-input);border:1px solid var(--border);border-radius:8px;padding:10px 14px;display:flex;align-items:center;gap:10px;cursor:pointer;transition:all .2s;}
+    .orden-saved:hover{border-color:var(--accent);}
+    .btn-success{background:rgba(76,175,128,.15);color:var(--success);border:1px solid rgba(76,175,128,.3);}
+    .btn-success:hover{background:rgba(76,175,128,.25);}
+    .btn-danger{background:rgba(201,76,76,.15);color:var(--danger);border:1px solid rgba(201,76,76,.3);}
+    .btn-danger:hover{background:rgba(201,76,76,.25);}
+    /* TEMAS */
+    .tema-btn{background:var(--bg-input);border:1px solid var(--border);border-radius:8px;padding:10px;cursor:pointer;transition:all .2s;text-align:center;color:var(--text-dim);font-family:'Cinzel',serif;font-size:11px;letter-spacing:.5px;}
+    .tema-btn:hover{border-color:var(--accent);}
+    .tema-btn.active-tema{border-color:var(--accent);background:rgba(201,168,76,.08);color:var(--accent);}
+    /* ANUNCIOS */
+    .anuncio-item{background:var(--bg-input);border:1px solid var(--border);border-radius:8px;padding:12px 14px;display:flex;align-items:center;gap:12px;transition:all .2s;}
+    .anuncio-item:hover{border-color:var(--accent);}
+    .anuncio-item.proyectado{border-color:var(--success);background:rgba(76,175,128,.08);}
+    .anuncio-thumb{width:48px;height:36px;border-radius:6px;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:18px;overflow:hidden;}
+    .anuncio-thumb img{width:100%;height:100%;object-fit:cover;}
+    .anuncio-info{flex:1;min-width:0;}
+    .anuncio-nombre{font-size:14px;color:var(--text);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+    .anuncio-tipo{font-family:'Cinzel',serif;font-size:10px;color:var(--text-muted);letter-spacing:1px;text-transform:uppercase;margin-top:2px;}
+    .fondo-btn{padding:6px 12px;border-radius:16px;border:1px solid var(--border);background:var(--bg-input);color:var(--text-dim);cursor:pointer;font-family:'Cinzel',serif;font-size:10px;letter-spacing:1px;transition:all .2s;text-transform:uppercase;}
+    .fondo-btn:hover{border-color:var(--accent);color:var(--accent);}
+    .fondo-btn.active-fondo{border-color:var(--accent);background:rgba(201,168,76,.12);color:var(--accent);}
+    ::-webkit-scrollbar{width:5px;}
+    ::-webkit-scrollbar-track{background:transparent;}
+    ::-webkit-scrollbar-thumb{background:var(--border);border-radius:4px;}
+    ::-webkit-scrollbar-thumb:hover{background:var(--accent-dim);}
+    @keyframes fadeIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+    /* ══════════════════════════════════════
+       RESPONSIVE
+    ══════════════════════════════════════ */
+
+    /* Tablet (≤ 1024px): ocultar panel derecho */
+    @media (max-width:1024px) {
+      .app { grid-template-columns: 220px 1fr; }
+      .preview-panel { display:none; }
+    }
+
+    /* Móvil (≤ 768px): layout vertical con nav inferior */
+    @media (max-width:768px) {
+      /* Header compacto */
+      header { padding:10px 16px; }
+      .logo-text { font-size:16px; letter-spacing:2px; }
+      .logo-sub { display:none; }
+      .logo-icon { width:28px; height:28px; }
+      .status-label { display:none; }
+
+      /* App: columna única, espacio para nav inferior */
+      .app {
+        grid-template-columns: 1fr;
+        grid-template-rows: 1fr;
+        height: calc(100vh - 56px - 64px);
+      }
+
+      /* Sidebar: convertir en nav inferior fija */
+      .sidebar {
+        position: fixed;
+        bottom: 0; left: 0; right: 0;
+        height: 64px;
+        flex-direction: row;
+        padding: 0;
+        border-right: none;
+        border-top: 1px solid var(--border);
+        z-index: 200;
+        overflow-x: auto;
+        overflow-y: hidden;
+        background: var(--bg-panel);
+        align-items: stretch;
+        justify-content: flex-start;
+      }
+
+      /* Ocultar secciones y badges en nav móvil */
+      .sidebar-section { display:none; }
+      .nav-badge, .badge-nuevo { display:none; }
+
+      /* Nav items: columna vertical centrada */
+      .nav-item {
+        flex-direction: column;
+        padding: 8px 12px;
+        gap: 3px;
+        border-left: none;
+        border-top: 3px solid transparent;
+        font-size: 10px;
+        min-width: 64px;
+        justify-content: center;
+        align-items: center;
+        white-space: nowrap;
+        letter-spacing: 0;
+      }
+      .nav-item.active {
+        border-left-color: transparent;
+        border-top-color: var(--accent);
+      }
+      .nav-item .nav-icon { font-size:20px; width:auto; }
+
+      /* Panel principal: scroll completo */
+      .main {
+        grid-column: 1;
+        height: calc(100vh - 56px - 64px);
+        overflow-y: auto;
+      }
+
+      /* Preview panel: oculto en móvil */
+      .preview-panel { display:none; }
+
+      /* Módulos: padding reducido */
+      .module-header { padding:16px 16px 12px; }
+      .module-body { padding:14px 16px; }
+      .module-title { font-size:15px; }
+
+      /* Cards más compactas */
+      .card { padding:14px; }
+
+      /* Botones más grandes (touch) */
+      .btn { padding:12px 16px; font-size:12px; }
+      .btn-row { gap:8px; }
+
+      /* Inputs táctiles */
+      textarea, input[type="text"], input[type="number"] {
+        font-size:16px; /* evita zoom en iOS */
+        padding:12px 14px;
+      }
+
+      /* Himnario: lista más alta en móvil */
+      .himno-lista { max-height:40vh; }
+      .estrofa-btn { font-size:15px; padding:14px; }
+
+      /* Biblia: selector en columna */
+      #bibliaLibro, #bibliaCap, #bibliaVer {
+        font-size:16px;
+      }
+
+      /* Orden del culto: botones de acción apilados */
+      .orden-acciones { gap:3px; }
+      .orden-btn { padding:6px 8px; font-size:13px; }
+
+      /* Versículos */
+      .versiculo-item { padding:10px 12px; }
+      .ver-texto { font-size:14px; }
+
+      /* Botones tipo pill más pequeños */
+      .btn-ver, .btn-tipo { padding:7px 12px; font-size:10px; }
+
+      /* Search row */
+      .search-row { flex-direction:row; gap:8px; }
+      .search-row input[type="number"] { width:65px; }
+
+      /* Quick bar flotante en lugar de sidebar */
+      .quick-bar {
+        display: flex !important;
+        position: fixed;
+        top: 60px;
+        right: 12px;
+        flex-direction: column;
+        gap: 6px;
+        z-index: 150;
+      }
+
+      .qbar-btn {
+        width: 44px;
+        height: 44px;
+        border-radius: 50%;
+        border: 1px solid var(--border);
+        background: var(--bg-card);
+        color: var(--text-dim);
+        cursor: pointer;
+        font-size: 16px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        box-shadow: 0 2px 10px rgba(0,0,0,.4);
+        transition: all .2s;
+      }
+      .qbar-btn:active { transform:scale(.92); }
+      .qbar-btn.black { background:rgba(201,76,76,.15); color:var(--danger); border-color:rgba(201,76,76,.4); }
+
+      /* Formulario de agregar himno */
+      #formAgregar { padding-top:4px; }
+
+      /* Biblia grid selector */
+      #bibliaLibro { font-size:15px; }
+      .biblia-selector-grid { grid-template-columns:1fr 60px 60px !important; }
+    }
+
+    /* Pantallas muy pequeñas (≤ 380px) */
+    @media (max-width:380px) {
+      .nav-item { min-width:52px; padding:6px 8px; font-size:9px; }
+      .nav-item .nav-icon { font-size:18px; }
+      .logo-text { font-size:14px; letter-spacing:1px; }
+    }
+
+    /* La quick-bar flotante se oculta en desktop */
+    .quick-bar { display:none; }
+
+  </style>
+</head>
+<body>
+
+<header>
+  <div class="logo">
+    <div class="logo-icon">
+      <svg viewBox="0 0 36 36" fill="none">
+        <path d="M18 3 L18 33" stroke="#c9a84c" stroke-width="2.5" stroke-linecap="round"/>
+        <path d="M10 10 L18 3 L26 10" stroke="#c9a84c" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+        <ellipse cx="18" cy="20" rx="10" ry="6" stroke="#c9a84c" stroke-width="1.5" fill="none" opacity=".5"/>
+        <circle cx="18" cy="20" r="3" fill="#c9a84c" opacity=".8"/>
+      </svg>
+    </div>
+    <div>
+      <div class="logo-text">Presencia</div>
+      <div class="logo-sub">Panel de Control — v2</div>
+    </div>
+  </div>
+  <div class="header-actions">
+    <div class="status-dot" id="statusDot"></div>
+    <span class="status-label" id="statusLabel">Sin proyección</span>
+  </div>
+</header>
+
+<!-- QUICK BAR FLOTANTE (solo móvil) -->
+<div class="quick-bar" id="quickBar">
+  <button class="qbar-btn" id="qbarBlack" onclick="toggleBlackScreen()" title="Pantalla negra">⬛</button>
+  <button class="qbar-btn" onclick="limpiarPantalla()" title="Limpiar">🗑</button>
+  <button class="qbar-btn" onclick="abrirProyeccion()" title="Proyección">🖥️</button>
+</div>
+
+<div class="app">
+  <nav class="sidebar">
+    <div class="sidebar-section">Contenido</div>
+    <div class="nav-item active" data-module="texto" onclick="switchModule('texto',this)">
+      <span class="nav-icon">✏️</span> Texto Libre
+    </div>
+    <div class="nav-item" data-module="himnario" onclick="switchModule('himnario',this)">
+      <span class="nav-icon">🎵</span> Himnario
+      <span class="badge-nuevo">NUEVO</span>
+    </div>
+    <div class="nav-item" data-module="canciones" onclick="switchModule('canciones',this)">
+      <span class="nav-icon">🎤</span> Canciones Libres
+      <span class="badge-nuevo">NUEVO</span>
+    </div>
+    <div class="nav-item" data-module="biblia" onclick="switchModule('biblia',this)">
+      <span class="nav-icon">📖</span> Biblia
+      <span class="badge-nuevo">NUEVO</span>
+    </div>
+    <div class="sidebar-section">Presentación</div>
+    <div class="nav-item" data-module="orden" onclick="switchModule('orden',this)">
+      <span class="nav-icon">📅</span> Orden del Culto
+      <span class="badge-nuevo">NUEVO</span>
+    </div>
+    <div class="nav-item" data-module="anuncios" onclick="switchModule('anuncios',this)">
+      <span class="nav-icon">🖼️</span> Anuncios e Imágenes
+      <span class="badge-nuevo">NUEVO</span>
+    </div>
+    <div class="sidebar-section">Sistema</div>
+    <div class="nav-item" data-module="config" onclick="switchModule('config',this)">
+      <span class="nav-icon">⚙️</span> Configuración
+    </div>
+  </nav>
+
+  <main class="main">
+
+    <!-- TEXTO LIBRE -->
+    <div class="module-view active" id="mod-texto">
+      <div class="module-header">
+        <span class="module-icon">✏️</span>
+        <div><div class="module-title">Texto Libre</div><div class="module-desc">Escribe cualquier texto para proyectar al instante</div></div>
+      </div>
+      <div class="module-body">
+        <div class="card">
+          <div class="card-title">Contenido a proyectar</div>
+          <textarea id="textoLibre" placeholder="Escribe aquí el texto que deseas proyectar..."></textarea>
+          <div class="btn-row">
+            <button class="btn btn-primary" onclick="proyectarTexto()">⚡ Proyectar</button>
+            <button class="btn btn-secondary" onclick="document.getElementById('textoLibre').value=''">🗑 Limpiar</button>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-title">Apariencia</div>
+          <div class="font-control">
+            <label>TAMAÑO</label>
+            <input type="range" id="fontSize" min="20" max="120" value="60" oninput="updateFontSize(this.value)">
+            <span class="font-size-val" id="fontSizeVal">60</span>
+          </div>
+          <div class="btn-row" style="margin-top:12px;">
+            <button class="btn btn-secondary" onclick="setAlign('left')">⬅ Izquierda</button>
+            <button class="btn btn-secondary" onclick="setAlign('center')">⬛ Centro</button>
+            <button class="btn btn-secondary" onclick="setAlign('right')">➡ Derecha</button>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-title">Textos frecuentes</div>
+          <div class="btn-row">
+            <button class="btn btn-secondary" onclick="setTexto('Bienvenidos\nal culto')">Bienvenida</button>
+            <button class="btn btn-secondary" onclick="setTexto('Silencio por favor')">Silencio</button>
+            <button class="btn btn-secondary" onclick="setTexto('La ofrenda\nserá recibida\nen este momento')">Ofrenda</button>
+            <button class="btn btn-secondary" onclick="setTexto('¡Alabado sea Dios!')">Alabanza</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- HIMNARIO -->
+    <div class="module-view" id="mod-himnario">
+      <div class="module-header">
+        <span class="module-icon">🎵</span>
+        <div><div class="module-title">Himnario de Gloria</div><div class="module-desc">Busca y proyecta himnos estrofa por estrofa · <span id="totalHimnos" style="color:var(--accent)">cargando...</span></div></div>
+      </div>
+      <div class="module-body">
+
+        <div class="card">
+          <div class="card-title">Buscar himno</div>
+          <div class="search-row">
+            <input type="number" id="buscarNumero" placeholder="Nº" min="1" max="329" oninput="buscarPorNumero(this.value)">
+            <input type="text" id="buscarTitulo" placeholder="Buscar por título..." oninput="buscarPorTitulo(this.value)">
+          </div>
+          <div class="himno-lista" id="himnoLista"></div>
+        </div>
+
+        <div class="card" id="himnoDetalle" style="display:none;">
+          <div class="himno-activo-info">
+            <div class="himno-activo-titulo" id="himnoActivoTitulo">—</div>
+            <div class="himno-activo-num" id="himnoActivoNum">—</div>
+          </div>
+          <div class="estrofa-nav" id="estrofaNav"></div>
+        </div>
+
+        <div class="card">
+          <div class="card-title">Agregar himno que no está en la lista</div>
+          <p style="font-size:13px;color:var(--text-dim);margin-bottom:12px;line-height:1.6;">Los himnos que agregues se guardan en este dispositivo permanentemente.</p>
+          <button class="btn btn-secondary btn-full" onclick="toggleFormAgregar()">➕ Agregar himno nuevo</button>
+          <div id="formAgregar" style="display:none;margin-top:16px;">
+            <div class="divider"></div>
+            <div style="display:grid;grid-template-columns:80px 1fr;gap:10px;margin-bottom:12px;">
+              <div>
+                <label style="font-size:11px;color:var(--text-dim);letter-spacing:1px;display:block;margin-bottom:5px;">NÚMERO</label>
+                <input type="number" id="nuevoNumero" placeholder="45">
+              </div>
+              <div>
+                <label style="font-size:11px;color:var(--text-dim);letter-spacing:1px;display:block;margin-bottom:5px;">TÍTULO</label>
+                <input type="text" id="nuevoTitulo" placeholder="Título del himno">
+              </div>
+            </div>
+            <label style="font-size:11px;color:var(--text-dim);letter-spacing:1px;display:block;margin-bottom:5px;">ESTROFA 1 *</label>
+            <textarea id="nuevaEstrofa1" placeholder="Letra de la primera estrofa..." style="margin-bottom:10px;"></textarea>
+            <label style="font-size:11px;color:var(--text-dim);letter-spacing:1px;display:block;margin-bottom:5px;">ESTROFA 2</label>
+            <textarea id="nuevaEstrofa2" placeholder="Opcional..." style="margin-bottom:10px;"></textarea>
+            <label style="font-size:11px;color:var(--text-dim);letter-spacing:1px;display:block;margin-bottom:5px;">ESTROFA 3</label>
+            <textarea id="nuevaEstrofa3" placeholder="Opcional..." style="margin-bottom:10px;"></textarea>
+            <label style="font-size:11px;color:var(--text-dim);letter-spacing:1px;display:block;margin-bottom:5px;">CORO</label>
+            <textarea id="nuevoCoro" placeholder="Opcional..." style="margin-bottom:14px;"></textarea>
+            <div class="btn-row">
+              <button class="btn btn-primary" onclick="guardarHimnoNuevo()">💾 Guardar himno</button>
+              <button class="btn btn-secondary" onclick="toggleFormAgregar()">Cancelar</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- CANCIONES LIBRES -->
+    <div class="module-view" id="mod-canciones">
+      <div class="module-header">
+        <span class="module-icon">🎤</span>
+        <div>
+          <div class="module-title">Canciones Libres</div>
+          <div class="module-desc">Alabanzas y adoraciones · <span id="totalCanciones" style="color:var(--accent)">0 canciones</span></div>
+        </div>
+      </div>
+      <div class="module-body">
+
+        <!-- VISTA: LISTA DE CANCIONES -->
+        <div id="cancionesVista-lista">
+          <div class="card">
+            <div class="card-title">Buscar canción</div>
+            <input type="text" id="buscarCancion" placeholder="Buscar por título o letra..." oninput="buscarCancion(this.value)" style="margin-bottom:12px;">
+            <div class="himno-lista" id="cancionLista"></div>
+            <div class="btn-row" style="margin-top:14px;">
+              <button class="btn btn-primary" onclick="mostrarFormCancion(null)">➕ Nueva canción</button>
+              <button class="btn btn-secondary" onclick="exportarCanciones()">💾 Exportar</button>
+              <label class="btn btn-secondary" style="cursor:pointer;">📂 Importar<input type="file" accept=".json" onchange="importarCanciones(this)" style="display:none;"></label>
+            </div>
+          </div>
+        </div>
+
+        <!-- VISTA: DETALLE / PROYECTAR -->
+        <div id="cancionesVista-detalle" style="display:none;">
+          <div class="card">
+            <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;">
+              <button class="btn btn-secondary" style="padding:7px 14px;font-size:11px;" onclick="volverListaCanciones()">← Volver</button>
+              <div style="display:flex;gap:8px;">
+                <button class="btn btn-secondary" style="padding:7px 14px;font-size:11px;" onclick="mostrarFormCancion(cancionActual)">✏️ Editar</button>
+                <button class="btn btn-secondary" style="padding:7px 14px;font-size:11px;color:var(--danger);border-color:rgba(201,76,76,.3);" onclick="eliminarCancion()">🗑 Eliminar</button>
+              </div>
+            </div>
+            <div class="himno-activo-info">
+              <div class="himno-activo-titulo" id="cancionActivaTitulo">—</div>
+              <div class="himno-activo-num" id="cancionActivaAutor" style="font-style:italic;"></div>
+            </div>
+            <div class="estrofa-nav" id="cancionEstrofaNav"></div>
+          </div>
+        </div>
+
+        <!-- VISTA: FORMULARIO CREAR/EDITAR -->
+        <div id="cancionesVista-form" style="display:none;">
+          <div class="card">
+            <div class="card-title" id="formCancionTitulo">Nueva canción</div>
+            <input type="hidden" id="cancionEditandoId">
+            <label style="font-size:11px;color:var(--text-dim);letter-spacing:1px;display:block;margin-bottom:5px;">TÍTULO *</label>
+            <input type="text" id="cTitulo" placeholder="Título de la canción" style="margin-bottom:12px;">
+            <label style="font-size:11px;color:var(--text-dim);letter-spacing:1px;display:block;margin-bottom:5px;">AUTOR / MINISTERIO (opcional)</label>
+            <input type="text" id="cAutor" placeholder="Ej: Marcos Witt, Hillsong, etc." style="margin-bottom:12px;">
+
+            <div id="cEstrofasContainer"></div>
+            <button class="btn btn-secondary" style="margin-bottom:12px;padding:8px 14px;font-size:11px;" onclick="agregarEstrofaForm()">+ Agregar estrofa</button>
+
+            <label style="font-size:11px;color:var(--text-dim);letter-spacing:1px;display:block;margin-bottom:5px;">CORO (opcional)</label>
+            <textarea id="cCoro" placeholder="Letra del coro..." style="margin-bottom:14px;"></textarea>
+
+            <label style="font-size:11px;color:var(--text-dim);letter-spacing:1px;display:block;margin-bottom:5px;">PUENTE (opcional)</label>
+            <textarea id="cPuente" placeholder="Letra del puente..." style="margin-bottom:14px;"></textarea>
+
+            <div class="btn-row">
+              <button class="btn btn-primary" onclick="guardarCancion()">💾 Guardar</button>
+              <button class="btn btn-secondary" onclick="volverListaCanciones()">Cancelar</button>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- BIBLIA -->
+    <div class="module-view" id="mod-biblia">
+      <div class="module-header">
+        <span class="module-icon">📖</span>
+        <div>
+          <div class="module-title">Biblia</div>
+          <div class="module-desc">RVR1960 · RVR1995 · NVI · DHH · PDT — requiere internet</div>
+        </div>
+      </div>
+      <div class="module-body">
+
+        <!-- SELECTOR VERSIÓN + BÚSQUEDA RÁPIDA -->
+        <div class="card">
+          <div class="card-title">Versión</div>
+          <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:16px;">
+            <button class="btn-ver active-ver" data-ver="rv1960" onclick="selVer('rv1960',this)">RVR 1960</button>
+            <button class="btn-ver" data-ver="rv1995" onclick="selVer('rv1995',this)">RVR 1995</button>
+            <button class="btn-ver" data-ver="nvi"    onclick="selVer('nvi',this)">NVI</button>
+            <button class="btn-ver" data-ver="dhh"    onclick="selVer('dhh',this)">DHH</button>
+            <button class="btn-ver" data-ver="pdt"    onclick="selVer('pdt',this)">PDT</button>
+          </div>
+
+          <div class="card-title">Búsqueda rápida por referencia</div>
+          <div style="display:flex;gap:8px;margin-bottom:10px;">
+            <input type="text" id="bibliaRef" placeholder="Ej: Juan 3:16  ó  Romanos 8:28-30" style="flex:1;" onkeydown="if(event.key==='Enter')buscarReferencia()">
+            <button class="btn btn-primary" style="white-space:nowrap;" onclick="buscarReferencia()">🔍 Buscar</button>
+          </div>
+          <div id="bibliaEstado" style="font-size:13px;color:var(--text-muted);min-height:18px;"></div>
+        </div>
+
+        <!-- SELECTOR MANUAL: LIBRO → CAPÍTULO → VERSÍCULO -->
+        <div class="card">
+          <div class="card-title">Navegar por libro, capítulo y versículo</div>
+          <div class="biblia-selector-grid" style="display:grid;grid-template-columns:1fr 80px 80px;gap:10px;margin-bottom:12px;">
+            <select id="bibliaLibro" onchange="onLibroCambio()" style="background:var(--bg-input);border:1px solid var(--border);border-radius:8px;color:var(--text);font-family:'Crimson Pro',serif;font-size:15px;padding:10px 12px;outline:none;">
+              <option value="">— Libro —</option>
+            </select>
+            <select id="bibliaCap" onchange="onCapCambio()" style="background:var(--bg-input);border:1px solid var(--border);border-radius:8px;color:var(--text);font-family:'Crimson Pro',serif;font-size:15px;padding:10px 12px;outline:none;">
+              <option value="">Cap</option>
+            </select>
+            <select id="bibliaVer" style="background:var(--bg-input);border:1px solid var(--border);border-radius:8px;color:var(--text);font-family:'Crimson Pro',serif;font-size:15px;padding:10px 12px;outline:none;">
+              <option value="">Ver</option>
+            </select>
+          </div>
+          <div style="display:flex;gap:8px;flex-wrap:wrap;">
+            <button class="btn btn-primary" onclick="cargarVersiculos()">📖 Cargar versículos</button>
+            <button class="btn btn-secondary" onclick="cargarCapituloCompleto()">📄 Capítulo completo</button>
+          </div>
+        </div>
+
+        <!-- RESULTADOS -->
+        <div class="card" id="bibliaResultados" style="display:none;">
+          <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;">
+            <div class="card-title" id="bibliaResultTitulo" style="margin-bottom:0;">—</div>
+            <button class="btn btn-secondary" style="padding:6px 12px;font-size:11px;" onclick="proyectarTodosVersiculos()">⚡ Proyectar todo</button>
+          </div>
+          <div id="bibliaVersiculoLista" style="display:flex;flex-direction:column;gap:6px;max-height:320px;overflow-y:auto;"></div>
+        </div>
+
+        <!-- VERSÍCULOS FAVORITOS -->
+        <div class="card">
+          <div class="card-title">⭐ Versículos favoritos</div>
+          <div id="bibliaFavoritos" style="display:flex;flex-direction:column;gap:6px;max-height:200px;overflow-y:auto;"></div>
+          <div id="bibliaFavVacio" style="font-size:13px;color:var(--text-muted);padding:8px 0;">Aún no tienes favoritos. Haz clic en ⭐ junto a cualquier versículo para guardarlo.</div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- ORDEN DEL CULTO -->
+    <div class="module-view" id="mod-orden">
+      <div class="module-header">
+        <span class="module-icon">📅</span>
+        <div>
+          <div class="module-title">Orden del Culto</div>
+          <div class="module-desc">Planifica, guarda y presenta el servicio completo</div>
+        </div>
+      </div>
+      <div class="module-body">
+        <div class="card" style="display:flex;align-items:center;gap:12px;flex-wrap:wrap;">
+          <input type="text" id="ordenNombre" placeholder="Nombre del orden (ej: Culto Domingo AM)" style="flex:1;min-width:180px;">
+          <div style="display:flex;gap:8px;flex-wrap:wrap;">
+            <button class="btn btn-primary" onclick="guardarOrden()">💾 Guardar</button>
+            <button class="btn btn-secondary" onclick="nuevoOrden()">✚ Nuevo</button>
+            <button class="btn btn-secondary" onclick="toggleOrdenesGuardados()">📂 Mis órdenes</button>
+          </div>
+        </div>
+        <div class="card" id="ordenesGuardadosPanel" style="display:none;">
+          <div class="card-title">Órdenes guardados</div>
+          <div id="ordenesGuardadosLista" style="display:flex;flex-direction:column;gap:6px;max-height:200px;overflow-y:auto;"></div>
+        </div>
+        <div class="card">
+          <div class="card-title">Agregar elemento al orden</div>
+          <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:12px;">
+            <button class="btn-tipo active-tipo" data-tipo="texto"   onclick="selTipo('texto',this)">✏️ Texto</button>
+            <button class="btn-tipo" data-tipo="himno"   onclick="selTipo('himno',this)">🎵 Himno</button>
+            <button class="btn-tipo" data-tipo="cancion" onclick="selTipo('cancion',this)">🎤 Canción</button>
+            <button class="btn-tipo" data-tipo="biblia"  onclick="selTipo('biblia',this)">📖 Biblia</button>
+            <button class="btn-tipo" data-tipo="seccion" onclick="selTipo('seccion',this)">📌 Sección</button>
+          </div>
+          <div id="ordenTipoForm"></div>
+          <div class="btn-row">
+            <button class="btn btn-primary" onclick="agregarElementoOrden()">➕ Agregar al orden</button>
+          </div>
+        </div>
+        <div class="card">
+          <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;flex-wrap:wrap;gap:8px;">
+            <div class="card-title" style="margin-bottom:0;">Orden actual <span id="ordenItemCount" style="color:var(--text-muted);font-size:11px;">(0 elementos)</span></div>
+            <div style="display:flex;gap:8px;">
+              <button class="btn btn-success" style="padding:7px 14px;font-size:11px;" id="btnPresentar" onclick="iniciarPresentacion()">▶ Presentar</button>
+              <button class="btn btn-secondary" style="padding:7px 14px;font-size:11px;" onclick="limpiarOrdenActual()">🗑 Vaciar</button>
+            </div>
+          </div>
+          <div id="presentacionControles" style="display:none;background:rgba(201,168,76,.06);border:1px solid rgba(201,168,76,.2);border-radius:8px;padding:12px;margin-bottom:14px;">
+            <div style="font-family:'Cinzel',serif;font-size:11px;color:var(--accent);letter-spacing:1.5px;text-transform:uppercase;margin-bottom:10px;">Modo presentación</div>
+            <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap;">
+              <button class="btn btn-secondary" style="padding:8px 14px;font-size:12px;" onclick="anteriorElemento()">⬅ Anterior</button>
+              <span id="presentacionPos" style="font-family:'Cinzel',serif;font-size:13px;color:var(--accent);min-width:60px;text-align:center;">0 / 0</span>
+              <button class="btn btn-primary" style="padding:8px 14px;font-size:12px;" onclick="siguienteElemento()">Siguiente ➡</button>
+              <button class="btn btn-danger" style="padding:8px 14px;font-size:12px;margin-left:auto;" onclick="detenerPresentacion()">⏹ Detener</button>
+            </div>
+          </div>
+          <div id="ordenLista" style="display:flex;flex-direction:column;gap:6px;"></div>
+          <div id="ordenVacio" style="color:var(--text-muted);font-size:13px;padding:16px;text-align:center;line-height:1.7;">El orden está vacío.<br>Agrega elementos usando el panel de arriba.</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ANUNCIOS -->
+    <div class="module-view" id="mod-anuncios">
+      <div class="module-header">
+        <span class="module-icon">🖼️</span>
+        <div>
+          <div class="module-title">Anuncios e Imágenes</div>
+          <div class="module-desc">Diapositivas · Imágenes · Carrusel — <span id="totalAnuncios" style="color:var(--accent)">0 diapositivas</span></div>
+        </div>
+      </div>
+      <div class="module-body">
+
+        <!-- VISTA: LISTA -->
+        <div id="anunciosVista-lista">
+          <div class="card">
+            <div class="card-title">Diapositivas guardadas</div>
+            <div id="anuncioLista" style="display:flex;flex-direction:column;gap:8px;max-height:320px;overflow-y:auto;margin-bottom:14px;"></div>
+            <div id="anuncioVacio" style="color:var(--text-muted);font-size:13px;padding:12px;text-align:center;line-height:1.7;">No hay diapositivas.<br>Crea la primera con los botones de abajo.</div>
+            <div class="btn-row">
+              <button class="btn btn-primary" onclick="mostrarFormAnuncio(null,'texto')">✏️ Texto</button>
+              <button class="btn btn-secondary" onclick="mostrarFormAnuncio(null,'imagen')">🖼️ Imagen</button>
+              <button class="btn btn-secondary" onclick="mostrarFormAnuncio(null,'texto-imagen')">📋 Texto + Imagen</button>
+            </div>
+            <div style="margin-top:12px;display:flex;gap:8px;flex-wrap:wrap;">
+              <button class="btn btn-success" id="btnCarrusel" onclick="toggleCarrusel()" style="font-size:11px;padding:8px 14px;">▶ Iniciar carrusel</button>
+              <button class="btn btn-secondary" onclick="exportarAnuncios()" style="font-size:11px;padding:8px 14px;">💾 Exportar</button>
+              <label class="btn btn-secondary" style="cursor:pointer;font-size:11px;padding:8px 14px;">📂 Importar<input type="file" accept=".json" onchange="importarAnuncios(this)" style="display:none;"></label>
+            </div>
+            <!-- Carrusel controles -->
+            <div id="carruselControles" style="display:none;background:rgba(201,168,76,.06);border:1px solid rgba(201,168,76,.2);border-radius:8px;padding:12px;margin-top:12px;">
+              <div style="font-family:'Cinzel',serif;font-size:11px;color:var(--accent);letter-spacing:1.5px;margin-bottom:10px;">🔄 CARRUSEL ACTIVO</div>
+              <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap;">
+                <label style="font-size:12px;color:var(--text-dim);">Intervalo:</label>
+                <select id="carruselIntervalo" style="background:var(--bg-input);border:1px solid var(--border);border-radius:6px;color:var(--text);padding:4px 8px;font-size:13px;outline:none;">
+                  <option value="3000">3 seg</option>
+                  <option value="5000" selected>5 seg</option>
+                  <option value="8000">8 seg</option>
+                  <option value="10000">10 seg</option>
+                  <option value="15000">15 seg</option>
+                </select>
+                <span id="carruselPos" style="font-family:'Cinzel',serif;font-size:12px;color:var(--accent);margin-left:auto;"></span>
+                <button class="btn btn-danger" style="padding:6px 12px;font-size:11px;" onclick="detenerCarrusel()">⏹ Detener</button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- VISTA: FORMULARIO -->
+        <div id="anunciosVista-form" style="display:none;">
+          <div class="card">
+            <div class="card-title" id="formAnuncioTitulo">Nueva diapositiva</div>
+            <input type="hidden" id="anuncioEditandoId">
+            <input type="hidden" id="anuncioTipoActual">
+
+            <!-- Título de la diapositiva -->
+            <label style="font-size:11px;color:var(--text-dim);letter-spacing:1px;display:block;margin-bottom:5px;">TÍTULO (referencia interna)</label>
+            <input type="text" id="aTitulo" placeholder="Ej: Anuncio retiro, Versículo del día..." style="margin-bottom:12px;">
+
+            <!-- Texto principal -->
+            <div id="aTextoGroup">
+              <label style="font-size:11px;color:var(--text-dim);letter-spacing:1px;display:block;margin-bottom:5px;">TEXTO A PROYECTAR</label>
+              <textarea id="aTexto" placeholder="Escribe el texto de la diapositiva..." style="margin-bottom:12px;min-height:100px;"></textarea>
+            </div>
+
+            <!-- Imagen -->
+            <div id="aImagenGroup" style="display:none;">
+              <label style="font-size:11px;color:var(--text-dim);letter-spacing:1px;display:block;margin-bottom:5px;">IMAGEN</label>
+              <div id="aImagenPreview" style="background:var(--bg-input);border:2px dashed var(--border);border-radius:8px;min-height:120px;display:flex;align-items:center;justify-content:center;margin-bottom:8px;overflow:hidden;cursor:pointer;" onclick="document.getElementById('aImagenInput').click()">
+                <span style="color:var(--text-muted);font-size:13px;">Toca para seleccionar imagen</span>
+              </div>
+              <input type="file" id="aImagenInput" accept="image/*" onchange="previewImagen(this)" style="display:none;">
+              <input type="hidden" id="aImagenData">
+              <label class="btn btn-secondary btn-full" style="cursor:pointer;margin-bottom:12px;">📷 Seleccionar imagen<input type="file" accept="image/*" onchange="previewImagen(this)" style="display:none;"></label>
+            </div>
+
+            <!-- Color de fondo -->
+            <div style="display:flex;gap:12px;align-items:center;margin-bottom:12px;flex-wrap:wrap;">
+              <label style="font-size:11px;color:var(--text-dim);letter-spacing:1px;">FONDO:</label>
+              <div style="display:flex;gap:8px;flex-wrap:wrap;" id="fondoOpciones">
+                <button class="fondo-btn active-fondo" data-fondo="dark" onclick="selFondo('dark',this)">Oscuro</button>
+                <button class="fondo-btn" data-fondo="light" onclick="selFondo('light',this)">Claro</button>
+                <button class="fondo-btn" data-fondo="gold" onclick="selFondo('gold',this)">Dorado</button>
+                <button class="fondo-btn" data-fondo="blue" onclick="selFondo('blue',this)">Azul</button>
+                <button class="fondo-btn" data-fondo="red" onclick="selFondo('red',this)">Rojo</button>
+              </div>
+            </div>
+
+            <!-- Tamaño de fuente -->
+            <div class="font-control" style="margin-bottom:14px;">
+              <label>TAMAÑO</label>
+              <input type="range" id="aFontSize" min="20" max="100" value="55" oninput="document.getElementById('aFontSizeVal').textContent=this.value">
+              <span class="font-size-val" id="aFontSizeVal">55</span>
+            </div>
+
+            <div class="btn-row">
+              <button class="btn btn-primary" onclick="guardarAnuncio()">💾 Guardar</button>
+              <button class="btn btn-secondary" onclick="volverListaAnuncios()">Cancelar</button>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- CONFIG / HERRAMIENTAS / AUDIO / TEMAS -->
+    <div class="module-view" id="mod-config">
+      <div class="module-header"><span class="module-icon">⚙️</span><div><div class="module-title">Configuración</div><div class="module-desc">Temas · Audio · Herramientas · Ajustes</div></div></div>
+      <div class="module-body">
+
+        <!-- PROYECCIÓN -->
+        <div class="card">
+          <div class="card-title">🖥️ Ventana de proyección</div>
+          <p style="font-size:14px;color:var(--text-dim);line-height:1.7;margin-bottom:14px;">Abre la ventana de proyección. Arrástrala al proyector y presiona <strong style="color:var(--accent)">F</strong> para pantalla completa.</p>
+          <button class="btn btn-primary btn-full" onclick="abrirProyeccion()">🖥️ Abrir ventana de proyección</button>
+        </div>
+
+        <!-- TEMAS VISUALES -->
+        <div class="card">
+          <div class="card-title">🎨 Tema de proyección</div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:12px;" id="temasGrid">
+            <button class="tema-btn active-tema" data-tema="dark" onclick="selTema('dark',this)">
+              <div style="background:#0a0c10;height:36px;border-radius:6px;margin-bottom:6px;border:1px solid #2a3045;"></div>
+              <span>Oscuro clásico</span>
+            </button>
+            <button class="tema-btn" data-tema="starry" onclick="selTema('starry',this)">
+              <div style="background:linear-gradient(135deg,#060918,#0d1a3a);height:36px;border-radius:6px;margin-bottom:6px;"></div>
+              <span>Noche estrellada</span>
+            </button>
+            <button class="tema-btn" data-tema="warm" onclick="selTema('warm',this)">
+              <div style="background:linear-gradient(135deg,#1a0e05,#2d1a08);height:36px;border-radius:6px;margin-bottom:6px;"></div>
+              <span>Cálido</span>
+            </button>
+            <button class="tema-btn" data-tema="light" onclick="selTema('light',this)">
+              <div style="background:linear-gradient(135deg,#f0ece0,#e8e0cc);height:36px;border-radius:6px;margin-bottom:6px;border:1px solid #ccc;"></div>
+              <span>Claro</span>
+            </button>
+            <button class="tema-btn" data-tema="green" onclick="selTema('green',this)">
+              <div style="background:linear-gradient(135deg,#020e06,#051a0a);height:36px;border-radius:6px;margin-bottom:6px;"></div>
+              <span>Verde oscuro</span>
+            </button>
+            <button class="tema-btn" data-tema="royal" onclick="selTema('royal',this)">
+              <div style="background:linear-gradient(135deg,#08061a,#12093a);height:36px;border-radius:6px;margin-bottom:6px;"></div>
+              <span>Azul real</span>
+            </button>
+          </div>
+          <div style="display:flex;align-items:center;gap:10px;margin-top:8px;flex-wrap:wrap;">
+            <label style="font-size:12px;color:var(--text-dim);">Color texto:</label>
+            <input type="color" id="textoColorPicker" value="#ffffff" onchange="cambiarColorTexto(this.value)"
+              style="width:36px;height:28px;border:1px solid var(--border);border-radius:6px;background:none;cursor:pointer;padding:2px;">
+            <label style="font-size:12px;color:var(--text-dim);">Opacidad fondo:</label>
+            <input type="range" id="fondoOpacidad" min="0" max="100" value="100" oninput="cambiarOpacidadFondo(this.value)"
+              style="width:80px;accent-color:var(--accent);">
+            <span id="fondoOpacidadVal" style="font-size:12px;color:var(--accent);">100%</span>
+          </div>
+        </div>
+
+        <!-- AUDIO -->
+        <div class="card">
+          <div class="card-title">🔊 Audio</div>
+          <div id="audioPlayer" style="margin-bottom:12px;">
+            <div style="background:var(--bg-input);border:2px dashed var(--border);border-radius:8px;padding:16px;text-align:center;cursor:pointer;margin-bottom:10px;" onclick="document.getElementById('audioInput').click()">
+              <div id="audioNombre" style="color:var(--text-muted);font-size:13px;">Toca para cargar archivo de audio (MP3, WAV, OGG)</div>
+            </div>
+            <input type="file" id="audioInput" accept="audio/*" onchange="cargarAudio(this)" style="display:none;">
+            <audio id="audioElement" style="display:none;"></audio>
+            <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap;">
+              <button class="btn btn-primary" style="padding:10px 16px;" onclick="audioPlay()">▶ Play</button>
+              <button class="btn btn-secondary" style="padding:10px 14px;" onclick="audioPause()">⏸</button>
+              <button class="btn btn-secondary" style="padding:10px 14px;" onclick="audioStop()">⏹</button>
+              <input type="range" id="audioVolumen" min="0" max="100" value="80" oninput="audioVolumen(this.value)"
+                style="flex:1;min-width:80px;accent-color:var(--accent);">
+              <span id="audioVolVal" style="font-size:12px;color:var(--accent);min-width:36px;">80%</span>
+            </div>
+            <div style="margin-top:10px;display:flex;align-items:center;gap:10px;">
+              <label style="font-size:12px;color:var(--text-dim);">
+                <input type="checkbox" id="audioLoop" style="accent-color:var(--accent);margin-right:4px;">
+                Repetir en bucle
+              </label>
+              <label style="font-size:12px;color:var(--text-dim);">
+                <input type="checkbox" id="audioFade" style="accent-color:var(--accent);margin-right:4px;" checked>
+                Fade in/out
+              </label>
+            </div>
+          </div>
+        </div>
+
+        <!-- TEMPORIZADOR Y RELOJ -->
+        <div class="card">
+          <div class="card-title">⏱️ Herramientas de tiempo</div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:14px;">
+            <!-- Reloj -->
+            <div style="background:var(--bg-input);border:1px solid var(--border);border-radius:8px;padding:14px;text-align:center;">
+              <div style="font-family:'Cinzel',serif;font-size:10px;color:var(--text-muted);letter-spacing:1.5px;text-transform:uppercase;margin-bottom:8px;">Reloj</div>
+              <div id="relojDisplay" style="font-family:'Cinzel',serif;font-size:22px;color:var(--accent);margin-bottom:8px;">00:00:00</div>
+              <button id="btnRelojProyectar" class="btn btn-secondary btn-full" style="font-size:11px;padding:7px;" onclick="toggleRelojProyeccion()">Proyectar reloj</button>
+            </div>
+            <!-- Cuenta atrás -->
+            <div style="background:var(--bg-input);border:1px solid var(--border);border-radius:8px;padding:14px;text-align:center;">
+              <div style="font-family:'Cinzel',serif;font-size:10px;color:var(--text-muted);letter-spacing:1.5px;text-transform:uppercase;margin-bottom:8px;">Cuenta atrás</div>
+              <div id="cuentaAtrasDisplay" style="font-family:'Cinzel',serif;font-size:22px;color:var(--success);margin-bottom:8px;">05:00</div>
+              <div style="display:flex;gap:4px;margin-bottom:6px;justify-content:center;">
+                <input type="number" id="cuentaAtrasMin" value="5" min="0" max="99" style="width:50px;padding:4px;font-size:14px;text-align:center;">
+                <span style="color:var(--text-dim);padding:4px 2px;font-size:18px;">:</span>
+                <input type="number" id="cuentaAtrasSeg" value="0" min="0" max="59" style="width:50px;padding:4px;font-size:14px;text-align:center;">
+              </div>
+              <div style="display:flex;gap:4px;justify-content:center;">
+                <button class="btn btn-success" style="font-size:11px;padding:6px 10px;" onclick="iniciarCuentaAtras()">▶</button>
+                <button class="btn btn-secondary" style="font-size:11px;padding:6px 10px;" onclick="pausarCuentaAtras()">⏸</button>
+                <button class="btn btn-secondary" style="font-size:11px;padding:6px 10px;" onclick="resetCuentaAtras()">↺</button>
+              </div>
+            </div>
+          </div>
+          <!-- Notas privadas -->
+          <div class="card-title" style="margin-top:4px;">📝 Notas privadas del operador</div>
+          <textarea id="notasPrivadas" placeholder="Notas solo visibles aquí (no se proyectan)..." style="min-height:80px;" oninput="guardarNotas()"></textarea>
+        </div>
+
+        <!-- ACERCA DE -->
+        <!-- CONTROL REMOTO -->
+        <div class="card">
+          <div class="card-title">📱 Control remoto (celular)</div>
+          <p style="font-size:13px;color:var(--text-dim);line-height:1.7;margin-bottom:14px;">
+            Genera un código para controlar Presencia desde tu celular u otro dispositivo en la misma red WiFi.
+          </p>
+          <div id="remotoApagado">
+            <button class="btn btn-primary btn-full" onclick="activarRemoto()">📡 Activar control remoto</button>
+          </div>
+          <div id="remotoActivo" style="display:none;">
+            <div style="display:flex;align-items:center;gap:14px;flex-wrap:wrap;margin-bottom:12px;">
+              <div id="qrContainer" style="background:#fff;padding:10px;border-radius:8px;flex-shrink:0;"></div>
+              <div>
+                <div style="font-size:12px;color:var(--text-dim);margin-bottom:4px;">Código de acceso:</div>
+                <div id="codigoDisplay" style="font-family:'Cinzel',serif;font-size:28px;letter-spacing:6px;color:var(--accent);"></div>
+                <div style="font-size:12px;color:var(--text-muted);margin-top:4px;">Ingresa este código en <strong style="color:var(--text)">remote.html</strong></div>
+              </div>
+            </div>
+            <div id="remotosConectados" style="font-size:12px;color:var(--text-muted);margin-bottom:10px;">Sin dispositivos conectados</div>
+            <button class="btn btn-secondary btn-full" onclick="desactivarRemoto()">✕ Desactivar</button>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-title">Acerca de Presencia</div>
+          <p style="font-size:14px;color:var(--text-dim);line-height:1.8;">
+            <strong style="color:var(--text)">Presencia</strong> — Sistema de Presentación para Cultos<br>
+            Versión 10.0 — Todas las fases completadas<br>
+            <span style="color:var(--text-muted)">Desarrollado con ❤️ para el servicio</span>
+          </p>
+        </div>
+
+      </div>
+    </div>
+
+  </main>
+
+  <aside class="preview-panel">
+    <button class="open-btn" onclick="abrirProyeccion()">🖥️ Abrir Proyección</button>
+    <div class="preview-title">Vista previa</div>
+    <div class="preview-screen" id="previewScreen">
+      <div class="preview-text" id="previewText"><span style="color:rgba(255,255,255,.2);font-style:italic;">Sin contenido</span></div>
+      <span class="preview-label">PRESENCIA</span>
+    </div>
+    <div class="current-slide">
+      <div class="cs-label">Proyectando ahora</div>
+      <div class="cs-content" id="currentSlideContent">— Pantalla vacía —</div>
+    </div>
+    <div class="divider"></div>
+    <div style="font-family:'Cinzel',serif;font-size:10px;letter-spacing:1.5px;color:var(--text-muted);text-transform:uppercase;margin-bottom:10px;">Control rápido</div>
+    <div class="quick-controls">
+      <button class="qbtn" id="btnBlack" onclick="toggleBlackScreen()">⬛ Pantalla<br>negra</button>
+      <button class="qbtn" onclick="limpiarPantalla()">🗑 Limpiar<br>pantalla</button>
+      <button class="qbtn" onclick="proyectarTexto()">⚡ Proyectar<br>texto</button>
+      <button class="qbtn" onclick="switchModule('config',document.querySelector('[data-module=config]'))">⚙️ Config</button>
+    </div>
+  </aside>
+</div>
+
+<script>
+// ══════════════════════════════════════════
+// PRESENCIA — Panel de Control v5
+// ══════════════════════════════════════════
+
+// ── VARIABLES GLOBALES (declaradas primero) ──
+const canal = new BroadcastChannel('presencia-channel');
+let pantallaOscura = false;
+let alineacion = 'center';
+let tamanoFuente = 60;
+let proyeccionAbierta = false;
+
+// Himnario
+let himnarioBase=[{"numero":1,"titulo":"En un aposento alto","estrofas":["En un aposento alto,\ncon los doce reunidos,\nmanifestóse el Espíritu\na sus siervos escogidos.","En un soplo de vida,\nen lenguas de fuego,\nse cumplió la promesa\ndel Padre en el cielo.","En el nombre de Cristo\nsanamos los enfermos,\ny predicamos su gracia\na los pueblos del suelo."],"coro":"¡Es el Espíritu Santo!\n¡Gloriosa llenura!\n¡Fuego, fuego! ¡Santo fuego!\n¡Bendita unción!"},{"numero":4,"titulo":"Dulce comunión","estrofas":["Dulce comunión la que gozo ya,\ncaminando con mi Dios;\nEn su Santa luz cada día voy,\ny su voz oigo en mi interior.","Solo él puede así consolarme aquí,\ncuando triste y abatido estoy;\nÉl es mi poder, él es mi sostén,\nél es todo para mí.","Ya la noche umbría nunca temo más,\npues que Dios está a mi lado;\nPorque me guiará con su santa luz,\nhasta el fin del camino."],"coro":"Andando con Jesús, andando con Jesús,\nhay paz en mi corazón;\nAndando con Jesús, andando con Jesús,\nhay paz en mi corazón."},{"numero":7,"titulo":"Santo, santo, santo","estrofas":["Santo, santo, santo,\nSeñor Omnipotente,\nsiempre el labio mío\nloores te dará.","Santo, santo, santo,\nen numerosa hueste,\nen tus obras todas\ntus pies adorarán.","Santo, santo, santo,\nSeñor Omnipotente,\nen tierra, en cielo y mar\ntu gloria brillará."],"coro":""},{"numero":18,"titulo":"Cristo me ama","estrofas":["Cristo me ama, bien lo sé,\nsu palabra me hace ver\nque los niños son de aquel\nque es nuestro amigo fiel.","Cristo me ama, pues murió\ny el cielo me abrió;\nÉl mis culpas limpió\ny al cielo me llevó.","Cristo me ama, me guiará\nen el cielo moraré;\nen su reino estaré\ny su gloria yo veré."],"coro":"Sí, Cristo me ama,\nsí, Cristo me ama,\nsí, Cristo me ama,\nla Biblia dice así."},{"numero":25,"titulo":"Cuán grande es Él","estrofas":["Señor mi Dios, al contemplar los cielos,\nel firmamento y las estrellas mil;\ncuando escucho el trueno poderoso\ny oigo al bosque y brisa susurrar.","Al recorrer los montes y los valles,\ny ver las flores, ríos al pasar;\nal escuchar el canto de las aves\ny el suave murmullo del raudal.","Cuando recuerdo que de amor profundo\nJesús murió en la cruz por ti y por mí;\ny que al morir venció el poder del mundo\ny que entre muertos se levantó por fin."],"coro":"Entonces prorrumpe mi alma en alabanzas,\n¡Cuán grande es Él, cuán grande es Él!\nEntonces prorrumpe mi alma en alabanzas,\n¡Cuán grande es Él, cuán grande es Él!"},{"numero":32,"titulo":"Sublime gracia","estrofas":["Sublime gracia del Señor\nque a un infeliz salvó;\nFui ciego mas hoy veo yo,\nperdido y Él me halló.","Su gracia me enseñó a temer,\nmis dudas ahuyentó;\n¡Oh cuán precioso fue a mi ser\ncuando Él me transformó!","Y cuando en Sión por siglos mil\nbrillando esté cual sol,\nyo cantaré por siempre aquí\nsu amor que me salvó."],"coro":""},{"numero":40,"titulo":"Firmes y adelante","estrofas":["Firmes y adelante, huestes de la fe,\nsin temor alguno que Jesús nos ve;\nJefe es el el Cristo que venció al morir,\nal seguir su enseña, Id al porvenir.","Al sagrado nombre de nuestro Señor\ntiemblan y se rinden fuerzas del error;\nfuerza hay en su nombre para dominar,\nfuerza en la batalla y para triunfar.","Juntos en combate, juntos en la fe,\nhermanos marchemos donde Él nos lleve;\nunidos en filas no habrá división,\nmarchad todos juntos en su dirección."],"coro":"Firmes y adelante, huestes de la fe,\nsin temor alguno que Jesús nos ve."},{"numero":55,"titulo":"A ti, oh Dios","estrofas":["A ti, oh Dios, mi corazón\nentrego con amor;\nte doy mi vida, mi canción,\nmi todo en derredor.","A ti, oh Cristo, Salvador,\nmi vida ofrezco hoy;\ntu sangre me dio el perdón\ny tuyo siempre soy.","A ti, Espíritu de Dios,\nme rindo en oración;\nllena mi ser de tu poder\ny dame tu unción."],"coro":"A ti, Señor, a ti, Señor,\nmi alma canta a ti;\nRecibe pues mi corazón,\nvive siempre en mí."},{"numero":78,"titulo":"Al mundo paz","estrofas":["Al mundo paz, nació Jesús,\nvenid, adoradle;\nal Rey de reyes recibid,\nvenid, adoradle.","Al mundo paz, el Salvador\nya reina en los corazones;\ny lleva su amor eterno\na todas las naciones.","Al mundo paz, con gratitud\ncantemos al Señor;\npor su misericordia\nsu nombre alabemos hoy."],"coro":"Venid, adoradle, venid, adoradle,\nvenid, adoradle a Cristo el Rey."},{"numero":85,"titulo":"Oh amor que no me dejarás","estrofas":["¡Oh amor que no me dejarás!\ndescansa el alma mía en ti;\nes tuya y tú la guardarás\ny en ti más rica ha de ser.","¡Oh luz que en mi sendero vas!\nmi antorcha en ti apagué;\nmas en tu esplendor me envolverás\ny bella ha de amanecer.","¡Oh gozo que a buscarme vas!\nla cruz me sostiene a mí;\ny de esa cruz mi gozo más\nflotando al cielo ya se fue."],"coro":""},{"numero":100,"titulo":"Gracias, oh Dios","estrofas":["Gracias, oh Dios, gracias,\npor tu gran amor;\ngracias por la sangre\nde tu Hijo el Señor.","Gracias porque un día\ntú me redimiste;\ngracias porque vida\nnueva tú me diste.","Gracias porque al cielo\nme has de llevar;\ngracias porque un día\nte podré contemplar."],"coro":"Gracias, gracias,\nte doy mi Señor;\ngracias, gracias\npor tu eterno amor."},{"numero":110,"titulo":"Yo tengo gozo","estrofas":["Yo tengo gozo, gozo, gozo\nen mi alma, en mi alma;\nyo tengo gozo, gozo, gozo\nen mi alma, en mi ser.","Yo tengo paz, paz, paz\nen mi alma, en mi alma;\nyo tengo paz, paz, paz\nen mi alma, en mi ser.","Yo tengo amor, amor, amor\nen mi alma, en mi alma;\nyo tengo amor, amor, amor\nen mi alma, en mi ser."],"coro":"El Espíritu que mora\nen mi alma hoy,\nes el gozo más profundo\nque en la tierra hay."},{"numero":135,"titulo":"Hay poder en Cristo","estrofas":["¿Quieres ser libre de orgullo y pasión?\n¡Hay poder en Cristo Señor!\n¿Quieres vencer en la cruel tentación?\n¡Hay poder en Cristo Señor!","¿Quieres servir a tu amante Jesús?\n¡Hay poder en Cristo Señor!\n¿Quieres brillar para él como la luz?\n¡Hay poder en Cristo Señor!","¿Quieres librarte del yugo del mal?\n¡Hay poder en Cristo Señor!\n¿Quieres tener vida eterna e inmortal?\n¡Hay poder en Cristo Señor!"],"coro":"¡Hay poder, poder, sin igual poder,\nen Jesús quien murió!\n¡Hay poder, poder, sin igual poder,\nen la sangre que él vertió!"},{"numero":150,"titulo":"En la cruz","estrofas":["En la cruz, en la cruz,\ndo primero vi la luz,\ny las manchas de mi alma yo lavé;\nfue allí por fe do vi a Jesús,\ny siempre feliz con él seré.","De mi cargo y pesadumbre\nfui a Jesús y hallé en él;\nlibertad, paz y alegría,\nqué reposo tan fiel.","Fue allí donde mi alma angustiada\nhallé el más sublime bien;\ncuando al pie de la cruz me postré\nllanto y sangre vi también."],"coro":"En la cruz, en la cruz,\ndo primero vi la luz,\ny las manchas de mi alma yo lavé;\nfue allí por fe do vi a Jesús,\ny siempre feliz con él seré."},{"numero":175,"titulo":"Castillo fuerte es nuestro Dios","estrofas":["Castillo fuerte es nuestro Dios,\ndefensa y buen escudo;\ncon su poder nos librará\nen este trance agudo.","Con furia y con afán\nel mundo busca al fiel;\npor Cristo el Hijo de Dios\nes nuestro defensor.","El mundo con sus males\njamás nos vencerá;\nla fuerza de su Cristo\ntriunfante lucirá."],"coro":""},{"numero":245,"titulo":"Más santidad dame","estrofas":["Más santidad dame,\nmás odio al mal;\nmás calma en las penas,\nmás alto en lo andar.","Más fe en mi Maestro,\nmás consagración;\nmás celo en servirle,\nmás fervor y unción.","Más pureza dame,\nmás fuerza y valor;\nmás dones del cielo\ny más de tu amor."],"coro":""},{"numero":280,"titulo":"Oh qué amigo nos es Cristo","estrofas":["¡Oh, qué amigo nos es Cristo!\nÉl llevó nuestro dolor,\ny nos manda que llevemos\ntodo a Dios en oración.","¿Vive el hombre desprovisto\nde paz, gozo y santo amor?\nEsto es porque no llevamos\ntodo a Dios en oración.","¿Eres débil y cargado,\ncansado de duro afán?\nA Jesús tu refugio eterno,\ndile todo en oración."],"coro":"¡Oh qué amigo nos es Cristo!\nÉl llevó nuestro dolor;\nen sus brazos nos llevará\na la vida y al amor."},{"numero":329,"titulo":"Cuando allá se pase lista","estrofas":["Cuando la trompeta suene\nen aquel día final,\ny que el alba eterna rompa\nen la mañana eternal;\ncuando las naciones salvas\na su gloria lleguen ya\ny que sea pasada lista,\nallí estaré.","En el trono de los siglos\ncuando estén los redimidos\ny al que a todos nos salvó\nle cantemos agradecidos;\ncuando al Rey el resultado\nnuestros siervos presentemos,\ncuando sea pasada lista,\nallí estaré.","Cuando los que aquí sembramos\ncon paciencia y con dolor\nrecojamos la cosecha\nen el campo del Señor;\ncuando veamos lo que hemos\ntrabajado con ardor\ny que sea pasada lista,\nallí estaré."],"coro":"Cuando allá se pase lista,\ncuando allá se pase lista,\ncuando allá se pase lista,\na mi nombre yo feliz responderé."}];
+let himnarioExtra = [];
+let himnarioCompleto = [];
+let himnoActual = null;
+
+// Canciones
+let cancionesLib = [];
+let cancionActual = null;
+let estrofasFormCount = 0;
+
+// Biblia
+const BIBLE_API = 'https://bible-api.deno.dev/api';
+const LIBROS = [
+  {n:'Génesis',a:'GN',c:50},{n:'Éxodo',a:'EX',c:40},{n:'Levítico',a:'LV',c:27},
+  {n:'Números',a:'NM',c:36},{n:'Deuteronomio',a:'DT',c:34},{n:'Josué',a:'JOS',c:24},
+  {n:'Jueces',a:'JUE',c:21},{n:'Rut',a:'RT',c:4},{n:'1 Samuel',a:'1S',c:31},
+  {n:'2 Samuel',a:'2S',c:24},{n:'1 Reyes',a:'1R',c:22},{n:'2 Reyes',a:'2R',c:25},
+  {n:'1 Crónicas',a:'1CR',c:29},{n:'2 Crónicas',a:'2CR',c:36},{n:'Esdras',a:'ESD',c:10},
+  {n:'Nehemías',a:'NEH',c:13},{n:'Ester',a:'EST',c:10},{n:'Job',a:'JOB',c:42},
+  {n:'Salmos',a:'SAL',c:150},{n:'Proverbios',a:'PR',c:31},{n:'Eclesiastés',a:'EC',c:12},
+  {n:'Cantares',a:'CNT',c:8},{n:'Isaías',a:'IS',c:66},{n:'Jeremías',a:'JER',c:52},
+  {n:'Lamentaciones',a:'LM',c:5},{n:'Ezequiel',a:'EZ',c:48},{n:'Daniel',a:'DN',c:12},
+  {n:'Oseas',a:'OS',c:14},{n:'Joel',a:'JL',c:3},{n:'Amós',a:'AM',c:9},
+  {n:'Abdías',a:'ABD',c:1},{n:'Jonás',a:'JON',c:4},{n:'Miqueas',a:'MI',c:7},
+  {n:'Nahúm',a:'NAH',c:3},{n:'Habacuc',a:'HAB',c:3},{n:'Sofonías',a:'SOF',c:3},
+  {n:'Hageo',a:'HAG',c:2},{n:'Zacarías',a:'ZAC',c:14},{n:'Malaquías',a:'MAL',c:4},
+  {n:'Mateo',a:'MT',c:28},{n:'Marcos',a:'MR',c:16},{n:'Lucas',a:'LC',c:24},
+  {n:'Juan',a:'JN',c:21},{n:'Hechos',a:'HCH',c:28},{n:'Romanos',a:'RO',c:16},
+  {n:'1 Corintios',a:'1CO',c:16},{n:'2 Corintios',a:'2CO',c:13},{n:'Gálatas',a:'GA',c:6},
+  {n:'Efesios',a:'EF',c:6},{n:'Filipenses',a:'FIL',c:4},{n:'Colosenses',a:'COL',c:4},
+  {n:'1 Tesalonicenses',a:'1TS',c:5},{n:'2 Tesalonicenses',a:'2TS',c:3},
+  {n:'1 Timoteo',a:'1TI',c:6},{n:'2 Timoteo',a:'2TI',c:4},{n:'Tito',a:'TIT',c:3},
+  {n:'Filemón',a:'FLM',c:1},{n:'Hebreos',a:'HE',c:13},{n:'Santiago',a:'STG',c:5},
+  {n:'1 Pedro',a:'1P',c:5},{n:'2 Pedro',a:'2P',c:3},{n:'1 Juan',a:'1JN',c:5},
+  {n:'2 Juan',a:'2JN',c:1},{n:'3 Juan',a:'3JN',c:1},{n:'Judas',a:'JUD',c:1},
+  {n:'Apocalipsis',a:'AP',c:22}
+];
+let bibliaVersion = 'rv1960';
+let bibliaFavoritos = [];
+let ultimosVersiculos = [];
+let ultimaRef = '';
+
+// Orden del Culto
+let ordenActual = [];
+let ordenIdActual = null;
+let ordenesGuardados = [];
+let tipoSeleccionado = 'texto';
+let presentacionActiva = false;
+let presentacionIdx = -1;
+
+// ══════════════════════════════════════════
+// CANAL Y ESTADO
+// ══════════════════════════════════════════
+canal.onmessage = (e) => {
+  if(e.data.type==='ping'){proyeccionAbierta=true;actualizarEstado(true);}
+  if(e.data.type==='closed'){proyeccionAbierta=false;actualizarEstado(false);}
+};
+function actualizarEstado(c){
+  document.getElementById('statusDot').className='status-dot'+(c?' connected':'');
+  document.getElementById('statusLabel').textContent=c?'Proyección activa':'Sin proyección';
+}
+function abrirProyeccion(){
+  window.open('proyeccion.html','presencia-proyeccion','width=1280,height=720,menubar=no,toolbar=no,location=no,status=no');
+  setTimeout(()=>{proyeccionAbierta=true;actualizarEstado(true);},1000);
+}
+function switchModule(id,el){
+  document.querySelectorAll('.module-view').forEach(m=>m.classList.remove('active'));
+  document.querySelectorAll('.nav-item').forEach(n=>n.classList.remove('active'));
+  document.getElementById('mod-'+id).classList.add('active');
+  if(el)el.classList.add('active');
+}
+
+// ══════════════════════════════════════════
+// TEXTO LIBRE
+// ══════════════════════════════════════════
+function proyectarTexto(){
+  const texto=document.getElementById('textoLibre').value.trim();
+  if(!texto)return;
+  pantallaOscura=false;
+  document.getElementById('btnBlack').classList.remove('active-black');
+  document.getElementById('previewScreen').classList.remove('black-screen');
+  actualizarPreview(texto);
+  canal.postMessage({type:'content',contentType:'texto',text:texto,fontSize:tamanoFuente,align:alineacion});
+}
+function setTexto(txt){document.getElementById('textoLibre').value=txt;proyectarTexto();}
+function toggleBlackScreen(){
+  pantallaOscura=!pantallaOscura;
+  const btnB=document.getElementById('btnBlack');
+  const qbarB=document.getElementById('qbarBlack');
+  if(btnB)btnB.classList.toggle('active-black',pantallaOscura);
+  if(qbarB)qbarB.classList.toggle('black',pantallaOscura);
+  const ps=document.getElementById('previewScreen');
+  if(ps)ps.classList.toggle('black-screen',pantallaOscura);
+  canal.postMessage({type:'black',black:pantallaOscura});
+}
+function limpiarPantalla(){
+  pantallaOscura=false;
+  document.getElementById('btnBlack').classList.remove('active-black');
+  document.getElementById('previewScreen').classList.remove('black-screen');
+  actualizarPreview('');
+  document.getElementById('currentSlideContent').textContent='— Pantalla vacía —';
+  canal.postMessage({type:'clear'});
+}
+function updateFontSize(val){tamanoFuente=parseInt(val);document.getElementById('fontSizeVal').textContent=val;canal.postMessage({type:'fontSize',value:tamanoFuente});}
+function setAlign(a){alineacion=a;canal.postMessage({type:'align',value:a});}
+function actualizarPreview(texto){
+  const prev=document.getElementById('previewText');
+  const curr=document.getElementById('currentSlideContent');
+  if(!texto){
+    prev.innerHTML='<span style="color:rgba(255,255,255,.2);font-style:italic;">Sin contenido</span>';
+    curr.textContent='— Pantalla vacía —';
+  }else{
+    prev.textContent=texto;
+    prev.style.fontSize=Math.min(tamanoFuente*0.18,13)+'px';
+    curr.textContent=texto.substring(0,80)+(texto.length>80?'…':'');
+  }
+  // Notificar a remotos conectados
+  setTimeout(difundirEstado, 100);
+}
+
+// ══════════════════════════════════════════
+// HIMNARIO
+// ══════════════════════════════════════════
+function cargarHimnario(){
+  try{himnarioExtra=JSON.parse(localStorage.getItem('presencia_himnos_extra')||'[]');}catch(e){himnarioExtra=[];}
+  fusionarHimnario();
+  renderizarLista(himnarioCompleto);
+  const el=document.getElementById('totalHimnos');
+  if(el)el.textContent=himnarioCompleto.length+' himnos';
+}
+function fusionarHimnario(){
+  himnarioCompleto=[...himnarioBase,...himnarioExtra];
+  himnarioCompleto.sort((a,b)=>a.numero-b.numero);
+}
+function renderizarLista(lista){
+  const cont=document.getElementById('himnoLista');
+  if(!cont)return;
+  cont.innerHTML='';
+  if(!lista.length){cont.innerHTML='<div style="color:var(--text-muted);font-size:13px;padding:12px;text-align:center;">No se encontraron himnos</div>';return;}
+  lista.slice(0,60).forEach(h=>{
+    const div=document.createElement('div');
+    div.className='himno-item'+(himnoActual&&himnoActual.numero===h.numero?' selected':'');
+    div.innerHTML=`<span class="himno-num">${h.numero}</span><span class="himno-titulo">${h.titulo}</span>`;
+    div.onclick=()=>seleccionarHimno(h);
+    cont.appendChild(div);
+  });
+  if(lista.length>60)cont.innerHTML+=`<div style="color:var(--text-muted);font-size:12px;padding:8px;text-align:center;">...y ${lista.length-60} más.</div>`;
+}
+function buscarPorNumero(val){
+  document.getElementById('buscarTitulo').value='';
+  if(!val){renderizarLista(himnarioCompleto);return;}
+  renderizarLista(himnarioCompleto.filter(h=>String(h.numero).startsWith(val)));
+}
+function buscarPorTitulo(val){
+  document.getElementById('buscarNumero').value='';
+  if(!val.trim()){renderizarLista(himnarioCompleto);return;}
+  const q=val.toLowerCase();
+  renderizarLista(himnarioCompleto.filter(h=>h.titulo.toLowerCase().includes(q)));
+}
+function seleccionarHimno(h){
+  himnoActual=h;
+  document.querySelectorAll('.himno-item').forEach(el=>{
+    el.classList.toggle('selected',el.querySelector('.himno-num')&&el.querySelector('.himno-num').textContent==h.numero);
+  });
+  document.getElementById('himnoDetalle').style.display='block';
+  document.getElementById('himnoActivoTitulo').textContent=h.titulo;
+  document.getElementById('himnoActivoNum').textContent='Himno #'+h.numero;
+  const nav=document.getElementById('estrofaNav');
+  nav.innerHTML='';
+  h.estrofas.forEach((est,i)=>{
+    const lbl=document.createElement('div');lbl.className='estrofa-label';lbl.textContent='Estrofa '+(i+1);nav.appendChild(lbl);
+    const btn=document.createElement('button');btn.className='estrofa-btn';btn.id='estrofa-btn-'+i;btn.textContent=est;
+    btn.onclick=()=>proyectarEstrofa(est,i,h);nav.appendChild(btn);
+  });
+  if(h.coro){
+    const lbl=document.createElement('div');lbl.className='estrofa-label';lbl.style.color='#c9a84c';lbl.textContent='🎵 Coro';nav.appendChild(lbl);
+    const btn=document.createElement('button');btn.className='estrofa-btn coro-btn';btn.id='coro-btn';btn.textContent=h.coro;
+    btn.onclick=()=>proyectarCoro(h.coro,h);nav.appendChild(btn);
+  }
+  document.getElementById('himnoDetalle').scrollIntoView({behavior:'smooth',block:'nearest'});
+}
+function proyectarEstrofa(texto,idx,h){
+  document.querySelectorAll('.estrofa-btn').forEach(b=>b.classList.remove('proyectada'));
+  document.getElementById('estrofa-btn-'+idx).classList.add('proyectada');
+  actualizarPreview(texto);pantallaOscura=false;
+  document.getElementById('btnBlack').classList.remove('active-black');
+  document.getElementById('previewScreen').classList.remove('black-screen');
+  canal.postMessage({type:'content',contentType:'himno',text:texto,subtitle:h.titulo+' — Estrofa '+(idx+1),label:'HIMNO '+h.numero,fontSize:tamanoFuente,align:alineacion});
+}
+function proyectarCoro(texto,h){
+  document.querySelectorAll('.estrofa-btn').forEach(b=>b.classList.remove('proyectada'));
+  const cb=document.getElementById('coro-btn');if(cb)cb.classList.add('proyectada');
+  actualizarPreview(texto);pantallaOscura=false;
+  document.getElementById('btnBlack').classList.remove('active-black');
+  document.getElementById('previewScreen').classList.remove('black-screen');
+  canal.postMessage({type:'content',contentType:'himno',text:texto,subtitle:h.titulo+' — Coro',label:'HIMNO '+h.numero,fontSize:tamanoFuente,align:alineacion});
+}
+function toggleFormAgregar(){
+  const f=document.getElementById('formAgregar');
+  f.style.display=f.style.display==='none'?'block':'none';
+}
+function guardarHimnoNuevo(){
+  const numero=parseInt(document.getElementById('nuevoNumero').value);
+  const titulo=document.getElementById('nuevoTitulo').value.trim();
+  const e1=document.getElementById('nuevaEstrofa1').value.trim();
+  if(!numero||!titulo||!e1){alert('El número, título y la Estrofa 1 son obligatorios.');return;}
+  const estrofas=[e1];
+  const e2=document.getElementById('nuevaEstrofa2').value.trim();
+  const e3=document.getElementById('nuevaEstrofa3').value.trim();
+  if(e2)estrofas.push(e2);if(e3)estrofas.push(e3);
+  const coro=document.getElementById('nuevoCoro').value.trim();
+  const nuevo={numero,titulo,estrofas,coro};
+  const existe=himnarioCompleto.find(h=>h.numero===numero);
+  if(existe){if(!confirm(`El himno #${numero} ya existe. ¿Reemplazar?`))return;himnarioExtra=himnarioExtra.filter(h=>h.numero!==numero);}
+  himnarioExtra.push(nuevo);
+  localStorage.setItem('presencia_himnos_extra',JSON.stringify(himnarioExtra));
+  fusionarHimnario();
+  renderizarLista(himnarioCompleto);
+  const el=document.getElementById('totalHimnos');
+  if(el)el.textContent=himnarioCompleto.length+' himnos';
+  toggleFormAgregar();
+  ['nuevoNumero','nuevoTitulo','nuevaEstrofa1','nuevaEstrofa2','nuevaEstrofa3','nuevoCoro'].forEach(id=>document.getElementById(id).value='');
+  seleccionarHimno(nuevo);
+}
+
+// ══════════════════════════════════════════
+// CANCIONES LIBRES
+// ══════════════════════════════════════════
+function iniciarCanciones(){
+  try{cancionesLib=JSON.parse(localStorage.getItem('presencia_canciones')||'[]');}catch(e){cancionesLib=[];}
+  renderizarCanciones(cancionesLib);
+  actualizarContadorCanciones();
+}
+function actualizarContadorCanciones(){
+  const el=document.getElementById('totalCanciones');
+  if(el)el.textContent=cancionesLib.length+(cancionesLib.length===1?' canción':' canciones');
+}
+function guardarCancionesStorage(){
+  localStorage.setItem('presencia_canciones',JSON.stringify(cancionesLib));
+  actualizarContadorCanciones();
+}
+function renderizarCanciones(lista){
+  const cont=document.getElementById('cancionLista');
+  if(!cont)return;
+  cont.innerHTML='';
+  if(!lista.length){
+    cont.innerHTML='<div style="color:var(--text-muted);font-size:13px;padding:16px;text-align:center;line-height:1.7;">Aún no hay canciones.<br>Presiona <strong style="color:var(--accent)">Nueva canción</strong> para agregar la primera.</div>';
+    return;
+  }
+  lista.forEach(c=>{
+    const div=document.createElement('div');
+    div.className='himno-item'+(cancionActual&&cancionActual.id===c.id?' selected':'');
+    div.innerHTML=`<span class="himno-num">🎤</span><div style="flex:1"><div class="himno-titulo">${c.titulo}</div>${c.autor?`<div style="font-size:12px;color:var(--text-muted);margin-top:2px;">${c.autor}</div>`:''}</div>`;
+    div.onclick=()=>abrirDetalleCancion(c);
+    cont.appendChild(div);
+  });
+}
+function buscarCancion(val){
+  if(!val.trim()){renderizarCanciones(cancionesLib);return;}
+  const q=val.toLowerCase();
+  renderizarCanciones(cancionesLib.filter(c=>
+    c.titulo.toLowerCase().includes(q)||
+    (c.autor&&c.autor.toLowerCase().includes(q))||
+    c.estrofas.some(e=>e.toLowerCase().includes(q))||
+    (c.coro&&c.coro.toLowerCase().includes(q))
+  ));
+}
+function mostrarVista(vista){
+  ['lista','detalle','form'].forEach(v=>{
+    document.getElementById('cancionesVista-'+v).style.display=v===vista?'block':'none';
+  });
+}
+function volverListaCanciones(){renderizarCanciones(cancionesLib);mostrarVista('lista');}
+function abrirDetalleCancion(c){
+  cancionActual=c;
+  document.getElementById('cancionActivaTitulo').textContent=c.titulo;
+  document.getElementById('cancionActivaAutor').textContent=c.autor||'';
+  const nav=document.getElementById('cancionEstrofaNav');
+  nav.innerHTML='';
+  c.estrofas.forEach((est,i)=>{
+    const lbl=document.createElement('div');lbl.className='estrofa-label';lbl.textContent='Estrofa '+(i+1);nav.appendChild(lbl);
+    const btn=document.createElement('button');btn.className='estrofa-btn';btn.id='cest-btn-'+i;btn.textContent=est;
+    btn.onclick=()=>proyectarCancionEstrofa(est,i,c);nav.appendChild(btn);
+  });
+  if(c.coro){
+    const lbl=document.createElement('div');lbl.className='estrofa-label';lbl.style.color='#c9a84c';lbl.textContent='🎵 Coro';nav.appendChild(lbl);
+    const btn=document.createElement('button');btn.className='estrofa-btn coro-btn';btn.id='cest-coro';btn.textContent=c.coro;
+    btn.onclick=()=>proyectarCancionSeccion(c.coro,'Coro',c);nav.appendChild(btn);
+  }
+  if(c.puente){
+    const lbl=document.createElement('div');lbl.className='estrofa-label';lbl.style.color='#7a9ecf';lbl.textContent='🌉 Puente';nav.appendChild(lbl);
+    const btn=document.createElement('button');btn.className='estrofa-btn';btn.style.borderColor='rgba(76,138,201,.3)';btn.id='cest-puente';btn.textContent=c.puente;
+    btn.onclick=()=>proyectarCancionSeccion(c.puente,'Puente',c);nav.appendChild(btn);
+  }
+  mostrarVista('detalle');
+}
+function proyectarCancionEstrofa(texto,idx,c){
+  document.querySelectorAll('.estrofa-btn').forEach(b=>b.classList.remove('proyectada'));
+  const btn=document.getElementById('cest-btn-'+idx);if(btn)btn.classList.add('proyectada');
+  _emitirCancion(texto,c.titulo+' — Estrofa '+(idx+1));
+}
+function proyectarCancionSeccion(texto,seccion,c){
+  document.querySelectorAll('.estrofa-btn').forEach(b=>b.classList.remove('proyectada'));
+  const id=seccion==='Coro'?'cest-coro':'cest-puente';
+  const btn=document.getElementById(id);if(btn)btn.classList.add('proyectada');
+  _emitirCancion(texto,c.titulo+' — '+seccion);
+}
+function _emitirCancion(texto,subtitulo){
+  pantallaOscura=false;
+  document.getElementById('btnBlack').classList.remove('active-black');
+  document.getElementById('previewScreen').classList.remove('black-screen');
+  actualizarPreview(texto);
+  canal.postMessage({type:'content',contentType:'cancion',text:texto,subtitle:subtitulo,label:'🎤',fontSize:tamanoFuente,align:alineacion});
+}
+function mostrarFormCancion(c){
+  cancionActual=c||null;
+  estrofasFormCount=0;
+  document.getElementById('formCancionTitulo').textContent=c?'Editar canción':'Nueva canción';
+  document.getElementById('cancionEditandoId').value=c?c.id:'';
+  document.getElementById('cTitulo').value=c?c.titulo:'';
+  document.getElementById('cAutor').value=c?(c.autor||''):'';
+  document.getElementById('cCoro').value=c?(c.coro||''):'';
+  document.getElementById('cPuente').value=c?(c.puente||''):'';
+  const cont=document.getElementById('cEstrofasContainer');
+  cont.innerHTML='';
+  const estrofas=c?c.estrofas:[''];
+  estrofas.forEach(e=>agregarEstrofaForm(e));
+  mostrarVista('form');
+}
+function agregarEstrofaForm(valor){
+  const cont=document.getElementById('cEstrofasContainer');
+  const idx=estrofasFormCount++;
+  const wrap=document.createElement('div');wrap.id='estrofa-wrap-'+idx;wrap.style.marginBottom='10px';
+  wrap.innerHTML=`
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:5px;">
+      <label style="font-size:11px;color:var(--text-dim);letter-spacing:1px;">ESTROFA ${idx+1} ${idx===0?'*':''}</label>
+      ${idx>0?`<button onclick="document.getElementById('estrofa-wrap-${idx}').remove();renumerarEstrofas()" style="background:none;border:none;color:var(--danger);cursor:pointer;font-size:12px;padding:2px 6px;">✕ Quitar</button>`:''}</div>
+    <textarea id="cEstrofa-${idx}" placeholder="Letra de la estrofa ${idx+1}...">${valor||''}</textarea>`;
+  cont.appendChild(wrap);
+}
+function renumerarEstrofas(){
+  document.querySelectorAll('#cEstrofasContainer [id^="estrofa-wrap-"]').forEach((wrap,i)=>{
+    const lbl=wrap.querySelector('label');if(lbl)lbl.textContent='ESTROFA '+(i+1)+(i===0?' *':'');
+    const ta=wrap.querySelector('textarea');if(ta)ta.placeholder='Letra de la estrofa '+(i+1)+'...';
+  });
+}
+function guardarCancion(){
+  const titulo=document.getElementById('cTitulo').value.trim();
+  if(!titulo){alert('El título es obligatorio.');return;}
+  const estrofas=[];
+  document.querySelectorAll('#cEstrofasContainer textarea').forEach(ta=>{const v=ta.value.trim();if(v)estrofas.push(v);});
+  if(!estrofas.length){alert('Agrega al menos una estrofa.');return;}
+  const coro=document.getElementById('cCoro').value.trim();
+  const puente=document.getElementById('cPuente').value.trim();
+  const autor=document.getElementById('cAutor').value.trim();
+  const editandoId=document.getElementById('cancionEditandoId').value;
+  if(editandoId){
+    const idx=cancionesLib.findIndex(c=>c.id===editandoId);
+    if(idx!==-1)cancionesLib[idx]={id:editandoId,titulo,autor,estrofas,coro,puente};
+  }else{
+    cancionesLib.push({id:Date.now().toString(),titulo,autor,estrofas,coro,puente});
+  }
+  guardarCancionesStorage();
+  renderizarCanciones(cancionesLib);
+  const guardada=cancionesLib.find(c=>c.titulo===titulo);
+  if(guardada)abrirDetalleCancion(guardada);else volverListaCanciones();
+}
+function eliminarCancion(){
+  if(!cancionActual)return;
+  if(!confirm(`¿Eliminar "${cancionActual.titulo}"?`))return;
+  cancionesLib=cancionesLib.filter(c=>c.id!==cancionActual.id);
+  cancionActual=null;
+  guardarCancionesStorage();
+  volverListaCanciones();
+}
+function exportarCanciones(){
+  if(!cancionesLib.length){alert('No hay canciones para exportar.');return;}
+  const blob=new Blob([JSON.stringify(cancionesLib,null,2)],{type:'application/json'});
+  const a=document.createElement('a');a.href=URL.createObjectURL(blob);
+  a.download='presencia-canciones-'+new Date().toISOString().slice(0,10)+'.json';a.click();
+}
+function importarCanciones(input){
+  const file=input.files[0];if(!file)return;
+  const reader=new FileReader();
+  reader.onload=(e)=>{
+    try{
+      const data=JSON.parse(e.target.result);
+      if(!Array.isArray(data))throw new Error('Formato inválido');
+      const confirmado=confirm(`Se importarán ${data.length} canciones. ¿Agregar a las existentes?\nAceptar = Agregar | Cancelar = Reemplazar`);
+      if(confirmado){data.forEach(c=>{if(!cancionesLib.find(x=>x.id===c.id))cancionesLib.push(c);});}
+      else{cancionesLib=data;}
+      guardarCancionesStorage();
+      renderizarCanciones(cancionesLib);
+      alert('Importación completada: '+cancionesLib.length+' canciones.');
+    }catch(err){alert('Error al importar: archivo no válido.');}
+  };
+  reader.readAsText(file);
+  input.value='';
+}
+
+// ══════════════════════════════════════════
+// BIBLIA
+// ══════════════════════════════════════════
+function iniciarBiblia(){
+  const sel=document.getElementById('bibliaLibro');
+  if(!sel)return;
+  LIBROS.forEach(l=>{const opt=document.createElement('option');opt.value=l.a;opt.textContent=l.n;sel.appendChild(opt);});
+  try{bibliaFavoritos=JSON.parse(localStorage.getItem('presencia_biblia_favs')||'[]');}catch(e){bibliaFavoritos=[];}
+  renderizarFavoritos();
+}
+function selVer(ver,el){
+  bibliaVersion=ver;
+  document.querySelectorAll('.btn-ver').forEach(b=>b.classList.remove('active-ver'));
+  el.classList.add('active-ver');
+}
+function onLibroCambio(){
+  const abrev=document.getElementById('bibliaLibro').value;
+  const libro=LIBROS.find(l=>l.a===abrev);
+  const selCap=document.getElementById('bibliaCap');
+  const selVer2=document.getElementById('bibliaVer');
+  selCap.innerHTML='<option value="">Cap</option>';
+  selVer2.innerHTML='<option value="">Ver</option>';
+  if(!libro)return;
+  for(let i=1;i<=libro.c;i++){const o=document.createElement('option');o.value=i;o.textContent=i;selCap.appendChild(o);}
+}
+function onCapCambio(){
+  const selVer2=document.getElementById('bibliaVer');
+  selVer2.innerHTML='<option value="">Ver</option>';
+  for(let i=1;i<=176;i++){const o=document.createElement('option');o.value=i;o.textContent=i;selVer2.appendChild(o);}
+}
+function setBibliaEstado(msg,tipo){
+  const el=document.getElementById('bibliaEstado');
+  if(!el)return;
+  el.textContent=msg;
+  el.style.color=tipo==='error'?'var(--danger)':tipo==='ok'?'var(--success)':'var(--text-muted)';
+}
+async function cargarVersiculos(){
+  const abrev=document.getElementById('bibliaLibro').value;
+  const cap=document.getElementById('bibliaCap').value;
+  const ver=document.getElementById('bibliaVer').value;
+  if(!abrev||!cap){setBibliaEstado('Selecciona libro y capítulo.','error');return;}
+  const rango=ver?ver:'1-10';
+  await _fetchYMostrar(`${abrev}/${cap}/${rango}`);
+}
+async function cargarCapituloCompleto(){
+  const abrev=document.getElementById('bibliaLibro').value;
+  const cap=document.getElementById('bibliaCap').value;
+  if(!abrev||!cap){setBibliaEstado('Selecciona libro y capítulo.','error');return;}
+  await _fetchYMostrar(`${abrev}/${cap}/1-176`);
+}
+async function buscarReferencia(){
+  const raw=document.getElementById('bibliaRef').value.trim();
+  if(!raw)return;
+  const match=raw.match(/^(.+?)\s+(\d+):(\d+(?:-\d+)?)$/i);
+  if(!match){setBibliaEstado('Formato: Libro Capítulo:Versículo  (ej: Juan 3:16)','error');return;}
+  const libroNombre=match[1].trim();
+  const cap=match[2];
+  const verRango=match[3];
+  const libro=LIBROS.find(l=>l.n.toLowerCase().includes(libroNombre.toLowerCase())||l.a.toLowerCase()===libroNombre.toLowerCase());
+  if(!libro){setBibliaEstado(`No se encontró el libro "${libroNombre}"`,'error');return;}
+  await _fetchYMostrar(`${libro.a}/${cap}/${verRango}`,`${libro.n} ${cap}:${verRango}`);
+}
+async function _fetchYMostrar(ref,tituloManual){
+  setBibliaEstado('Buscando...','');
+  document.getElementById('bibliaResultados').style.display='none';
+  try{
+    const url=`${BIBLE_API}/read/${bibliaVersion}/${ref.toLowerCase()}`;
+    const resp=await fetch(url);
+    if(!resp.ok)throw new Error('No encontrado');
+    const data=await resp.json();
+    if(!Array.isArray(data)||!data.length)throw new Error('Sin resultados');
+    ultimosVersiculos=data;ultimaRef=tituloManual||ref.replace('/',' ').replace('/',' ');
+    setBibliaEstado(`${data.length} versículo(s) cargados`,'ok');
+    mostrarVersiculos(data,tituloManual||ref);
+  }catch(e){setBibliaEstado('No se pudo cargar. Verifica tu conexión a internet.','error');}
+}
+function mostrarVersiculos(versos,titulo){
+  const cont=document.getElementById('bibliaVersiculoLista');
+  cont.innerHTML='';
+  const partes=titulo.split('/');
+  const abrev=partes[0]?partes[0].toUpperCase():'';
+  const libro=LIBROS.find(l=>l.a===abrev);
+  const nombreLib=libro?libro.n:abrev;
+  const tituloLeg=partes.length>=2?`${nombreLib} ${partes[1]}`:titulo;
+  document.getElementById('bibliaResultTitulo').textContent=tituloLeg;
+  document.getElementById('bibliaResultados').style.display='block';
+  const verNombre={'rv1960':'RVR1960','rv1995':'RVR1995','nvi':'NVI','dhh':'DHH','pdt':'PDT'}[bibliaVersion]||bibliaVersion.toUpperCase();
+  versos.forEach(v=>{
+    const div=document.createElement('div');div.className='versiculo-item';div.id='vitem-'+v.number;
+    const refCompleta=`${tituloLeg}:${v.number} (${verNombre})`;
+    const esFav=bibliaFavoritos.some(f=>f.ref===refCompleta);
+    const verseClean = v.verse.replace(/"/g,'&quot;').replace(/'/g,'&#39;');
+    div.innerHTML=`<span class="ver-num">${v.number}</span><span class="ver-texto">${v.verse}</span><button class="ver-fav ${esFav?'activo':''}" title="Guardar favorito" data-ref="${refCompleta}" data-verse="${verseClean}" onclick="toggleFavoritoBtn(this)">⭐</button>`;
+    div.onclick=(e)=>{if(e.target.classList.contains('ver-fav'))return;proyectarVersiculo(v,refCompleta);};
+    cont.appendChild(div);
+  });
+}
+function proyectarVersiculo(v,ref){
+  document.querySelectorAll('.versiculo-item').forEach(el=>el.classList.remove('proyectado'));
+  const el=document.getElementById('vitem-'+v.number);if(el)el.classList.add('proyectado');
+  actualizarPreview(v.verse);pantallaOscura=false;
+  document.getElementById('btnBlack').classList.remove('active-black');
+  document.getElementById('previewScreen').classList.remove('black-screen');
+  canal.postMessage({type:'content',contentType:'biblia',text:v.verse,subtitle:ref,label:'📖',fontSize:tamanoFuente,align:alineacion});
+}
+function proyectarTodosVersiculos(){
+  if(!ultimosVersiculos.length)return;
+  const texto=ultimosVersiculos.map(v=>`${v.number} ${v.verse}`).join('\n');
+  actualizarPreview(texto);
+  canal.postMessage({type:'content',contentType:'biblia',text:texto,subtitle:ultimaRef,label:'📖',fontSize:Math.max(tamanoFuente-15,20),align:alineacion});
+}
+function toggleFavoritoBtn(btn){
+  const ref=btn.dataset.ref;
+  const texto=btn.dataset.verse;
+  toggleFavorito(ref,texto,btn);
+}
+function toggleFavorito(ref,texto,btn){
+  const idx=bibliaFavoritos.findIndex(f=>f.ref===ref);
+  if(idx===-1){bibliaFavoritos.push({ref,texto});btn.classList.add('activo');}
+  else{bibliaFavoritos.splice(idx,1);btn.classList.remove('activo');}
+  localStorage.setItem('presencia_biblia_favs',JSON.stringify(bibliaFavoritos));
+  renderizarFavoritos();
+}
+function renderizarFavoritos(){
+  const cont=document.getElementById('bibliaFavoritos');
+  const vacio=document.getElementById('bibliaFavVacio');
+  if(!cont)return;
+  cont.innerHTML='';
+  if(!bibliaFavoritos.length){if(vacio)vacio.style.display='block';return;}
+  if(vacio)vacio.style.display='none';
+  bibliaFavoritos.forEach((f,i)=>{
+    const div=document.createElement('div');div.className='fav-item';
+    div.innerHTML=`<span class="fav-ref">${f.ref}</span><span class="fav-txt">${f.texto}</span><button class="fav-del" title="Eliminar" onclick="eliminarFavorito(${i},event)">✕</button>`;
+    div.onclick=(e)=>{if(e.target.classList.contains('fav-del'))return;proyectarFavorito(f);};
+    cont.appendChild(div);
+  });
+}
+function proyectarFavorito(f){
+  actualizarPreview(f.texto);pantallaOscura=false;
+  document.getElementById('btnBlack').classList.remove('active-black');
+  document.getElementById('previewScreen').classList.remove('black-screen');
+  canal.postMessage({type:'content',contentType:'biblia',text:f.texto,subtitle:f.ref,label:'📖',fontSize:tamanoFuente,align:alineacion});
+}
+function eliminarFavorito(idx,e){
+  e.stopPropagation();
+  bibliaFavoritos.splice(idx,1);
+  localStorage.setItem('presencia_biblia_favs',JSON.stringify(bibliaFavoritos));
+  renderizarFavoritos();
+}
+
+// ══════════════════════════════════════════
+// ORDEN DEL CULTO
+// ══════════════════════════════════════════
+function iniciarOrden(){
+  try{ordenesGuardados=JSON.parse(localStorage.getItem('presencia_ordenes')||'[]');}catch(e){ordenesGuardados=[];}
+  renderizarFormTipo('texto');
+  renderizarOrdenLista();
+}
+function selTipo(tipo,el){
+  tipoSeleccionado=tipo;
+  document.querySelectorAll('.btn-tipo').forEach(b=>b.classList.remove('active-tipo'));
+  el.classList.add('active-tipo');
+  renderizarFormTipo(tipo);
+}
+function renderizarFormTipo(tipo){
+  const cont=document.getElementById('ordenTipoForm');
+  if(!cont)return;
+  if(tipo==='texto'){
+    cont.innerHTML=`<input type="text" id="oTexto" placeholder="Texto a proyectar (ej: Bienvenidos)" style="margin-bottom:0;">`;
+  }else if(tipo==='himno'){
+    const opts=himnarioCompleto.map(h=>`<option value="${h.numero}">${h.numero} — ${h.titulo}</option>`).join('');
+    cont.innerHTML=`<select id="oHimno" style="width:100%;background:var(--bg-input);border:1px solid var(--border);border-radius:8px;color:var(--text);font-family:'Crimson Pro',serif;font-size:15px;padding:10px 12px;outline:none;"><option value="">— Selecciona un himno —</option>${opts}</select>`;
+  }else if(tipo==='cancion'){
+    if(!cancionesLib.length){cont.innerHTML='<div style="color:var(--text-muted);font-size:13px;">No hay canciones libres guardadas aún.</div>';return;}
+    const opts=cancionesLib.map(c=>`<option value="${c.id}">${c.titulo}${c.autor?' · '+c.autor:''}</option>`).join('');
+    cont.innerHTML=`<select id="oCancion" style="width:100%;background:var(--bg-input);border:1px solid var(--border);border-radius:8px;color:var(--text);font-family:'Crimson Pro',serif;font-size:15px;padding:10px 12px;outline:none;"><option value="">— Selecciona una canción —</option>${opts}</select>`;
+  }else if(tipo==='biblia'){
+    cont.innerHTML=`<input type="text" id="oBiblia" placeholder="Referencia bíblica (ej: Juan 3:16-17)" style="margin-bottom:0;">`;
+  }else if(tipo==='seccion'){
+    cont.innerHTML=`<input type="text" id="oSeccion" placeholder="Nombre de sección (ej: Alabanza, Predicación...)" style="margin-bottom:0;">`;
+  }
+}
+function agregarElementoOrden(){
+  const icoMap={texto:'✏️',himno:'🎵',cancion:'🎤',biblia:'📖',seccion:'📌'};
+  let elemento={tipo:tipoSeleccionado,icono:icoMap[tipoSeleccionado],id:Date.now().toString()};
+  if(tipoSeleccionado==='texto'){
+    const v=document.getElementById('oTexto')?.value.trim();
+    if(!v){alert('Escribe el texto a proyectar.');return;}
+    elemento.etiqueta='Texto';elemento.detalle=v;elemento.contenido=v;
+  }else if(tipoSeleccionado==='himno'){
+    const num=parseInt(document.getElementById('oHimno')?.value);
+    if(!num){alert('Selecciona un himno.');return;}
+    const h=himnarioCompleto.find(x=>x.numero===num);if(!h)return;
+    elemento.etiqueta='Himno #'+h.numero;elemento.detalle=h.titulo;elemento.himnoNum=num;
+  }else if(tipoSeleccionado==='cancion'){
+    const id=document.getElementById('oCancion')?.value;
+    if(!id){alert('Selecciona una canción.');return;}
+    const c=cancionesLib.find(x=>x.id===id);if(!c)return;
+    elemento.etiqueta='Canción';elemento.detalle=c.titulo+(c.autor?' · '+c.autor:'');elemento.cancionId=id;
+  }else if(tipoSeleccionado==='biblia'){
+    const v=document.getElementById('oBiblia')?.value.trim();
+    if(!v){alert('Escribe la referencia bíblica.');return;}
+    elemento.etiqueta='Biblia';elemento.detalle=v;elemento.referencia=v;
+  }else if(tipoSeleccionado==='seccion'){
+    const v=document.getElementById('oSeccion')?.value.trim();
+    if(!v){alert('Escribe el nombre de la sección.');return;}
+    elemento.etiqueta='Sección';elemento.detalle=v;elemento.esSeccion=true;
+  }
+  ordenActual.push(elemento);
+  renderizarOrdenLista();
+  renderizarFormTipo(tipoSeleccionado);
+}
+function renderizarOrdenLista(){
+  const cont=document.getElementById('ordenLista');
+  const vacio=document.getElementById('ordenVacio');
+  const counter=document.getElementById('ordenItemCount');
+  const btnPres=document.getElementById('btnPresentar');
+  if(!cont)return;
+  cont.innerHTML='';
+  if(counter)counter.textContent=`(${ordenActual.length} elemento${ordenActual.length!==1?'s':''})`;
+  if(btnPres)btnPres.disabled=ordenActual.length===0;
+  if(!ordenActual.length){if(vacio)vacio.style.display='block';return;}
+  if(vacio)vacio.style.display='none';
+  ordenActual.forEach((el,i)=>{
+    const div=document.createElement('div');
+    div.className='orden-item'+(el.esSeccion?' es-seccion':'')+(presentacionActiva&&i===presentacionIdx?' activo-pres':'');
+    div.innerHTML=`<span class="orden-drag">⠿</span><span class="orden-icono">${el.icono}</span>
+      <div class="orden-info"><div class="orden-etiqueta">${el.etiqueta}</div><div class="orden-detalle">${el.detalle}</div></div>
+      <div class="orden-acciones">
+        <button class="orden-btn" title="Proyectar" onclick="proyectarElementoOrden(${i})">⚡</button>
+        <button class="orden-btn" title="Subir" onclick="moverElemento(${i},-1)" ${i===0?'disabled':''}>↑</button>
+        <button class="orden-btn" title="Bajar" onclick="moverElemento(${i},1)" ${i===ordenActual.length-1?'disabled':''}>↓</button>
+        <button class="orden-btn del" title="Eliminar" onclick="eliminarElementoOrden(${i})">✕</button>
+      </div>`;
+    cont.appendChild(div);
+  });
+}
+function moverElemento(idx,dir){
+  const nuevo=idx+dir;
+  if(nuevo<0||nuevo>=ordenActual.length)return;
+  [ordenActual[idx],ordenActual[nuevo]]=[ordenActual[nuevo],ordenActual[idx]];
+  renderizarOrdenLista();
+}
+function eliminarElementoOrden(idx){ordenActual.splice(idx,1);renderizarOrdenLista();}
+function limpiarOrdenActual(){
+  if(ordenActual.length&&!confirm('¿Vaciar el orden actual?'))return;
+  ordenActual=[];ordenIdActual=null;
+  document.getElementById('ordenNombre').value='';
+  detenerPresentacion();renderizarOrdenLista();
+}
+async function proyectarElementoOrden(idx){
+  const el=ordenActual[idx];if(!el)return;
+  presentacionIdx=idx;renderizarOrdenLista();
+  if(el.esSeccion){
+    actualizarPreview(el.detalle);
+    canal.postMessage({type:'content',contentType:'seccion',text:el.detalle,subtitle:'',label:'📌',fontSize:tamanoFuente+10,align:'center'});
+  }else if(el.tipo==='texto'){
+    actualizarPreview(el.contenido);
+    canal.postMessage({type:'content',contentType:'texto',text:el.contenido,fontSize:tamanoFuente,align:alineacion});
+  }else if(el.tipo==='himno'){
+    const h=himnarioCompleto.find(x=>x.numero===el.himnoNum);if(!h)return;
+    const texto=h.estrofas[0];actualizarPreview(texto);
+    canal.postMessage({type:'content',contentType:'himno',text:texto,subtitle:h.titulo+' — Estrofa 1',label:'HIMNO '+h.numero,fontSize:tamanoFuente,align:alineacion});
+    seleccionarHimno(h);
+  }else if(el.tipo==='cancion'){
+    const c=cancionesLib.find(x=>x.id===el.cancionId);if(!c)return;
+    const texto=c.estrofas[0];actualizarPreview(texto);
+    canal.postMessage({type:'content',contentType:'cancion',text:texto,subtitle:c.titulo+' — Estrofa 1',label:'🎤',fontSize:tamanoFuente,align:alineacion});
+    abrirDetalleCancion(c);
+  }else if(el.tipo==='biblia'){
+    document.getElementById('bibliaRef').value=el.referencia;
+    await buscarReferencia();
+    switchModule('biblia',document.querySelector('[data-module=biblia]'));
+  }
+}
+function iniciarPresentacion(){
+  if(!ordenActual.length)return;
+  presentacionActiva=true;presentacionIdx=-1;
+  document.getElementById('presentacionControles').style.display='block';
+  actualizarPosPresentacion();siguienteElemento();
+}
+function detenerPresentacion(){
+  presentacionActiva=false;presentacionIdx=-1;
+  const pc=document.getElementById('presentacionControles');
+  if(pc)pc.style.display='none';
+  renderizarOrdenLista();
+}
+function siguienteElemento(){
+  if(presentacionIdx<ordenActual.length-1){presentacionIdx++;proyectarElementoOrden(presentacionIdx);actualizarPosPresentacion();}
+}
+function anteriorElemento(){
+  if(presentacionIdx>0){presentacionIdx--;proyectarElementoOrden(presentacionIdx);actualizarPosPresentacion();}
+}
+function actualizarPosPresentacion(){
+  const el=document.getElementById('presentacionPos');
+  if(el)el.textContent=(presentacionIdx+1)+' / '+ordenActual.length;
+}
+function guardarOrden(){
+  const nombre=document.getElementById('ordenNombre').value.trim()||'Orden sin nombre';
+  if(!ordenActual.length){alert('El orden está vacío.');return;}
+  const id=ordenIdActual||Date.now().toString();
+  const idx=ordenesGuardados.findIndex(o=>o.id===id);
+  const obj={id,nombre,fecha:new Date().toLocaleDateString('es'),items:JSON.parse(JSON.stringify(ordenActual))};
+  if(idx!==-1)ordenesGuardados[idx]=obj;else ordenesGuardados.unshift(obj);
+  ordenIdActual=id;
+  localStorage.setItem('presencia_ordenes',JSON.stringify(ordenesGuardados));
+  renderizarOrdenesGuardados();
+  alert(`Orden "${nombre}" guardado.`);
+}
+function nuevoOrden(){
+  if(ordenActual.length&&!confirm('¿Crear un nuevo orden? Se perderán los cambios no guardados.'))return;
+  ordenActual=[];ordenIdActual=null;
+  document.getElementById('ordenNombre').value='';
+  detenerPresentacion();renderizarOrdenLista();
+}
+function toggleOrdenesGuardados(){
+  const panel=document.getElementById('ordenesGuardadosPanel');
+  panel.style.display=panel.style.display==='none'?'block':'none';
+  renderizarOrdenesGuardados();
+}
+function renderizarOrdenesGuardados(){
+  const cont=document.getElementById('ordenesGuardadosLista');if(!cont)return;
+  cont.innerHTML='';
+  if(!ordenesGuardados.length){cont.innerHTML='<div style="color:var(--text-muted);font-size:13px;padding:8px;">No hay órdenes guardados aún.</div>';return;}
+  ordenesGuardados.forEach(o=>{
+    const div=document.createElement('div');div.className='orden-saved';
+    div.innerHTML=`<div style="flex:1;"><div style="font-size:14px;color:var(--text);">${o.nombre}</div><div style="font-size:11px;color:var(--text-muted);">${o.fecha} · ${o.items.length} elementos</div></div>
+      <button class="orden-btn" onclick="cargarOrdenGuardado('${o.id}')">📂 Cargar</button>
+      <button class="orden-btn del" onclick="eliminarOrdenGuardado('${o.id}',event)">✕</button>`;
+    cont.appendChild(div);
+  });
+}
+function cargarOrdenGuardado(id){
+  const o=ordenesGuardados.find(x=>x.id===id);if(!o)return;
+  if(ordenActual.length&&!confirm(`¿Cargar "${o.nombre}"? Se perderá el orden actual.`))return;
+  ordenActual=JSON.parse(JSON.stringify(o.items));ordenIdActual=o.id;
+  document.getElementById('ordenNombre').value=o.nombre;
+  detenerPresentacion();renderizarOrdenLista();
+  document.getElementById('ordenesGuardadosPanel').style.display='none';
+}
+function eliminarOrdenGuardado(id,e){
+  e.stopPropagation();
+  if(!confirm('¿Eliminar este orden guardado?'))return;
+  ordenesGuardados=ordenesGuardados.filter(o=>o.id!==id);
+  localStorage.setItem('presencia_ordenes',JSON.stringify(ordenesGuardados));
+  renderizarOrdenesGuardados();
+}
+
+// ══════════════════════════════════════════
+// INICIALIZACIÓN
+// ══════════════════════════════════════════
+setInterval(()=>{if(proyeccionAbierta)canal.postMessage({type:'heartbeat'});},3000);
+
+document.addEventListener('DOMContentLoaded', ()=>{
+  cargarHimnario();
+  iniciarCanciones();
+  iniciarBiblia();
+  iniciarOrden();
+  iniciarAnuncios();
+  iniciarReloj();
+  cargarNotas();
+  // Restaurar tema guardado
+  const temaGuardado = localStorage.getItem("presencia_tema");
+  if (temaGuardado) { const btn = document.querySelector(`[data-tema="${temaGuardado}"]`); if(btn) selTema(temaGuardado, btn); }
+});
+
+
+// ══════════════════════════════════════════
+// MÓDULO ANUNCIOS E IMÁGENES
+// ══════════════════════════════════════════
+let anunciosLib = [];
+let anuncioActual = null;
+let fondoSeleccionado = 'dark';
+let carruselTimer = null;
+let carruselIdx = 0;
+
+const FONDOS = {
+  dark:  { bg:'#0a0c10', text:'#e8e2d5', sub:'rgba(201,168,76,0.6)' },
+  light: { bg:'#f5f0e8', text:'#1a1810', sub:'rgba(80,60,20,0.6)' },
+  gold:  { bg:'#1a1200', text:'#f5d878', sub:'rgba(245,216,120,0.5)' },
+  blue:  { bg:'#050d1a', text:'#c8dff5', sub:'rgba(100,160,220,0.6)' },
+  red:   { bg:'#120506', text:'#f5c8ca', sub:'rgba(200,80,85,0.6)' }
+};
+
+function iniciarAnuncios() {
+  try { anunciosLib = JSON.parse(localStorage.getItem('presencia_anuncios') || '[]'); } catch(e) { anunciosLib = []; }
+  renderizarAnuncios();
+  actualizarContadorAnuncios();
+}
+
+function actualizarContadorAnuncios() {
+  const el = document.getElementById('totalAnuncios');
+  if (el) el.textContent = anunciosLib.length + ' diapositiva' + (anunciosLib.length !== 1 ? 's' : '');
+}
+
+function guardarAnunciosStorage() {
+  localStorage.setItem('presencia_anuncios', JSON.stringify(anunciosLib));
+  actualizarContadorAnuncios();
+}
+
+function renderizarAnuncios() {
+  const cont = document.getElementById('anuncioLista');
+  const vacio = document.getElementById('anuncioVacio');
+  if (!cont) return;
+  cont.innerHTML = '';
+  if (!anunciosLib.length) { if(vacio) vacio.style.display = 'block'; return; }
+  if(vacio) vacio.style.display = 'none';
+  anunciosLib.forEach((a, i) => {
+    const div = document.createElement('div');
+    div.className = 'anuncio-item' + (anuncioActual && anuncioActual.id === a.id ? ' proyectado' : '');
+    const tipoIcon = { texto:'✏️', imagen:'🖼️', 'texto-imagen':'📋' }[a.tipo] || '📄';
+    let thumbHtml = '';
+    if (a.imagen) {
+      thumbHtml = `<div class="anuncio-thumb"><img src="${a.imagen}" alt=""></div>`;
+    } else {
+      const bg = FONDOS[a.fondo]?.bg || '#000';
+      thumbHtml = `<div class="anuncio-thumb" style="background:${bg};">${tipoIcon}</div>`;
+    }
+    div.innerHTML = `
+      ${thumbHtml}
+      <div class="anuncio-info">
+        <div class="anuncio-nombre">${a.titulo || 'Sin título'}</div>
+        <div class="anuncio-tipo">${{ texto:'Texto', imagen:'Imagen', 'texto-imagen':'Texto + Imagen' }[a.tipo] || a.tipo}</div>
+      </div>
+      <div class="orden-acciones">
+        <button class="orden-btn" title="Proyectar" onclick="proyectarAnuncio(${i})">⚡</button>
+        <button class="orden-btn" title="Editar" onclick="editarAnuncio(${i})">✏️</button>
+        <button class="orden-btn" title="Subir" onclick="moverAnuncio(${i},-1)" ${i===0?'disabled':''}>↑</button>
+        <button class="orden-btn" title="Bajar" onclick="moverAnuncio(${i},1)" ${i===anunciosLib.length-1?'disabled':''}>↓</button>
+        <button class="orden-btn del" title="Eliminar" onclick="eliminarAnuncio(${i})">✕</button>
+      </div>`;
+    div.onclick = (e) => { if (e.target.tagName === 'BUTTON') return; proyectarAnuncio(i); };
+    cont.appendChild(div);
+  });
+}
+
+// ── PROYECTAR ──
+function proyectarAnuncio(idx) {
+  const a = anunciosLib[idx];
+  if (!a) return;
+  anuncioActual = a;
+  renderizarAnuncios();
+  carruselIdx = idx;
+
+  const fondo = FONDOS[a.fondo] || FONDOS.dark;
+  const msg = {
+    type: 'content',
+    contentType: 'anuncio',
+    text: a.texto || '',
+    subtitle: '',
+    label: '🖼️',
+    fontSize: a.fontSize || 55,
+    align: 'center',
+    fondo: fondo,
+    imagen: a.imagen || null
+  };
+
+  actualizarPreview(a.texto || (a.imagen ? '🖼️ Imagen' : ''));
+  pantallaOscura = false;
+  document.getElementById('btnBlack')?.classList.remove('active-black');
+  document.getElementById('previewScreen')?.classList.remove('black-screen');
+  canal.postMessage(msg);
+}
+
+// ── FORMULARIO ──
+function mostrarFormAnuncio(a, tipo) {
+  fondoSeleccionado = a ? (a.fondo || 'dark') : 'dark';
+  document.getElementById('formAnuncioTitulo').textContent = a ? 'Editar diapositiva' : 'Nueva diapositiva';
+  document.getElementById('anuncioEditandoId').value = a ? a.id : '';
+  document.getElementById('anuncioTipoActual').value = a ? a.tipo : tipo;
+  document.getElementById('aTitulo').value = a ? (a.titulo || '') : '';
+  document.getElementById('aTexto').value = a ? (a.texto || '') : '';
+  document.getElementById('aImagenData').value = a ? (a.imagen || '') : '';
+  document.getElementById('aFontSize').value = a ? (a.fontSize || 55) : 55;
+  document.getElementById('aFontSizeVal').textContent = a ? (a.fontSize || 55) : 55;
+
+  const tipoActual = a ? a.tipo : tipo;
+  document.getElementById('aTextoGroup').style.display = tipoActual !== 'imagen' ? 'block' : 'none';
+  document.getElementById('aImagenGroup').style.display = tipoActual !== 'texto' ? 'block' : 'none';
+
+  // Preview de imagen existente
+  const prev = document.getElementById('aImagenPreview');
+  if (a && a.imagen) {
+    prev.innerHTML = `<img src="${a.imagen}" style="width:100%;height:100%;object-fit:contain;max-height:160px;">`;
+  } else {
+    prev.innerHTML = '<span style="color:var(--text-muted);font-size:13px;">Toca para seleccionar imagen</span>';
+  }
+
+  // Seleccionar fondo activo
+  document.querySelectorAll('.fondo-btn').forEach(b => {
+    b.classList.toggle('active-fondo', b.dataset.fondo === fondoSeleccionado);
+  });
+
+  document.getElementById('anunciosVista-lista').style.display = 'none';
+  document.getElementById('anunciosVista-form').style.display = 'block';
+}
+
+function volverListaAnuncios() {
+  document.getElementById('anunciosVista-lista').style.display = 'block';
+  document.getElementById('anunciosVista-form').style.display = 'none';
+}
+
+function editarAnuncio(idx) {
+  mostrarFormAnuncio(anunciosLib[idx], anunciosLib[idx].tipo);
+}
+
+function selFondo(fondo, el) {
+  fondoSeleccionado = fondo;
+  document.querySelectorAll('.fondo-btn').forEach(b => b.classList.remove('active-fondo'));
+  el.classList.add('active-fondo');
+}
+
+function previewImagen(input) {
+  const file = input.files[0];
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = (e) => {
+    const data = e.target.result;
+    document.getElementById('aImagenData').value = data;
+    const prev = document.getElementById('aImagenPreview');
+    prev.innerHTML = `<img src="${data}" style="width:100%;max-height:160px;object-fit:contain;">`;
+  };
+  reader.readAsDataURL(file);
+}
+
+function guardarAnuncio() {
+  const titulo = document.getElementById('aTitulo').value.trim() || 'Sin título';
+  const tipo = document.getElementById('anuncioTipoActual').value;
+  const texto = document.getElementById('aTexto').value.trim();
+  const imagen = document.getElementById('aImagenData').value;
+  const fontSize = parseInt(document.getElementById('aFontSize').value);
+  const editandoId = document.getElementById('anuncioEditandoId').value;
+
+  if (tipo !== 'imagen' && !texto) { alert('Escribe el texto de la diapositiva.'); return; }
+  if (tipo !== 'texto' && !imagen) { alert('Selecciona una imagen.'); return; }
+
+  const obj = { id: editandoId || Date.now().toString(), titulo, tipo, texto, imagen, fondo: fondoSeleccionado, fontSize };
+
+  if (editandoId) {
+    const idx = anunciosLib.findIndex(a => a.id === editandoId);
+    if (idx !== -1) anunciosLib[idx] = obj;
+  } else {
+    anunciosLib.push(obj);
+  }
+
+  guardarAnunciosStorage();
+  renderizarAnuncios();
+  volverListaAnuncios();
+}
+
+function eliminarAnuncio(idx) {
+  if (!confirm('¿Eliminar esta diapositiva?')) return;
+  anunciosLib.splice(idx, 1);
+  guardarAnunciosStorage();
+  renderizarAnuncios();
+}
+
+function moverAnuncio(idx, dir) {
+  const nuevo = idx + dir;
+  if (nuevo < 0 || nuevo >= anunciosLib.length) return;
+  [anunciosLib[idx], anunciosLib[nuevo]] = [anunciosLib[nuevo], anunciosLib[idx]];
+  guardarAnunciosStorage();
+  renderizarAnuncios();
+}
+
+// ── CARRUSEL ──
+function toggleCarrusel() {
+  if (carruselTimer) { detenerCarrusel(); return; }
+  if (!anunciosLib.length) { alert('No hay diapositivas para el carrusel.'); return; }
+  carruselIdx = 0;
+  document.getElementById('carruselControles').style.display = 'block';
+  document.getElementById('btnCarrusel').textContent = '⏸ Pausar carrusel';
+  document.getElementById('btnCarrusel').classList.add('btn-danger');
+  document.getElementById('btnCarrusel').classList.remove('btn-success');
+  proyectarAnuncio(carruselIdx);
+  iniciarTimerCarrusel();
+}
+
+function iniciarTimerCarrusel() {
+  const intervalo = parseInt(document.getElementById('carruselIntervalo').value);
+  carruselTimer = setInterval(() => {
+    carruselIdx = (carruselIdx + 1) % anunciosLib.length;
+    proyectarAnuncio(carruselIdx);
+    document.getElementById('carruselPos').textContent = (carruselIdx + 1) + ' / ' + anunciosLib.length;
+  }, intervalo);
+}
+
+function detenerCarrusel() {
+  if (carruselTimer) { clearInterval(carruselTimer); carruselTimer = null; }
+  document.getElementById('carruselControles').style.display = 'none';
+  const btn = document.getElementById('btnCarrusel');
+  if (btn) {
+    btn.textContent = '▶ Iniciar carrusel';
+    btn.classList.remove('btn-danger');
+    btn.classList.add('btn-success');
+  }
+}
+
+// ── EXPORTAR / IMPORTAR ──
+function exportarAnuncios() {
+  if (!anunciosLib.length) { alert('No hay diapositivas para exportar.'); return; }
+  // Exportar sin imágenes base64 grandes si las hay
+  const exportData = anunciosLib.map(a => ({...a, imagen: a.imagen ? '[imagen guardada]' : ''}));
+  const blob = new Blob([JSON.stringify(anunciosLib, null, 2)], { type: 'application/json' });
+  const link = document.createElement('a');
+  link.href = URL.createObjectURL(blob);
+  link.download = 'presencia-anuncios-' + new Date().toISOString().slice(0,10) + '.json';
+  link.click();
+}
+
+function importarAnuncios(input) {
+  const file = input.files[0]; if (!file) return;
+  const reader = new FileReader();
+  reader.onload = (e) => {
+    try {
+      const data = JSON.parse(e.target.result);
+      if (!Array.isArray(data)) throw new Error();
+      const conf = confirm(`Importar ${data.length} diapositivas.\nAceptar = Agregar | Cancelar = Reemplazar`);
+      if (conf) { data.forEach(a => { if (!anunciosLib.find(x => x.id === a.id)) anunciosLib.push(a); }); }
+      else { anunciosLib = data; }
+      guardarAnunciosStorage();
+      renderizarAnuncios();
+      alert('Importación completada.');
+    } catch(e) { alert('Archivo no válido.'); }
+  };
+  reader.readAsText(file);
+  input.value = '';
+}
+
+// ══════════════════════════════════════════
+// TEMAS VISUALES
+// ══════════════════════════════════════════
+const TEMAS = {
+  dark:   {bg:'radial-gradient(ellipse at 30% 40%,#0d1520 0%,#000 65%)', text:'#ffffff', accent:'rgba(201,168,76,0.7)'},
+  starry: {bg:'radial-gradient(ellipse at 50% 30%,#0d1a3a 0%,#020510 70%)', text:'#e8f0ff', accent:'rgba(120,160,220,0.7)'},
+  warm:   {bg:'radial-gradient(ellipse at 40% 50%,#2d1a08 0%,#0d0500 70%)', text:'#f5e6cc', accent:'rgba(220,160,80,0.7)'},
+  light:  {bg:'linear-gradient(135deg,#f0ece0,#e0d8c8)', text:'#1a1408', accent:'rgba(120,90,20,0.6)'},
+  green:  {bg:'radial-gradient(ellipse at 30% 50%,#051a0a 0%,#010801 70%)', text:'#c8f0d0', accent:'rgba(80,200,120,0.6)'},
+  royal:  {bg:'radial-gradient(ellipse at 40% 40%,#12093a 0%,#04021a 70%)', text:'#d8ccff', accent:'rgba(140,110,240,0.6)'}
+};
+let temaActual = 'dark';
+
+function selTema(tema, el) {
+  temaActual = tema;
+  document.querySelectorAll('.tema-btn').forEach(b => b.classList.remove('active-tema'));
+  el.classList.add('active-tema');
+  localStorage.setItem('presencia_tema', tema);
+  canal.postMessage({type:'tema', tema: TEMAS[tema]});
+}
+
+function cambiarColorTexto(color) {
+  canal.postMessage({type:'textoColor', color});
+}
+
+function cambiarOpacidadFondo(val) {
+  document.getElementById('fondoOpacidadVal').textContent = val + '%';
+  canal.postMessage({type:'fondoOpacidad', value: val/100});
+}
+
+// ══════════════════════════════════════════
+// AUDIO
+// ══════════════════════════════════════════
+let audioCtx = null;
+let gainNode = null;
+let audioFading = false;
+
+function cargarAudio(input) {
+  const file = input.files[0]; if (!file) return;
+  const url = URL.createObjectURL(file);
+  const audio = document.getElementById('audioElement');
+  audio.src = url;
+  audio.loop = document.getElementById('audioLoop').checked;
+  document.getElementById('audioNombre').textContent = '🎵 ' + file.name;
+  document.getElementById('audioNombre').style.color = 'var(--accent)';
+}
+
+function audioPlay() {
+  const audio = document.getElementById('audioElement');
+  if (!audio.src) { alert('Primero carga un archivo de audio.'); return; }
+  audio.loop = document.getElementById('audioLoop').checked;
+  const vol = parseInt(document.getElementById('audioVolumen').value) / 100;
+  if (document.getElementById('audioFade').checked) {
+    audio.volume = 0;
+    audio.play();
+    fadeAudio(audio, 0, vol, 1500);
+  } else {
+    audio.volume = vol;
+    audio.play();
+  }
+}
+
+function audioPause() {
+  const audio = document.getElementById('audioElement');
+  if (document.getElementById('audioFade').checked && !audio.paused) {
+    fadeAudio(audio, audio.volume, 0, 800, () => audio.pause());
+  } else {
+    audio.pause();
+  }
+}
+
+function audioStop() {
+  const audio = document.getElementById('audioElement');
+  if (document.getElementById('audioFade').checked && !audio.paused) {
+    fadeAudio(audio, audio.volume, 0, 800, () => { audio.pause(); audio.currentTime = 0; });
+  } else {
+    audio.pause(); audio.currentTime = 0;
+  }
+}
+
+function audioVolumen(val) {
+  document.getElementById('audioVolVal').textContent = val + '%';
+  const audio = document.getElementById('audioElement');
+  audio.volume = val / 100;
+}
+
+function fadeAudio(audio, from, to, duration, callback) {
+  const steps = 30;
+  const stepTime = duration / steps;
+  const stepVal = (to - from) / steps;
+  let current = from;
+  const interval = setInterval(() => {
+    current += stepVal;
+    audio.volume = Math.max(0, Math.min(1, current));
+    if ((stepVal > 0 && current >= to) || (stepVal < 0 && current <= to)) {
+      clearInterval(interval);
+      audio.volume = to;
+      if (callback) callback();
+    }
+  }, stepTime);
+}
+
+// ══════════════════════════════════════════
+// RELOJ Y CUENTA ATRÁS
+// ══════════════════════════════════════════
+let relojInterval = null;
+let relojProyectando = false;
+let cuentaAtrasInterval = null;
+let cuentaAtrasSegRestantes = 300;
+let cuentaAtrasPausada = false;
+
+function iniciarReloj() {
+  relojInterval = setInterval(() => {
+    const now = new Date();
+    const h = String(now.getHours()).padStart(2,'0');
+    const m = String(now.getMinutes()).padStart(2,'0');
+    const s = String(now.getSeconds()).padStart(2,'0');
+    const texto = h + ':' + m + ':' + s;
+    const el = document.getElementById('relojDisplay');
+    if (el) el.textContent = texto;
+    if (relojProyectando) {
+      canal.postMessage({type:'content', contentType:'reloj', text:texto, subtitle:'', label:'⏰', fontSize:90, align:'center'});
+    }
+  }, 1000);
+}
+
+function toggleRelojProyeccion() {
+  relojProyectando = !relojProyectando;
+  const btn = document.getElementById('btnRelojProyectar');
+  if (btn) {
+    btn.textContent = relojProyectando ? '⏹ Dejar de proyectar' : 'Proyectar reloj';
+    btn.className = relojProyectando
+      ? 'btn btn-danger btn-full'
+      : 'btn btn-secondary btn-full';
+  }
+  if (!relojProyectando) limpiarPantalla();
+}
+
+function iniciarCuentaAtras() {
+  if (cuentaAtrasInterval) return;
+  const min = parseInt(document.getElementById('cuentaAtrasMin').value) || 0;
+  const seg = parseInt(document.getElementById('cuentaAtrasSeg').value) || 0;
+  if (!cuentaAtrasPausada) cuentaAtrasSegRestantes = min * 60 + seg;
+  cuentaAtrasPausada = false;
+  cuentaAtrasInterval = setInterval(() => {
+    if (cuentaAtrasSegRestantes <= 0) {
+      clearInterval(cuentaAtrasInterval); cuentaAtrasInterval = null;
+      actualizarCuentaAtrasDisplay(0);
+      canal.postMessage({type:'content', contentType:'cuentaAtras', text:'¡Tiempo!', subtitle:'', label:'⏱️', fontSize:90, align:'center'});
+      return;
+    }
+    cuentaAtrasSegRestantes--;
+    actualizarCuentaAtrasDisplay(cuentaAtrasSegRestantes);
+    const m2 = Math.floor(cuentaAtrasSegRestantes/60);
+    const s2 = cuentaAtrasSegRestantes % 60;
+    const txt = String(m2).padStart(2,'0') + ':' + String(s2).padStart(2,'0');
+    canal.postMessage({type:'content', contentType:'cuentaAtras', text:txt, subtitle:'', label:'⏱️', fontSize:90, align:'center'});
+  }, 1000);
+}
+
+function pausarCuentaAtras() {
+  if (cuentaAtrasInterval) {
+    clearInterval(cuentaAtrasInterval); cuentaAtrasInterval = null;
+    cuentaAtrasPausada = true;
+  }
+}
+
+function resetCuentaAtras() {
+  clearInterval(cuentaAtrasInterval); cuentaAtrasInterval = null;
+  cuentaAtrasPausada = false;
+  const min = parseInt(document.getElementById('cuentaAtrasMin').value) || 0;
+  const seg = parseInt(document.getElementById('cuentaAtrasSeg').value) || 0;
+  cuentaAtrasSegRestantes = min * 60 + seg;
+  actualizarCuentaAtrasDisplay(cuentaAtrasSegRestantes);
+}
+
+function actualizarCuentaAtrasDisplay(segs) {
+  const m = Math.floor(segs/60);
+  const s = segs % 60;
+  const el = document.getElementById('cuentaAtrasDisplay');
+  if (el) {
+    el.textContent = String(m).padStart(2,'0') + ':' + String(s).padStart(2,'0');
+    el.style.color = segs <= 30 ? 'var(--danger)' : segs <= 60 ? '#f0a830' : 'var(--success)';
+  }
+}
+
+// ══════════════════════════════════════════
+// NOTAS PRIVADAS
+// ══════════════════════════════════════════
+function guardarNotas() {
+  const val = document.getElementById('notasPrivadas')?.value || '';
+  localStorage.setItem('presencia_notas', val);
+}
+
+function cargarNotas() {
+  const el = document.getElementById('notasPrivadas');
+  if (el) el.value = localStorage.getItem('presencia_notas') || '';
+}
+
+// ══════════════════════════════════════════
+// CONTROL REMOTO — PeerJS Host
+// ══════════════════════════════════════════
+let hostPeer = null;
+let remotosConectados = new Map();
+let codigoRemoto = '';
+
+function generarCodigo() {
+  const chars = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
+  let code = '';
+  for (let i = 0; i < 6; i++) code += chars[Math.floor(Math.random() * chars.length)];
+  return code;
+}
+
+function activarRemoto() {
+  codigoRemoto = generarCodigo();
+  const peerId = 'presencia-' + codigoRemoto;
+
+  hostPeer = new Peer(peerId);
+
+  hostPeer.on('open', (id) => {
+    document.getElementById('remotoApagado').style.display = 'none';
+    document.getElementById('remotoActivo').style.display = 'block';
+    document.getElementById('codigoDisplay').textContent = codigoRemoto;
+    generarQR(codigoRemoto);
+  });
+
+  hostPeer.on('connection', (conn) => {
+    const connId = conn.peer;
+    remotosConectados.set(connId, conn);
+    actualizarContadorRemotos();
+
+    conn.on('open', () => {
+      // Enviar estado actual al remoto recién conectado
+      conn.send({
+        type: 'estado',
+        texto: document.getElementById('currentSlideContent')?.textContent || '',
+        fontSize: tamanoFuente,
+        pantallaOscura
+      });
+    });
+
+    conn.on('data', (data) => {
+      procesarComandoRemoto(data);
+    });
+
+    conn.on('close', () => {
+      remotosConectados.delete(connId);
+      actualizarContadorRemotos();
+    });
+  });
+
+  hostPeer.on('error', (err) => {
+    console.warn('PeerJS error:', err);
+    // Si el ID ya está en uso, generar otro
+    if (err.type === 'unavailable-id') {
+      hostPeer.destroy();
+      activarRemoto();
+    }
+  });
+}
+
+function desactivarRemoto() {
+  if (hostPeer) { hostPeer.destroy(); hostPeer = null; }
+  remotosConectados.clear();
+  document.getElementById('remotoApagado').style.display = 'block';
+  document.getElementById('remotoActivo').style.display = 'none';
+  document.getElementById('qrContainer').innerHTML = '';
+}
+
+function actualizarContadorRemotos() {
+  const n = remotosConectados.size;
+  const el = document.getElementById('remotosConectados');
+  if (el) {
+    el.textContent = n === 0 ? 'Sin dispositivos conectados'
+      : `✓ ${n} dispositivo${n > 1 ? 's' : ''} conectado${n > 1 ? 's' : ''}`;
+    el.style.color = n > 0 ? 'var(--success)' : 'var(--text-muted)';
+  }
+}
+
+function procesarComandoRemoto(data) {
+  if (data.type === 'ping') return;
+  if (data.type !== 'cmd') return;
+
+  const cmd = data.cmd;
+
+  if (cmd === 'siguiente') {
+    siguienteElemento();
+  } else if (cmd === 'anterior') {
+    anteriorElemento();
+  } else if (cmd === 'negro') {
+    toggleBlackScreen();
+  } else if (cmd === 'limpiar') {
+    limpiarPantalla();
+  } else if (cmd === 'proyectar') {
+    proyectarTexto();
+  } else if (cmd === 'texto' && data.text) {
+    document.getElementById('textoLibre').value = data.text;
+    proyectarTexto();
+    switchModule('texto', document.querySelector('[data-module=texto]'));
+  } else if (cmd === 'fuente-up') {
+    tamanoFuente = Math.min(120, tamanoFuente + 5);
+    document.getElementById('fontSize').value = tamanoFuente;
+    document.getElementById('fontSizeVal').textContent = tamanoFuente;
+    canal.postMessage({ type: 'fontSize', value: tamanoFuente });
+  } else if (cmd === 'fuente-down') {
+    tamanoFuente = Math.max(20, tamanoFuente - 5);
+    document.getElementById('fontSize').value = tamanoFuente;
+    document.getElementById('fontSizeVal').textContent = tamanoFuente;
+    canal.postMessage({ type: 'fontSize', value: tamanoFuente });
+  }
+
+  // Reenviar estado a todos los remotos
+  difundirEstado();
+}
+
+function difundirEstado() {
+  if (!remotosConectados || !remotosConectados.size) return;
+  const el = document.getElementById('currentSlideContent');
+  const estado = {
+    type: 'estado',
+    texto: el ? el.textContent : '',
+    fontSize: tamanoFuente,
+    pantallaOscura
+  };
+  remotosConectados.forEach(conn => {
+    try { if (conn.open) conn.send(estado); } catch(e) {}
+  });
+}
+
+// difundirEstado se llama directamente en actualizarPreview (ver función original)
+
+// ── QR CODE (sin librería externa — SVG simple con texto) ──
+function generarQR(codigo) {
+  const cont = document.getElementById('qrContainer');
+  if (!cont) return;
+  // QR simple: mostrar código grande en un cuadro blanco
+  // Para QR real usaríamos qrcode.js, pero lo hacemos sin dependencias
+  cont.innerHTML = `
+    <div style="width:90px;height:90px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;">
+      <div style="font-size:9px;color:#333;font-family:monospace;letter-spacing:1px;text-align:center;">Código:</div>
+      <div style="font-family:monospace;font-size:18px;font-weight:bold;color:#000;letter-spacing:3px;">${codigo}</div>
+      <div style="font-size:8px;color:#666;text-align:center;line-height:1.3;">Abre<br>remote.html</div>
+    </div>`;
+}
+
+</script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/peerjs/1.5.2/peerjs.min.js"></script>
+</body>
+</html>
