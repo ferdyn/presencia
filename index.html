@@ -324,6 +324,37 @@
     /* La quick-bar flotante se oculta en desktop */
     .quick-bar { display:none; }
 
+  
+
+    /* ══════════════════════════════════════
+       V12 — PROFESSIONAL POLISH
+    ══════════════════════════════════════ */
+    :focus-visible{outline:2px solid var(--accent);outline-offset:2px;border-radius:8px;}
+    header{backdrop-filter:blur(8px);box-shadow:0 6px 24px rgba(0,0,0,.25);} 
+    .sidebar{background:linear-gradient(180deg,#121620,#0f1218);} 
+    .nav-item{border-radius:0 12px 12px 0;margin-right:10px;position:relative;}
+    .nav-item.active{box-shadow:inset 0 0 0 1px rgba(201,168,76,.2),0 8px 18px rgba(0,0,0,.2);} 
+    .module-header{background:linear-gradient(180deg,rgba(255,255,255,.02),transparent);} 
+    .card{border-radius:14px;box-shadow:0 10px 22px rgba(0,0,0,.20);}
+    textarea,input[type="text"],input[type="number"],select{border-radius:10px;}
+    .btn{border-radius:10px;box-shadow:0 3px 10px rgba(0,0,0,.16);} 
+    .btn:active{transform:translateY(1px) scale(.99);} 
+    .preview-panel{background:linear-gradient(180deg,#131824,#0f131d);} 
+    .preview-screen{border-radius:12px;box-shadow:0 12px 30px rgba(0,0,0,.35);} 
+    .open-btn{box-shadow:0 8px 18px rgba(201,168,76,.12);} 
+    .card-title{display:flex;align-items:center;gap:8px;}
+
+    .toast-stack{position:fixed;right:18px;bottom:18px;display:flex;flex-direction:column;gap:8px;z-index:9999;pointer-events:none;}
+    .toast{background:#121723;border:1px solid var(--border);color:var(--text);padding:10px 12px;border-radius:10px;font-size:13px;box-shadow:0 8px 20px rgba(0,0,0,.28);opacity:0;transform:translateY(8px);transition:all .25s ease;max-width:300px;}
+    .toast.show{opacity:1;transform:translateY(0);} 
+    .toast.ok{border-color:rgba(76,175,128,.45);} .toast.warn{border-color:rgba(240,168,48,.45);} .toast.err{border-color:rgba(201,76,76,.45);} 
+
+    @media (max-width:768px){
+      .toast-stack{left:10px;right:10px;bottom:74px;}
+      .toast{max-width:none;}
+      .card{padding:14px;border-radius:12px;}
+    }
+
   </style>
 </head>
 <body>
@@ -355,6 +386,7 @@
   <button class="qbar-btn" onclick="limpiarPantalla()" title="Limpiar">🗑</button>
   <button class="qbar-btn" onclick="abrirProyeccion()" title="Proyección">🖥️</button>
 </div>
+<div class="toast-stack" id="toastStack" aria-live="polite"></div>
 
 <div class="app">
   <nav class="sidebar">
@@ -580,6 +612,7 @@
             <button class="btn-ver" data-ver="rv1995" onclick="selVer('rv1995',this)">RVR 1995</button>
             <button class="btn-ver" data-ver="nvi"    onclick="selVer('nvi',this)">NVI</button>
             <button class="btn-ver" data-ver="dhh"    onclick="selVer('dhh',this)">DHH</button>
+            <button class="btn-ver" data-ver="tla"    onclick="selVer('tla',this)">TLA</button>
             <button class="btn-ver" data-ver="pdt"    onclick="selVer('pdt',this)">PDT</button>
           </div>
 
@@ -589,6 +622,15 @@
             <button class="btn btn-primary" style="white-space:nowrap;" onclick="buscarReferencia()">🔍 Buscar</button>
           </div>
           <div id="bibliaEstado" style="font-size:13px;color:var(--text-muted);min-height:18px;"></div>
+          <div style="margin-top:10px;padding:10px;border:1px dashed var(--border);border-radius:8px;background:rgba(201,168,76,.04);">
+            <div style="font-size:12px;color:var(--text-dim);margin-bottom:8px;">Modo offline (RVR60, TLA, DHH)</div>
+            <div style="display:flex;gap:8px;flex-wrap:wrap;">
+              <button class="btn btn-secondary" style="padding:7px 10px;font-size:11px;" onclick="descargarVersionOffline('rv1960')">⬇ Descargar RVR60</button>
+              <button class="btn btn-secondary" style="padding:7px 10px;font-size:11px;" onclick="descargarVersionOffline('tla')">⬇ Descargar TLA</button>
+              <button class="btn btn-secondary" style="padding:7px 10px;font-size:11px;" onclick="descargarVersionOffline('dhh')">⬇ Descargar DHH</button>
+              <button class="btn btn-secondary" style="padding:7px 10px;font-size:11px;" onclick="verEstadoOfflineBiblia()">📦 Estado offline</button>
+            </div>
+          </div>
         </div>
 
         <!-- SELECTOR MANUAL: LIBRO → CAPÍTULO → VERSÍCULO -->
@@ -933,7 +975,7 @@
           <div class="card-title">Acerca de Presencia</div>
           <p style="font-size:14px;color:var(--text-dim);line-height:1.8;">
             <strong style="color:var(--text)">Presencia</strong> — Sistema de Presentación para Cultos<br>
-            Versión 10.0 — Todas las fases completadas<br>
+            Versión 11.0 — Plataforma extendida<br>
             <span style="color:var(--text-muted)">Desarrollado con ❤️ para el servicio</span>
           </p>
         </div>
@@ -1017,6 +1059,10 @@ const LIBROS = [
 ];
 let bibliaVersion = 'rv1960';
 let bibliaFavoritos = [];
+const OFFLINE_BIBLE_VERSIONS = ['rv1960','tla','dhh'];
+const BIBLE_LABELS = { rv1960:'RVR60', rv1995:'RVR95', nvi:'NVI', dhh:'DHH', pdt:'PDT', tla:'TLA' };
+const BIBLE_DB_NAME = 'presencia_biblia_offline';
+
 let ultimosVersiculos = [];
 let ultimaRef = '';
 
@@ -1101,8 +1147,23 @@ function actualizarPreview(texto){
 // ══════════════════════════════════════════
 // HIMNARIO
 // ══════════════════════════════════════════
-function cargarHimnario(){
+async function cargarHimnario(){
+  // 1) Intentar cargar catálogo completo desde data/himnario.json
+  try {
+    const resp = await fetch('data/himnario.json', { cache:'no-store' });
+    if (resp.ok) {
+      const data = await resp.json();
+      if (Array.isArray(data) && data.length) {
+        himnarioBase = data;
+      }
+    }
+  } catch (e) {
+    console.warn('No se pudo cargar data/himnario.json, usando base embebida.', e);
+  }
+
+  // 2) Cargar himnos extra locales
   try{himnarioExtra=JSON.parse(localStorage.getItem('presencia_himnos_extra')||'[]');}catch(e){himnarioExtra=[];}
+
   fusionarHimnario();
   renderizarLista(himnarioCompleto);
   const el=document.getElementById('totalHimnos');
@@ -1387,6 +1448,7 @@ function iniciarBiblia(){
   LIBROS.forEach(l=>{const opt=document.createElement('option');opt.value=l.a;opt.textContent=l.n;sel.appendChild(opt);});
   try{bibliaFavoritos=JSON.parse(localStorage.getItem('presencia_biblia_favs')||'[]');}catch(e){bibliaFavoritos=[];}
   renderizarFavoritos();
+  verEstadoOfflineBiblia().catch(()=>{});
 }
 function selVer(ver,el){
   bibliaVersion=ver;
@@ -1413,6 +1475,132 @@ function setBibliaEstado(msg,tipo){
   if(!el)return;
   el.textContent=msg;
   el.style.color=tipo==='error'?'var(--danger)':tipo==='ok'?'var(--success)':'var(--text-muted)';
+}
+
+function openBibliaOfflineDB(){
+  return new Promise((resolve,reject)=>{
+    const req=indexedDB.open(BIBLE_DB_NAME,1);
+    req.onupgradeneeded=()=>{const db=req.result; if(!db.objectStoreNames.contains('chapters')) db.createObjectStore('chapters',{keyPath:'key'});};
+    req.onsuccess=()=>resolve(req.result);
+    req.onerror=()=>reject(req.error);
+  });
+}
+
+async function guardarCapituloOffline(version,abrev,cap,verses){
+  const db=await openBibliaOfflineDB();
+  const key=`${version}:${abrev}:${cap}`;
+  await new Promise((resolve,reject)=>{
+    const tx=db.transaction('chapters','readwrite');
+    tx.objectStore('chapters').put({key,version,abrev,cap,verses,updatedAt:Date.now()});
+    tx.oncomplete=resolve; tx.onerror=()=>reject(tx.error);
+  });
+}
+
+async function leerCapituloOffline(version,abrev,cap){
+  const db=await openBibliaOfflineDB();
+  const key=`${version}:${abrev}:${cap}`;
+  return await new Promise((resolve,reject)=>{
+    const tx=db.transaction('chapters','readonly');
+    const req=tx.objectStore('chapters').get(key);
+    req.onsuccess=()=>resolve(req.result?req.result.verses:null);
+    req.onerror=()=>reject(req.error);
+  });
+}
+
+function parseRefPath(ref){
+  const p=String(ref||'').split('/');
+  if(p.length<3) return null;
+  const abrev=(p[0]||'').toUpperCase();
+  const cap=String(p[1]||'');
+  const rango=String(p[2]||'1-176');
+  const m=rango.match(/^(\d+)(?:-(\d+))?$/);
+  if(!m) return null;
+  const ini=parseInt(m[1]);
+  const fin=parseInt(m[2]||m[1]);
+  return {abrev,cap,ini,fin};
+}
+
+async function obtenerVersosConFallback(version,ref){
+  const info=parseRefPath(ref);
+  if(!info) return null;
+  const {abrev,cap,ini,fin}=info;
+
+  // 1) Intento online
+  try {
+    const url=`${BIBLE_API}/read/${version}/${ref.toLowerCase()}`;
+    const resp=await fetch(url);
+    if(resp.ok){
+      const data=await resp.json();
+      if(Array.isArray(data)&&data.length){
+        // cachear capítulo completo para offline
+        try {
+          const chapterUrl=`${BIBLE_API}/read/${version}/${abrev.toLowerCase()}/${cap}/1-176`;
+          const cResp=await fetch(chapterUrl);
+          if(cResp.ok){
+            const chapterData=await cResp.json();
+            if(Array.isArray(chapterData)&&chapterData.length) await guardarCapituloOffline(version,abrev,cap,chapterData);
+          }
+        } catch(e){}
+        return {data, source:'online'};
+      }
+    }
+  } catch(e){}
+
+  // 2) Fallback offline para versiones soportadas
+  if(!OFFLINE_BIBLE_VERSIONS.includes(version)) return null;
+  const verses=await leerCapituloOffline(version,abrev,cap);
+  if(!verses||!verses.length) return null;
+  const filtered=verses.filter(v=>v.number>=ini && v.number<=fin);
+  return filtered.length?{data:filtered,source:'offline'}:null;
+}
+
+async function descargarVersionOffline(version){
+  if(!OFFLINE_BIBLE_VERSIONS.includes(version)){
+    setBibliaEstado(`La versión ${version.toUpperCase()} no está habilitada para offline.`, 'error');
+    return;
+  }
+  if(!navigator.onLine){
+    setBibliaEstado('Necesitas internet para descargar la versión offline.', 'error');
+    return;
+  }
+  if(!confirm(`Se descargará ${BIBLE_LABELS[version]||version.toUpperCase()} para uso offline. Puede tardar varios minutos. ¿Continuar?`)) return;
+  let total=0, ok=0, fail=0;
+  for(const l of LIBROS) total += l.c;
+  let done=0;
+  for(const l of LIBROS){
+    for(let c=1;c<=l.c;c++){
+      done++;
+      setBibliaEstado(`Descargando ${BIBLE_LABELS[version]}... ${done}/${total} (${l.a} ${c})`, '');
+      try{
+        const url=`${BIBLE_API}/read/${version}/${l.a.toLowerCase()}/${c}/1-176`;
+        const resp=await fetch(url);
+        if(!resp.ok) throw new Error('http');
+        const data=await resp.json();
+        if(Array.isArray(data)&&data.length){
+          await guardarCapituloOffline(version,l.a,c,data);
+          ok++;
+        } else fail++;
+      }catch(e){ fail++; }
+    }
+  }
+  setBibliaEstado(`Offline ${BIBLE_LABELS[version]} listo: ${ok}/${total} capítulos guardados.${fail?` (${fail} fallidos)`:''}`, fail?'error':'ok');
+}
+
+async function verEstadoOfflineBiblia(){
+  const db=await openBibliaOfflineDB();
+  const counts={rv1960:0,tla:0,dhh:0};
+  await new Promise((resolve,reject)=>{
+    const tx=db.transaction('chapters','readonly');
+    const req=tx.objectStore('chapters').openCursor();
+    req.onsuccess=(e)=>{
+      const cur=e.target.result;
+      if(cur){ const v=cur.value.version; if(counts[v]!==undefined) counts[v]++; cur.continue(); }
+      else resolve();
+    };
+    req.onerror=()=>reject(req.error);
+  });
+  const txt=`Offline — RVR60:${counts.rv1960} cap · TLA:${counts.tla} cap · DHH:${counts.dhh} cap`;
+  setBibliaEstado(txt,'ok');
 }
 async function cargarVersiculos(){
   const abrev=document.getElementById('bibliaLibro').value;
@@ -1444,15 +1632,16 @@ async function _fetchYMostrar(ref,tituloManual){
   setBibliaEstado('Buscando...','');
   document.getElementById('bibliaResultados').style.display='none';
   try{
-    const url=`${BIBLE_API}/read/${bibliaVersion}/${ref.toLowerCase()}`;
-    const resp=await fetch(url);
-    if(!resp.ok)throw new Error('No encontrado');
-    const data=await resp.json();
-    if(!Array.isArray(data)||!data.length)throw new Error('Sin resultados');
+    const result=await obtenerVersosConFallback(bibliaVersion, ref);
+    if(!result||!Array.isArray(result.data)||!result.data.length) throw new Error('Sin resultados');
+    const data=result.data;
     ultimosVersiculos=data;ultimaRef=tituloManual||ref.replace('/',' ').replace('/',' ');
-    setBibliaEstado(`${data.length} versículo(s) cargados`,'ok');
+    const src=result.source==='offline'?' (offline)':'';
+    setBibliaEstado(`${data.length} versículo(s) cargados${src}`,'ok');
     mostrarVersiculos(data,tituloManual||ref);
-  }catch(e){setBibliaEstado('No se pudo cargar. Verifica tu conexión a internet.','error');}
+  }catch(e){
+    setBibliaEstado('No se pudo cargar. Si no hay internet, descarga antes la versión offline (RVR60/TLA/DHH).','error');
+  }
 }
 function mostrarVersiculos(versos,titulo){
   const cont=document.getElementById('bibliaVersiculoLista');
@@ -1464,7 +1653,7 @@ function mostrarVersiculos(versos,titulo){
   const tituloLeg=partes.length>=2?`${nombreLib} ${partes[1]}`:titulo;
   document.getElementById('bibliaResultTitulo').textContent=tituloLeg;
   document.getElementById('bibliaResultados').style.display='block';
-  const verNombre={'rv1960':'RVR1960','rv1995':'RVR1995','nvi':'NVI','dhh':'DHH','pdt':'PDT'}[bibliaVersion]||bibliaVersion.toUpperCase();
+  const verNombre={'rv1960':'RVR1960','rv1995':'RVR1995','nvi':'NVI','dhh':'DHH','pdt':'PDT','tla':'TLA'}[bibliaVersion]||bibliaVersion.toUpperCase();
   versos.forEach(v=>{
     const div=document.createElement('div');div.className='versiculo-item';div.id='vitem-'+v.number;
     const refCompleta=`${tituloLeg}:${v.number} (${verNombre})`;
@@ -1731,8 +1920,8 @@ function eliminarOrdenGuardado(id,e){
 // ══════════════════════════════════════════
 setInterval(()=>{if(proyeccionAbierta)canal.postMessage({type:'heartbeat'});},3000);
 
-document.addEventListener('DOMContentLoaded', ()=>{
-  cargarHimnario();
+document.addEventListener('DOMContentLoaded', async ()=>{
+  await cargarHimnario();
   iniciarCanciones();
   iniciarBiblia();
   iniciarOrden();
@@ -2352,7 +2541,49 @@ function generarQR(codigo) {
     </div>`;
 }
 
+
+// ══════════════════════════════════════════
+// UX MEJORADO — TOASTS Y ATAJOS
+// ══════════════════════════════════════════
+function showToast(msg,tipo='ok'){
+  const stack=document.getElementById('toastStack');
+  if(!stack)return;
+  const t=document.createElement('div');
+  t.className='toast '+tipo;
+  t.textContent=msg;
+  stack.appendChild(t);
+  requestAnimationFrame(()=>t.classList.add('show'));
+  setTimeout(()=>{t.classList.remove('show');setTimeout(()=>t.remove(),220);},2200);
+}
+
+(function setupUsabilityEnhancements(){
+  const _proyectarTexto = window.proyectarTexto;
+  window.proyectarTexto = function(){ _proyectarTexto(); showToast('Contenido proyectado','ok'); };
+
+  const _toggleBlackScreen = window.toggleBlackScreen;
+  window.toggleBlackScreen = function(){ _toggleBlackScreen(); showToast('Pantalla negra '+(document.getElementById('btnBlack')?.classList.contains('active-black')?'activada':'desactivada'),'warn'); };
+
+  const _limpiarPantalla = window.limpiarPantalla;
+  window.limpiarPantalla = function(){ _limpiarPantalla(); showToast('Pantalla limpiada','ok'); };
+
+  const _switchModule = window.switchModule;
+  window.switchModule = function(id,el){ _switchModule(id,el); showToast('Módulo: '+id,'ok'); };
+
+  document.addEventListener('keydown',(e)=>{
+    if(e.target && ['INPUT','TEXTAREA'].includes(e.target.tagName) && !(e.ctrlKey && e.key==='Enter')) return;
+    if(e.ctrlKey && e.key==='Enter'){ e.preventDefault(); if(typeof proyectarTexto==='function')proyectarTexto(); }
+    if(e.ctrlKey && (e.key==='b' || e.key==='B')){ e.preventDefault(); if(typeof toggleBlackScreen==='function')toggleBlackScreen(); }
+    if(e.ctrlKey && (e.key==='l' || e.key==='L')){ e.preventDefault(); if(typeof limpiarPantalla==='function')limpiarPantalla(); }
+    if(e.ctrlKey && (e.key==='p' || e.key==='P')){ e.preventDefault(); if(typeof abrirProyeccion==='function')abrirProyeccion(); showToast('Abriendo proyección…','ok'); }
+    if(e.key==='/' && !e.ctrlKey){
+      const input=document.querySelector('#mod-himnario.active #buscarTitulo, #mod-canciones.active #buscarCancion, #mod-biblia.active #bibliaRef');
+      if(input){ e.preventDefault(); input.focus(); }
+    }
+  });
+})();
+
 </script>
+<script src="enhancements.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/peerjs/1.5.2/peerjs.min.js"></script>
 </body>
 </html>

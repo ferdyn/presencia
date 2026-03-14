@@ -85,7 +85,21 @@
       100%{box-shadow:0 0 0 0 rgba(201,168,76,0)}
     }
     .nav-btn:active{animation:pulse-border .3s ease;}
-  </style>
+  
+
+    /* V12 — REMOTE POLISH */
+    :focus-visible{outline:2px solid var(--accent);outline-offset:2px;border-radius:8px;}
+    header{backdrop-filter:blur(8px);box-shadow:0 8px 20px rgba(0,0,0,.25);} 
+    .screen{max-width:720px;margin:0 auto;padding-bottom:18px;}
+    .current-display,.texto-rapido,.ctrl-btn,.nav-btn,.btn-conectar,.btn-desconectar{box-shadow:0 8px 18px rgba(0,0,0,.18);} 
+    .ctrl-btn,.nav-btn,.btn-conectar{transition:transform .15s ease,border-color .2s ease,background .2s ease;}
+    .ctrl-btn:active,.nav-btn:active,.btn-conectar:active{transform:scale(.98);} 
+    .sec-title{font-size:11px;letter-spacing:1.8px;}
+    .toast-stack{position:fixed;left:12px;right:12px;bottom:12px;display:flex;flex-direction:column;gap:8px;z-index:9999;pointer-events:none;}
+    .toast{background:#121723;border:1px solid var(--border);color:var(--text);padding:9px 11px;border-radius:10px;font-size:12px;opacity:0;transform:translateY(8px);transition:.2s;}
+    .toast.show{opacity:1;transform:translateY(0);} 
+
+</style>
 </head>
 <body>
 
@@ -193,6 +207,7 @@
 
   </div>
 </div>
+<div class="toast-stack" id="toastStack" aria-live="polite"></div>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/peerjs/1.5.2/peerjs.min.js"></script>
 <script>
@@ -318,6 +333,29 @@ function recibirDatos(data) {
 setInterval(() => {
   if (conn && conn.open) conn.send({ type: 'ping' });
 }, 5000);
+
+
+function toast(msg){
+  const stack=document.getElementById('toastStack');if(!stack)return;
+  const t=document.createElement('div');t.className='toast';t.textContent=msg;stack.appendChild(t);
+  requestAnimationFrame(()=>t.classList.add('show'));
+  setTimeout(()=>{t.classList.remove('show');setTimeout(()=>t.remove(),180);},1700);
+}
+
+const _enviar=enviar;
+enviar=function(cmd){ _enviar(cmd); toast('Enviado: '+cmd); };
+const _enviarTexto=enviarTexto;
+enviarTexto=function(){ _enviarTexto(); toast('Texto enviado'); };
+const _conectar=conectar;
+conectar=function(){ _conectar(); toast('Conectando…'); };
+
+document.getElementById('codigoInput')?.addEventListener('keydown', (e)=>{
+  if(e.key==='Enter') conectar();
+});
+document.getElementById('textoRapidoInput')?.addEventListener('keydown', (e)=>{
+  if(e.ctrlKey && e.key==='Enter') enviarTexto();
+});
+
 </script>
 </body>
 </html>
