@@ -1133,8 +1133,23 @@ function actualizarPreview(texto){
 // ══════════════════════════════════════════
 // HIMNARIO
 // ══════════════════════════════════════════
-function cargarHimnario(){
+async function cargarHimnario(){
+  // 1) Intentar cargar catálogo completo desde data/himnario.json
+  try {
+    const resp = await fetch('data/himnario.json', { cache:'no-store' });
+    if (resp.ok) {
+      const data = await resp.json();
+      if (Array.isArray(data) && data.length) {
+        himnarioBase = data;
+      }
+    }
+  } catch (e) {
+    console.warn('No se pudo cargar data/himnario.json, usando base embebida.', e);
+  }
+
+  // 2) Cargar himnos extra locales
   try{himnarioExtra=JSON.parse(localStorage.getItem('presencia_himnos_extra')||'[]');}catch(e){himnarioExtra=[];}
+
   fusionarHimnario();
   renderizarLista(himnarioCompleto);
   const el=document.getElementById('totalHimnos');
@@ -1763,8 +1778,8 @@ function eliminarOrdenGuardado(id,e){
 // ══════════════════════════════════════════
 setInterval(()=>{if(proyeccionAbierta)canal.postMessage({type:'heartbeat'});},3000);
 
-document.addEventListener('DOMContentLoaded', ()=>{
-  cargarHimnario();
+document.addEventListener('DOMContentLoaded', async ()=>{
+  await cargarHimnario();
   iniciarCanciones();
   iniciarBiblia();
   iniciarOrden();
