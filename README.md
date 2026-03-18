@@ -30,6 +30,22 @@ Abre `remote.html` en el celular desde la misma red WiFi. En el panel ve a **Con
 
 > ⚠️ La comunicación entre el panel y la proyección usa `BroadcastChannel`, por lo que ambas ventanas deben estar abiertas en el **mismo navegador** del mismo equipo. El control remoto requiere conexión a internet para la señalización inicial (usa PeerJS).
 
+### 4. Importar un himnario propio
+En el módulo **Himnario de Gloria**, usa **📂 Importar JSON** para cargar un archivo local con este formato:
+
+```json
+[
+  {
+    "numero": 1,
+    "titulo": "Ejemplo de himno",
+    "estrofas": ["Primera estrofa...", "Segunda estrofa..."],
+    "coro": "Coro opcional..."
+  }
+]
+```
+
+También puedes descargar una plantilla desde el mismo módulo con **⬇️ Plantilla JSON**.
+
 ---
 
 ## 🎛️ Módulos
@@ -38,22 +54,26 @@ Abre `remote.html` en el celular desde la misma red WiFi. En el panel ve a **Con
 Escribe cualquier texto y proyéctalo al instante. Incluye textos frecuentes predefinidos (Bienvenida, Ofrenda, Silencio, etc.), control de tamaño de fuente (20–120px) y alineación.
 
 ### 🎵 Himnario de Gloria
-Base de datos con los himnos más usados del Himnario de Gloria (329 himnos en total). Búsqueda por número o título. Proyección estrofa por estrofa y coro independiente. Permite agregar himnos nuevos que se guardan permanentemente en el navegador.
+Base incluida con himnos verificados del proyecto y búsqueda por número o título. Proyección estrofa por estrofa y coro independiente. También permite importar un himnario completo desde un archivo JSON local o agregar himnos manualmente; lo importado se guarda permanentemente en el navegador del dispositivo.
 
 ### 🎤 Canciones Libres
 Crea y gestiona tu propia biblioteca de alabanzas y adoraciones. Cada canción puede tener múltiples estrofas, coro y puente. Búsqueda por título, autor o letra. Exportación e importación en formato JSON para respaldo.
 
 ### 📖 Biblia
-Acceso a 5 versiones en español mediante la API de bible-api.deno.dev:
+Acceso a 6 versiones en español mediante la API de bible-api.deno.dev:
 - **RVR 1960** — Reina Valera 1960
 - **RVR 1995** — Reina Valera 1995
 - **NVI** — Nueva Versión Internacional
 - **DHH** — Dios Habla Hoy
+- **TLA** — Traducción en Lenguaje Actual
 - **PDT** — Palabra de Dios para Todos
 
 Búsqueda rápida por referencia (`Juan 3:16`), navegación por libro/capítulo/versículo, carga de capítulo completo y versículos favoritos guardados localmente.
 
-> ⚠️ Requiere conexión a internet.
+> ⚠️ Requiere conexión a internet para consultas no cacheadas.
+
+> ✅ Modo offline: puedes descargar capítulos completos para **RVR60, TLA y DHH** desde el módulo Biblia.
+Cuando no haya internet, la app usa automáticamente la copia local guardada (IndexedDB).
 
 ### 📅 Orden del Culto
 Planifica la secuencia completa del servicio antes de comenzar. Combina himnos, canciones, versículos, textos y secciones en cualquier orden. Modo presentación con botones Anterior/Siguiente. Los órdenes se guardan y pueden reutilizarse en cultos futuros.
@@ -74,6 +94,21 @@ Reproduce archivos de audio (MP3, WAV, OGG) directamente desde el navegador. Pla
 
 ### 📱 Control remoto
 Controla el panel desde un celular u otro dispositivo en la misma red. Funciones disponibles desde el celular: Anterior/Siguiente en el Orden del Culto, Pantalla negra, Limpiar, Proyectar texto, Escribir texto directamente y controlar el tamaño de fuente.
+
+### 🆕 Plataforma Extendida (v11)
+Se añadieron capacidades avanzadas para evolución y operación:
+
+- **Storage versionado + migraciones** (`schemaVersion`) y recuperación segura de datos.
+- **IndexedDB para medios** de anuncios (imágenes), reduciendo presión en `localStorage`.
+- **Diagnóstico y observabilidad** (niveles de log y panel de eventos).
+- **Resiliencia bíblica** con reintentos y caché local de consultas.
+- **Centro de control en vivo** con estado consolidado + botón global de pánico.
+- **Roles y bloqueo por PIN** de módulos sensibles.
+  - Nota: por defecto el bloqueo aplica al panel del operador; el control remoto no se bloquea, salvo que se active la opción para restringir comandos remotos críticos.
+- **Escenas/plantillas** guardables y aplicables en un clic.
+- **Paquete de culto** para backup/restauración integral.
+- **Teleprompter** (`teleprompter.html`) con control de velocidad desde panel.
+- **Métricas operativas locales** (sesiones, proyecciones, módulos usados).
 
 ---
 

@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Presencia — Teleprompter</title>
+  <style>
+    :root{--bg:#05070a;--text:#f4efe1;--accent:#c9a84c}
+    *{box-sizing:border-box}
+    body{margin:0;background:var(--bg);color:var(--text);font-family:Georgia,serif;overflow:hidden}
+    .hud{position:fixed;top:0;left:0;right:0;height:46px;background:rgba(0,0,0,.6);display:flex;align-items:center;gap:12px;padding:0 14px;border-bottom:1px solid rgba(255,255,255,.12);z-index:2}
+    .badge{font-size:12px;color:var(--accent);letter-spacing:1px;text-transform:uppercase}
+    .wrap{position:absolute;left:0;right:0;top:46px;bottom:0;overflow:hidden;padding:40px 60px}
+    #text{font-size:54px;line-height:1.45;white-space:pre-wrap;transform:translateY(0);will-change:transform}
+    .hint{opacity:.45;font-style:italic}
+  </style>
+</head>
+<body>
+  <div class="hud">
+    <div class="badge">Teleprompter · Presencia</div>
+    <div id="speedLbl" style="font-size:12px;color:#aaa;">Velocidad: 30</div>
+  </div>
+  <div class="wrap"><div id="text"><span class="hint">Esperando texto...</span></div></div>
+
+  <script>
+    const canal = new BroadcastChannel('presencia-channel');
+    const textEl = document.getElementById('text');
+    const speedLbl = document.getElementById('speedLbl');
+    let speed = 30;
+    let y = 0;
+
+    function loop(){
+      y -= speed / 100;
+      textEl.style.transform = `translateY(${y}px)`;
+      requestAnimationFrame(loop);
+    }
+
+    canal.onmessage = (e) => {
+      const msg = e.data || {};
+      if (msg.type === 'teleprompter-update') {
+        textEl.textContent = msg.text || '';
+        y = 0;
+      }
+      if (msg.type === 'teleprompter-speed') {
+        speed = Number(msg.speed || 30);
+        speedLbl.textContent = 'Velocidad: ' + speed;
+      }
+    };
+
+    requestAnimationFrame(loop);
+  </script>
+</body>
+</html>
