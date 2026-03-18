@@ -30,6 +30,22 @@ Abre `remote.html` en el celular desde la misma red WiFi. En el panel ve a **Con
 
 > ⚠️ La comunicación entre el panel y la proyección usa `BroadcastChannel`, por lo que ambas ventanas deben estar abiertas en el **mismo navegador** del mismo equipo. El control remoto requiere conexión a internet para la señalización inicial (usa PeerJS).
 
+### 4. Importar un himnario propio
+En el módulo **Himnario de Gloria**, usa **📂 Importar JSON** para cargar un archivo local con este formato:
+
+```json
+[
+  {
+    "numero": 1,
+    "titulo": "Ejemplo de himno",
+    "estrofas": ["Primera estrofa...", "Segunda estrofa..."],
+    "coro": "Coro opcional..."
+  }
+]
+```
+
+También puedes descargar una plantilla desde el mismo módulo con **⬇️ Plantilla JSON**.
+
 ---
 
 ## 🎛️ Módulos
@@ -38,7 +54,7 @@ Abre `remote.html` en el celular desde la misma red WiFi. En el panel ve a **Con
 Escribe cualquier texto y proyéctalo al instante. Incluye textos frecuentes predefinidos (Bienvenida, Ofrenda, Silencio, etc.), control de tamaño de fuente (20–120px) y alineación.
 
 ### 🎵 Himnario de Gloria
-Base de datos con los himnos más usados del Himnario de Gloria (329 himnos en total). Búsqueda por número o título. Proyección estrofa por estrofa y coro independiente. Permite agregar himnos nuevos que se guardan permanentemente en el navegador.
+Base incluida con himnos verificados del proyecto y búsqueda por número o título. Proyección estrofa por estrofa y coro independiente. También permite importar un himnario completo desde un archivo JSON local o agregar himnos manualmente; lo importado se guarda permanentemente en el navegador del dispositivo.
 
 ### 🎤 Canciones Libres
 Crea y gestiona tu propia biblioteca de alabanzas y adoraciones. Cada canción puede tener múltiples estrofas, coro y puente. Búsqueda por título, autor o letra. Exportación e importación en formato JSON para respaldo.

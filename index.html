@@ -489,9 +489,13 @@
         </div>
 
         <div class="card">
-          <div class="card-title">Agregar himno que no está en la lista</div>
-          <p style="font-size:13px;color:var(--text-dim);margin-bottom:12px;line-height:1.6;">Los himnos que agregues se guardan en este dispositivo permanentemente.</p>
-          <button class="btn btn-secondary btn-full" onclick="toggleFormAgregar()">➕ Agregar himno nuevo</button>
+          <div class="card-title">Agregar o importar himnos</div>
+          <p style="font-size:13px;color:var(--text-dim);margin-bottom:12px;line-height:1.6;">La base incluida ahora contiene solo himnos verificados del proyecto. Para cargar tu himnario completo, importa un archivo JSON local con tus letras autorizadas; los himnos importados se guardan en este dispositivo.</p>
+          <div class="btn-row" style="margin-bottom:12px;">
+            <button class="btn btn-secondary" onclick="toggleFormAgregar()">➕ Agregar himno nuevo</button>
+            <label class="btn btn-secondary" style="cursor:pointer;">📂 Importar JSON<input type="file" accept=".json" onchange="importarHimnos(this)" style="display:none;"></label>
+            <button class="btn btn-secondary" onclick="exportarPlantillaHimnos()">⬇️ Plantilla JSON</button>
+          </div>
           <div id="formAgregar" style="display:none;margin-top:16px;">
             <div class="divider"></div>
             <div style="display:grid;grid-template-columns:80px 1fr;gap:10px;margin-bottom:12px;">
@@ -1239,6 +1243,54 @@ function proyectarCoro(texto,h){
 function toggleFormAgregar(){
   const f=document.getElementById('formAgregar');
   f.style.display=f.style.display==='none'?'block':'none';
+}
+function esHimnoValido(h){
+  return h&&Number.isInteger(Number(h.numero))&&String(h.titulo||'').trim()&&Array.isArray(h.estrofas)&&h.estrofas.length&&h.estrofas.every(e=>String(e||'').trim());
+}
+function normalizarHimno(h){
+  return {
+    numero:Number(h.numero),
+    titulo:String(h.titulo||'').trim(),
+    estrofas:h.estrofas.map(e=>String(e||'').trim()).filter(Boolean),
+    coro:String(h.coro||'').trim()
+  };
+}
+function exportarPlantillaHimnos(){
+  const plantilla=[{numero:1,titulo:'Ejemplo de himno',estrofas:['Primera estrofa...','Segunda estrofa...'],coro:'Coro opcional...'}];
+  const blob=new Blob([JSON.stringify(plantilla,null,2)],{type:'application/json'});
+  const a=document.createElement('a');a.href=URL.createObjectURL(blob);
+  a.download='presencia-himnario-plantilla.json';a.click();
+}
+function importarHimnos(input){
+  const file=input.files&&input.files[0];if(!file)return;
+  const reader=new FileReader();
+  reader.onload=(e)=>{
+    try{
+      const data=JSON.parse(e.target.result);
+      if(!Array.isArray(data))throw new Error('Formato inválido');
+      const normalizados=data.filter(esHimnoValido).map(normalizarHimno);
+      if(!normalizados.length)throw new Error('Sin himnos válidos');
+      const confirmado=confirm(`Se importarán ${normalizados.length} himnos válidos. ¿Agregar a los existentes?
+Aceptar = Agregar | Cancelar = Reemplazar`);
+      if(confirmado){
+        const mapa=new Map(himnarioExtra.map(h=>[h.numero,h]));
+        normalizados.forEach(h=>mapa.set(h.numero,h));
+        himnarioExtra=[...mapa.values()].sort((a,b)=>a.numero-b.numero);
+      }else{
+        himnarioExtra=normalizados.sort((a,b)=>a.numero-b.numero);
+      }
+      localStorage.setItem('presencia_himnos_extra',JSON.stringify(himnarioExtra));
+      fusionarHimnario();
+      renderizarLista(himnarioCompleto);
+      const el=document.getElementById('totalHimnos');
+      if(el)el.textContent=himnarioCompleto.length+' himnos';
+      alert('Importación completada: '+himnarioCompleto.length+' himnos disponibles.');
+    }catch(err){
+      alert('Error al importar: archivo no válido.');
+    }
+  };
+  reader.readAsText(file);
+  input.value='';
 }
 function guardarHimnoNuevo(){
   const numero=parseInt(document.getElementById('nuevoNumero').value);

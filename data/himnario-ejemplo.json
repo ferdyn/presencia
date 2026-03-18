@@ -1,0 +1,11 @@
+[
+  {
+    "numero": 1,
+    "titulo": "Ejemplo de himno",
+    "estrofas": [
+      "Primera estrofa...",
+      "Segunda estrofa..."
+    ],
+    "coro": "Coro opcional..."
+  }
+]
