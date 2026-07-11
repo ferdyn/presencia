@@ -1170,8 +1170,19 @@ async function cargarHimnario(){
   if(el)el.textContent=himnarioCompleto.length+' himnos';
 }
 function fusionarHimnario(){
-  himnarioCompleto=[...himnarioBase,...himnarioExtra];
-  himnarioCompleto.sort((a,b)=>a.numero-b.numero);
+  // Solo se muestran himnos con letra disponible. Las entradas de relleno
+  // no deben llegar a la pantalla de proyección.
+  const tieneLetra = h => Array.isArray(h?.estrofas) && h.estrofas.some(estrofa =>
+    typeof estrofa === 'string' && estrofa.trim() &&
+    !estrofa.includes('[Letra pendiente de cargar')
+  );
+
+  // Las canciones añadidas por el operador sustituyen el número original.
+  const porNumero = new Map();
+  [...himnarioBase, ...himnarioExtra].forEach(h => {
+    if (tieneLetra(h)) porNumero.set(Number(h.numero), h);
+  });
+  himnarioCompleto = [...porNumero.values()].sort((a,b) => a.numero - b.numero);
 }
 function renderizarLista(lista){
   const cont=document.getElementById('himnoLista');
