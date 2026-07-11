@@ -216,6 +216,9 @@ let conn = null;
 let pantallaNegraActiva = false;
 let remoteFontSize = 60;
 
+const codigoEnlace = new URLSearchParams(window.location.search).get('code');
+if (codigoEnlace) document.getElementById('codigoInput').value = codigoEnlace.toUpperCase();
+
 // ── CONECTAR ──
 function conectar() {
   const codigo = document.getElementById('codigoInput').value.trim().toUpperCase();
