@@ -4,11 +4,11 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Presencia — Proyección</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&family=Crimson+Pro:ital,wght@0,300;0,400;0,600;1,300;1,400&display=swap" rel="stylesheet">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
   <style>
     :root {
-      --accent: #c9a84c;
+      --accent: #dfc282;
     }
 
     * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -69,15 +69,15 @@
     /* ── TEXTO PRINCIPAL ── */
     #mainText {
       color: #fff;
-      font-family: 'Crimson Pro', serif;
-      font-size: 60px;
-      font-weight: 400;
-      line-height: 1.4;
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      font-size: 58px;
+      font-weight: 600;
+      line-height: 1.45;
       text-align: center;
       text-shadow:
         0 2px 20px rgba(0,0,0,0.8),
-        0 0 60px rgba(201,168,76,0.15);
-      letter-spacing: 1px;
+        0 0 60px rgba(223,194,130,0.15);
+      letter-spacing: -0.5px;
       max-width: 1100px;
       transition: all .4s ease;
       word-break: break-word;
@@ -94,10 +94,11 @@
 
     /* ── SUBTÍTULO / REFERENCIA ── */
     #subtitle {
-      color: rgba(201,168,76,0.7);
-      font-family: 'Cinzel', serif;
-      font-size: 18px;
-      letter-spacing: 3px;
+      color: var(--accent);
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      font-size: 19px;
+      font-weight: 500;
+      letter-spacing: 1.5px;
       text-transform: uppercase;
       margin-top: 28px;
       opacity: 0;
@@ -255,19 +256,43 @@
   let currentFontSize = 60;
   let currentAlign = 'center';
   let hasContent = false;
+  let lastMsg = null;
+
+  // Función para enviar mensajes al panel de control de forma robusta
+  function enviarMensajeAlPanel(msg) {
+    try {
+      canal.postMessage(msg);
+    } catch (e) {
+      console.warn('Error al enviar mensaje por BroadcastChannel:', e);
+    }
+    if (window.opener) {
+      try {
+        window.opener.postMessage(msg, '*');
+      } catch (e) {
+        console.warn('Error al enviar mensaje directo a opener:', e);
+      }
+    }
+    if (window.parent && window.parent !== window) {
+      try {
+        window.parent.postMessage(msg, '*');
+      } catch (e) {
+        console.warn('Error al enviar mensaje directo al parent:', e);
+      }
+    }
+  }
 
   // Avisar al panel que estamos listos
-  canal.postMessage({ type: 'ping' });
-  setInterval(() => canal.postMessage({ type: 'ping' }), 2000);
+  enviarMensajeAlPanel({ type: 'ping' });
+  setInterval(() => enviarMensajeAlPanel({ type: 'ping' }), 2000);
 
   // Avisar al cerrar
   window.addEventListener('beforeunload', () => {
-    canal.postMessage({ type: 'closed' });
+    enviarMensajeAlPanel({ type: 'closed' });
   });
 
   // ── RECIBIR MENSAJES ──
-  canal.onmessage = (e) => {
-    const msg = e.data;
+  function procesarMensaje(msg) {
+    if (!msg) return;
 
     switch (msg.type) {
 
@@ -306,7 +331,9 @@
         break;
 
       case 'clear':
-        limpiarPantalla();
+        if (hasContent) {
+          limpiarPantalla();
+        }
         break;
 
       case 'fontSize':
@@ -320,9 +347,28 @@
         subtitle.style.textAlign = msg.value;
         break;
     }
+  }
+
+  canal.onmessage = (e) => {
+    procesarMensaje(e.data);
   };
 
+  window.addEventListener('message', (e) => {
+    if (e.data && typeof e.data === 'object' && e.data.type) {
+      procesarMensaje(e.data);
+    }
+  });
+
   function mostrarContenido(msg) {
+    const isSameContent = lastMsg && 
+                          lastMsg.type === 'content' && 
+                          lastMsg.contentType !== 'anuncio' && 
+                          lastMsg.text === msg.text && 
+                          lastMsg.subtitle === msg.subtitle && 
+                          lastMsg.label === msg.label;
+
+    lastMsg = JSON.parse(JSON.stringify(msg));
+
     // Ocultar "en espera"
     waiting.classList.add('hidden');
     hasContent = true;
@@ -330,7 +376,20 @@
     // Ocultar pantalla negra si estaba activa
     blackOv.classList.remove('active');
 
-    // Animación de salida
+    if (isSameContent) {
+      // Aplicar propiedades de diseño de forma directa si el contenido no varió
+      mainText.style.fontSize = (msg.fontSize || currentFontSize) + 'px';
+      mainText.style.textAlign = msg.align || currentAlign;
+      if (msg.subtitle) {
+        subtitle.style.textAlign = msg.align || currentAlign;
+      }
+      mainText.classList.add('visible');
+      subtitle.classList.add('visible');
+      decoLine.classList.add('visible');
+      return;
+    }
+
+    // Animación de salida (si el contenido es nuevo o distinto)
     mainText.classList.remove('visible');
     subtitle.classList.remove('visible');
     decoLine.classList.remove('visible');
@@ -349,6 +408,7 @@
       if (msg.subtitle) {
         subtitle.textContent = msg.subtitle;
         subtitle.style.display = '';
+        subtitle.style.textAlign = msg.align || currentAlign;
       } else {
         subtitle.textContent = '';
         subtitle.style.display = 'none';
@@ -368,6 +428,7 @@
   }
 
   function limpiarPantalla() {
+    lastMsg = null;
     mainText.classList.remove('visible');
     subtitle.classList.remove('visible');
     decoLine.classList.remove('visible');
@@ -383,8 +444,33 @@
   }
 
   function mostrarAnuncio(msg) {
+    const isSameAnuncio = lastMsg && 
+                          lastMsg.type === 'content' && 
+                          lastMsg.contentType === 'anuncio' && 
+                          lastMsg.text === msg.text && 
+                          lastMsg.imagen === msg.imagen && 
+                          JSON.stringify(lastMsg.fondo) === JSON.stringify(msg.fondo);
+
+    lastMsg = JSON.parse(JSON.stringify(msg));
+
     waiting.classList.add('hidden');
     blackOv.classList.remove('active');
+    hasContent = true;
+
+    if (isSameAnuncio) {
+      if (msg.fondo) {
+        document.getElementById('background').style.background = msg.fondo.bg;
+        mainText.style.color = msg.fondo.text;
+        subtitle.style.color = msg.fondo.sub || 'rgba(201,168,76,0.6)';
+      }
+      if (msg.text) {
+        mainText.style.fontSize = (msg.fontSize || 55) + 'px';
+      }
+      mainText.classList.add('visible');
+      decoLine.classList.add('visible');
+      return;
+    }
+
     mainText.classList.remove('visible');
     subtitle.classList.remove('visible');
     decoLine.classList.remove('visible');

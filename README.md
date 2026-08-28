@@ -38,7 +38,7 @@ Abre `remote.html` en el celular desde la misma red WiFi. En el panel ve a **Con
 Escribe cualquier texto y proyéctalo al instante. Incluye textos frecuentes predefinidos (Bienvenida, Ofrenda, Silencio, etc.), control de tamaño de fuente (20–120px) y alineación.
 
 ### 🎵 Himnario de Gloria
-Catálogo de himnos con letras verificadas y búsqueda por número o título. Las entradas sin letra no se muestran hasta que se completen. Búsqueda por número o título. Proyección estrofa por estrofa y coro independiente. Permite agregar himnos nuevos que se guardan permanentemente en el navegador.
+Base de datos con los himnos más usados del Himnario de Gloria (329 himnos en total). Búsqueda por número o título. Proyección estrofa por estrofa y coro independiente. Permite agregar himnos nuevos que se guardan permanentemente en el navegador.
 
 ### 🎤 Canciones Libres
 Crea y gestiona tu propia biblioteca de alabanzas y adoraciones. Cada canción puede tener múltiples estrofas, coro y puente. Búsqueda por título, autor o letra. Exportación e importación en formato JSON para respaldo.

@@ -4,24 +4,28 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
   <title>Presencia — Control Remoto</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&family=Crimson+Pro:wght@300;400;600&display=swap" rel="stylesheet">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
   <style>
     :root {
-      --bg:#0a0c10; --panel:#111318; --card:#181c24; --input:#1e2330;
-      --border:#2a3045; --accent:#c9a84c; --text:#e8e2d5;
-      --text-dim:#7a7468; --text-muted:#4a4840;
-      --success:#4caf80; --danger:#c94c4c;
+      --bg:#09090b; --panel:#111114; --card:#18181b; --input:#202024;
+      --border:#27272a; --accent:#dfc282; --text:#f4f4f5;
+      --text-dim:#a1a1aa; --text-muted:#62626a;
+      --success:#10b981; --danger:#ef4444;
+      --accent-alpha-08:rgba(223,194,130,0.08);
+      --accent-alpha-12:rgba(223,194,130,0.12);
+      --accent-alpha-15:rgba(223,194,130,0.15);
+      --accent-alpha-20:rgba(223,194,130,0.2);
     }
     *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
-    html,body{background:var(--bg);color:var(--text);font-family:'Crimson Pro',serif;height:100%;overflow:hidden;}
+    html,body{background:var(--bg);color:var(--text);font-family:'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;font-size:14px;height:100%;overflow:hidden;-webkit-font-smoothing:antialiased;}
 
     /* ── HEADER ── */
     header{background:linear-gradient(135deg,#0e1018,#151a24);border-bottom:1px solid var(--border);padding:12px 20px;display:flex;align-items:center;justify-content:space-between;}
     .logo{display:flex;align-items:center;gap:10px;}
     .logo svg{width:28px;height:28px;}
-    .logo-text{font-family:'Cinzel',serif;font-size:16px;font-weight:700;letter-spacing:3px;color:var(--accent);}
-    .logo-sub{font-size:9px;color:var(--text-muted);letter-spacing:2px;text-transform:uppercase;}
+    .logo-text{font-size:18px;font-weight:700;letter-spacing:0.5px;color:var(--accent);}
+    .logo-sub{font-size:11px;color:var(--text-muted);letter-spacing:0.5px;text-transform:none;}
     .conn-badge{display:flex;align-items:center;gap:6px;font-size:11px;color:var(--text-dim);}
     .conn-dot{width:8px;height:8px;border-radius:50%;background:var(--text-muted);transition:all .3s;}
     .conn-dot.ok{background:var(--success);box-shadow:0 0 6px var(--success);}
@@ -32,11 +36,12 @@
 
     /* ── CONECTAR ── */
     #vistaConectar{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:24px;gap:16px;text-align:center;}
-    #vistaConectar h2{font-family:'Cinzel',serif;font-size:18px;color:var(--text);letter-spacing:1px;}
+    #vistaConectar h2{font-size:18px;font-weight:700;color:var(--text);letter-spacing:0.5px;}
     #vistaConectar p{font-size:14px;color:var(--text-dim);line-height:1.7;max-width:280px;}
-    .codigo-input{background:var(--input);border:1px solid var(--border);border-radius:10px;color:var(--text);font-family:'Cinzel',serif;font-size:24px;letter-spacing:6px;text-align:center;padding:14px 20px;width:100%;max-width:280px;outline:none;text-transform:uppercase;}
-    .codigo-input:focus{border-color:var(--accent);}
-    .btn-conectar{background:linear-gradient(135deg,var(--accent),#dbb85a);color:#0a0c10;border:none;border-radius:10px;font-family:'Cinzel',serif;font-size:14px;font-weight:700;letter-spacing:2px;padding:16px 32px;cursor:pointer;width:100%;max-width:280px;text-transform:uppercase;transition:all .2s;}
+    .codigo-input{background:var(--input);border:1px solid var(--border);border-radius:12px;color:var(--text);font-family:inherit;font-weight:700;font-size:24px;letter-spacing:6px;text-align:center;padding:14px 20px;width:100%;max-width:280px;outline:none;text-transform:uppercase;}
+    .codigo-input:focus{border-color:var(--accent);box-shadow:0 0 0 3px rgba(223,194,130,.15);}
+    .btn-conectar{background:var(--accent);color:#09090b;border:none;border-radius:12px;font-family:inherit;font-size:14px;font-weight:700;letter-spacing:1px;padding:16px 32px;cursor:pointer;width:100%;max-width:280px;text-transform:uppercase;transition:all .2s;}
+    .btn-conectar:hover{filter:brightness(1.08);}
     .btn-conectar:active{transform:scale(.97);}
 
     /* ── CONTROL REMOTO ── */
@@ -44,59 +49,60 @@
 
     /* Diapositiva actual */
     .current-display{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:14px 16px;text-align:center;}
-    .current-label{font-family:'Cinzel',serif;font-size:9px;letter-spacing:2px;color:var(--text-muted);text-transform:uppercase;margin-bottom:6px;}
-    .current-text{font-size:15px;color:var(--text);line-height:1.5;min-height:40px;max-height:80px;overflow:hidden;}
+    .current-label{font-size:11px;letter-spacing:1px;color:var(--text-muted);text-transform:uppercase;margin-bottom:6px;font-weight:600;}
+    .current-text{font-size:14px;color:var(--text);line-height:1.5;min-height:40px;max-height:80px;overflow:hidden;}
 
     /* Botones de navegación grandes */
     .nav-row{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
-    .nav-btn{background:var(--card);border:1px solid var(--border);border-radius:14px;color:var(--text);font-family:'Cinzel',serif;font-size:13px;letter-spacing:1px;padding:22px 10px;cursor:pointer;text-align:center;transition:all .15s;text-transform:uppercase;display:flex;flex-direction:column;align-items:center;gap:6px;}
-    .nav-btn:active{transform:scale(.95);background:rgba(201,168,76,.08);border-color:var(--accent);}
+    .nav-btn{background:var(--card);border:1px solid var(--border);border-radius:12px;color:var(--text);font-family:inherit;font-weight:600;font-size:14px;letter-spacing:0.5px;padding:22px 10px;cursor:pointer;text-align:center;transition:all .15s;text-transform:uppercase;display:flex;flex-direction:column;align-items:center;gap:6px;}
+    .nav-btn:active{transform:scale(.95);background:var(--accent-alpha-08);border-color:var(--accent);}
     .nav-btn .nav-icon{font-size:28px;}
 
     /* Botones de control rápido */
     .control-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
-    .ctrl-btn{border:1px solid var(--border);border-radius:12px;padding:18px 10px;cursor:pointer;font-family:'Cinzel',serif;font-size:11px;letter-spacing:1px;text-align:center;transition:all .15s;text-transform:uppercase;display:flex;flex-direction:column;align-items:center;gap:6px;}
+    .ctrl-btn{border:1px solid var(--border);border-radius:12px;padding:18px 10px;cursor:pointer;font-family:inherit;font-weight:600;font-size:11px;letter-spacing:0.5px;text-align:center;transition:all .15s;text-transform:uppercase;display:flex;flex-direction:column;align-items:center;gap:6px;}
     .ctrl-btn:active{transform:scale(.95);}
     .ctrl-btn .ci{font-size:24px;}
     .ctrl-negro{background:rgba(0,0,0,.4);color:var(--text-dim);}
-    .ctrl-negro.activo{background:rgba(201,76,76,.15);border-color:var(--danger);color:var(--danger);}
+    .ctrl-negro.activo{background:rgba(239,68,68,.15);border-color:var(--danger);color:var(--danger);}
     .ctrl-limpiar{background:var(--card);color:var(--text-dim);}
-    .ctrl-proyectar{background:rgba(201,168,76,.08);border-color:rgba(201,168,76,.3);color:var(--accent);}
+    .ctrl-proyectar{background:var(--accent-alpha-08);border-color:rgba(223,194,130,.3);color:var(--accent);}
     .ctrl-texto{background:var(--card);color:var(--text-dim);}
 
     /* Texto rápido */
     .texto-rapido{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:14px;}
-    .texto-rapido textarea{width:100%;background:var(--input);border:1px solid var(--border);border-radius:8px;color:var(--text);font-family:'Crimson Pro',serif;font-size:16px;padding:10px 12px;resize:none;height:70px;outline:none;}
-    .texto-rapido textarea:focus{border-color:var(--accent);}
-    .texto-rapido button{width:100%;margin-top:8px;background:var(--accent);color:#0a0c10;border:none;border-radius:8px;font-family:'Cinzel',serif;font-size:12px;font-weight:700;letter-spacing:1px;padding:12px;cursor:pointer;text-transform:uppercase;}
+    .texto-rapido textarea{width:100%;background:var(--input);border:1px solid var(--border);border-radius:12px;color:var(--text);font-family:inherit;font-size:14px;padding:10px 12px;resize:none;height:70px;outline:none;}
+    .texto-rapido textarea:focus{border-color:var(--accent);box-shadow:0 0 0 3px rgba(223,194,130,.15);}
+    .texto-rapido button{width:100%;margin-top:8px;background:var(--accent);color:#09090b;border:none;border-radius:12px;font-family:inherit;font-size:14px;font-weight:700;letter-spacing:1px;padding:12px;cursor:pointer;text-transform:uppercase;transition:all .2s;}
+    .texto-rapido button:hover{filter:brightness(1.08);}
     .texto-rapido button:active{transform:scale(.98);}
 
     /* Sección title */
-    .sec-title{font-family:'Cinzel',serif;font-size:10px;letter-spacing:2px;color:var(--text-muted);text-transform:uppercase;margin-bottom:4px;}
+    .sec-title{font-size:11px;font-weight:600;letter-spacing:1px;color:var(--text-muted);text-transform:uppercase;margin-bottom:4px;}
 
     /* Desconectar */
-    .btn-desconectar{background:rgba(201,76,76,.1);border:1px solid rgba(201,76,76,.3);border-radius:10px;color:var(--danger);font-family:'Cinzel',serif;font-size:11px;letter-spacing:1px;padding:12px;cursor:pointer;text-align:center;text-transform:uppercase;margin-top:4px;}
-    .btn-desconectar:active{background:rgba(201,76,76,.2);}
+    .btn-desconectar{background:rgba(239,68,68,.1);border:1px solid rgba(239,68,68,.3);border-radius:12px;color:var(--danger);font-family:inherit;font-weight:600;font-size:11px;letter-spacing:0.5px;padding:12px;cursor:pointer;text-align:center;text-transform:uppercase;margin-top:4px;}
+    .btn-desconectar:active{background:rgba(239,68,68,.2);}
 
     /* VIBRACIÓN feedback */
     @keyframes pulse-border {
-      0%{box-shadow:0 0 0 0 rgba(201,168,76,.4)}
-      70%{box-shadow:0 0 0 10px rgba(201,168,76,0)}
-      100%{box-shadow:0 0 0 0 rgba(201,168,76,0)}
+      0%{box-shadow:0 0 0 0 rgba(223,194,130,.4)}
+      70%{box-shadow:0 0 0 10px rgba(223,194,130,0)}
+      100%{box-shadow:0 0 0 0 rgba(223,194,130,0)}
     }
     .nav-btn:active{animation:pulse-border .3s ease;}
   
 
     /* V12 — REMOTE POLISH */
-    :focus-visible{outline:2px solid var(--accent);outline-offset:2px;border-radius:8px;}
+    :focus-visible{outline:2px solid var(--accent);outline-offset:2px;border-radius:12px;}
     header{backdrop-filter:blur(8px);box-shadow:0 8px 20px rgba(0,0,0,.25);} 
     .screen{max-width:720px;margin:0 auto;padding-bottom:18px;}
     .current-display,.texto-rapido,.ctrl-btn,.nav-btn,.btn-conectar,.btn-desconectar{box-shadow:0 8px 18px rgba(0,0,0,.18);} 
     .ctrl-btn,.nav-btn,.btn-conectar{transition:transform .15s ease,border-color .2s ease,background .2s ease;}
     .ctrl-btn:active,.nav-btn:active,.btn-conectar:active{transform:scale(.98);} 
-    .sec-title{font-size:11px;letter-spacing:1.8px;}
+    .sec-title{font-size:11px;letter-spacing:1px;}
     .toast-stack{position:fixed;left:12px;right:12px;bottom:12px;display:flex;flex-direction:column;gap:8px;z-index:9999;pointer-events:none;}
-    .toast{background:#121723;border:1px solid var(--border);color:var(--text);padding:9px 11px;border-radius:10px;font-size:12px;opacity:0;transform:translateY(8px);transition:.2s;}
+    .toast{background:#121723;border:1px solid var(--border);color:var(--text);padding:9px 11px;border-radius:12px;font-size:12px;opacity:0;transform:translateY(8px);transition:.2s;}
     .toast.show{opacity:1;transform:translateY(0);} 
 
 </style>
@@ -106,10 +112,10 @@
 <header>
   <div class="logo">
     <svg viewBox="0 0 36 36" fill="none">
-      <path d="M18 3 L18 33" stroke="#c9a84c" stroke-width="2.5" stroke-linecap="round"/>
-      <path d="M10 10 L18 3 L26 10" stroke="#c9a84c" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-      <ellipse cx="18" cy="20" rx="10" ry="6" stroke="#c9a84c" stroke-width="1.5" fill="none" opacity=".5"/>
-      <circle cx="18" cy="20" r="3" fill="#c9a84c" opacity=".8"/>
+      <path d="M18 3 L18 33" stroke="var(--accent)" stroke-width="2.5" stroke-linecap="round"/>
+      <path d="M10 10 L18 3 L26 10" stroke="var(--accent)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+      <ellipse cx="18" cy="20" rx="10" ry="6" stroke="var(--accent)" stroke-width="1.5" fill="none" opacity=".5"/>
+      <circle cx="18" cy="20" r="3" fill="var(--accent)" opacity=".8"/>
     </svg>
     <div>
       <div class="logo-text">Presencia</div>
@@ -127,10 +133,10 @@
   <!-- VISTA: CONECTAR -->
   <div id="vistaConectar">
     <svg width="60" height="60" viewBox="0 0 36 36" fill="none" style="opacity:.3;">
-      <path d="M18 3 L18 33" stroke="#c9a84c" stroke-width="2.5" stroke-linecap="round"/>
-      <path d="M10 10 L18 3 L26 10" stroke="#c9a84c" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-      <ellipse cx="18" cy="20" rx="10" ry="6" stroke="#c9a84c" stroke-width="1.5" fill="none" opacity=".5"/>
-      <circle cx="18" cy="20" r="3" fill="#c9a84c" opacity=".8"/>
+      <path d="M18 3 L18 33" stroke="var(--accent)" stroke-width="2.5" stroke-linecap="round"/>
+      <path d="M10 10 L18 3 L26 10" stroke="var(--accent)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+      <ellipse cx="18" cy="20" rx="10" ry="6" stroke="var(--accent)" stroke-width="1.5" fill="none" opacity=".5"/>
+      <circle cx="18" cy="20" r="3" fill="var(--accent)" opacity=".8"/>
     </svg>
     <h2>Conectar al panel</h2>
     <p>Ingresa el código de 6 dígitos que aparece en el panel de control de Presencia.</p>
@@ -190,7 +196,13 @@
     <div class="texto-rapido" id="textoRapidoPanel" style="display:none;">
       <div class="sec-title">Enviar texto</div>
       <textarea id="textoRapidoInput" placeholder="Escribe el texto a proyectar..."></textarea>
-      <button onclick="enviarTexto()">⚡ Proyectar</button>
+      <button onclick="enviarTexto()" style="margin-bottom:12px;">⚡ Proyectar</button>
+      
+      <!-- Historial rápido -->
+      <div id="historialRapidoContainer" style="display:none;border-top:1px solid var(--border);padding-top:12px;margin-top:12px;">
+        <div class="sec-title">Historial de textos rápidos</div>
+        <div id="historialRapidoLista" style="display:flex;flex-direction:column;gap:8px;"></div>
+      </div>
     </div>
 
     <!-- Tamaño de fuente remoto -->
@@ -215,9 +227,6 @@ let peer = null;
 let conn = null;
 let pantallaNegraActiva = false;
 let remoteFontSize = 60;
-
-const codigoEnlace = new URLSearchParams(window.location.search).get('code');
-if (codigoEnlace) document.getElementById('codigoInput').value = codigoEnlace.toUpperCase();
 
 // ── CONECTAR ──
 function conectar() {
@@ -304,10 +313,77 @@ function enviar(cmd) {
   conn.send({ type: 'cmd', cmd, fontSize: remoteFontSize });
 }
 
+let historialRapido = [];
+
+function actualizarHistorialUI() {
+  const container = document.getElementById('historialRapidoContainer');
+  const lista = document.getElementById('historialRapidoLista');
+  if (!container || !lista) return;
+  
+  if (historialRapido.length === 0) {
+    container.style.display = 'none';
+    return;
+  }
+  
+  container.style.display = 'block';
+  lista.innerHTML = '';
+  historialRapido.forEach(txt => {
+    const item = document.createElement('div');
+    item.style.display = 'flex';
+    item.style.alignItems = 'center';
+    item.style.justifyContent = 'space-between';
+    item.style.background = 'rgba(255,255,255,0.03)';
+    item.style.border = '1px solid var(--border)';
+    item.style.borderRadius = '8px';
+    item.style.padding = '8px 10px';
+    item.style.gap = '8px';
+    
+    const label = document.createElement('span');
+    label.style.fontSize = '12px';
+    label.style.color = 'var(--text)';
+    label.style.whiteSpace = 'nowrap';
+    label.style.overflow = 'hidden';
+    label.style.textOverflow = 'ellipsis';
+    label.style.flex = '1';
+    label.style.textAlign = 'left';
+    label.textContent = txt;
+    
+    const btn = document.createElement('button');
+    btn.innerHTML = '⚡ RE-PROYECTAR';
+    btn.style.background = 'rgba(201,168,76,0.15)';
+    btn.style.border = '1px solid var(--accent)';
+    btn.style.borderRadius = '4px';
+    btn.style.cursor = 'pointer';
+    btn.style.color = 'var(--accent)';
+    btn.style.fontSize = '9px';
+    btn.style.fontFamily = "'Cinzel', serif";
+    btn.style.padding = '4px 8px';
+    btn.style.transition = 'all 0.15s';
+    btn.onclick = () => {
+      document.getElementById('textoRapidoInput').value = txt;
+      enviarTexto();
+    };
+    
+    item.appendChild(label);
+    item.appendChild(btn);
+    lista.appendChild(item);
+  });
+}
+
 function enviarTexto() {
   const texto = document.getElementById('textoRapidoInput').value.trim();
   if (!texto || !conn || !conn.open) return;
   if (navigator.vibrate) navigator.vibrate(40);
+  
+  // Guardar en el historial
+  if (!historialRapido.includes(texto)) {
+    historialRapido.unshift(texto);
+    if (historialRapido.length > 3) {
+      historialRapido.pop();
+    }
+    actualizarHistorialUI();
+  }
+
   conn.send({ type: 'cmd', cmd: 'texto', text: texto, fontSize: remoteFontSize });
   document.getElementById('textoRapidoInput').value = '';
   document.getElementById('textoRapidoPanel').style.display = 'none';
@@ -316,6 +392,9 @@ function enviarTexto() {
 function toggleTextoRapido() {
   const panel = document.getElementById('textoRapidoPanel');
   panel.style.display = panel.style.display === 'none' ? 'block' : 'none';
+  if (panel.style.display === 'block') {
+    actualizarHistorialUI();
+  }
 }
 
 // ── RECIBIR DATOS DEL PANEL ──

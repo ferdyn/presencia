@@ -153,7 +153,7 @@
       }
     }
     const cached = StorageService.get(cacheKey, null);
-    if (cached && Array.isArray(cached.data)) return { data: cached.data, cached: true };
+    if (cached && (Array.isArray(cached.data) || (cached.data && typeof cached.data === 'object'))) return { data: cached.data, cached: true };
     throw lastErr;
   }
 
@@ -531,7 +531,10 @@
         if (typeof window.setBibliaEstado === 'function') window.setBibliaEstado('Buscando (con reintentos)...', '');
         const url = `${window.BIBLE_API}/read/${window.bibliaVersion}/${ref.toLowerCase()}`;
         const result = await fetchWithRetryAndCache(url, cacheKey, 2);
-        const data = result.data;
+        let data = result.data;
+        if (data && !Array.isArray(data) && typeof data === 'object') {
+          data = [data];
+        }
         if (!Array.isArray(data) || !data.length) throw new Error('Sin resultados');
         window.ultimosVersiculos = data;
         window.ultimaRef = tituloManual || ref;
@@ -633,6 +636,583 @@
     }, 1000);
   }
 
+  function setupProjectionSyncing() {
+    if (!window.canal) return;
+
+    // Helpers para acceder de forma dinámica a las variables declaradas en el script global de index.html
+    function getTamanoFuente() {
+      try { return tamanoFuente; } catch (e) { return window.tamanoFuente || 60; }
+    }
+    function getAlineacion() {
+      try { return alineacion; } catch (e) { return window.alineacion || 'center'; }
+    }
+    function getTemaActual() {
+      try { return temaActual; } catch (e) { return window.temaActual || 'dark'; }
+    }
+    function getPantallaOscura() {
+      try { return pantallaOscura; } catch (e) { return window.pantallaOscura || false; }
+    }
+
+    function setGlobalTamanoFuente(val) {
+      try { tamanoFuente = val; } catch (e) {}
+      try { window.tamanoFuente = val; } catch (e) {}
+    }
+    function setGlobalAlineacion(val) {
+      try { alineacion = val; } catch (e) {}
+      try { window.alineacion = val; } catch (e) {}
+    }
+    function setGlobalTemaActual(val) {
+      try { temaActual = val; } catch (e) {}
+      try { window.temaActual = val; } catch (e) {}
+    }
+    function setGlobalPantallaOscura(val) {
+      try { pantallaOscura = val; } catch (e) {}
+      try { window.pantallaOscura = val; } catch (e) {}
+    }
+
+    const originalPostMessage = window.canal.postMessage;
+    let ultimoContenidoProyectado = null;
+    let ultimoTemaProyectado = null;
+    let ultimoColorProyectado = null;
+    let ultimaOpacidadProyectada = null;
+    let ultimoFontSizeProyectado = null;
+    let ultimoAlignProyectado = null;
+    let ultimoBlackProyectado = null;
+
+    window.canal.postMessage = function(msg) {
+      if (msg) {
+        if (msg.type === 'content') {
+          ultimoContenidoProyectado = msg;
+          if (ultimoContenidoProyectado && !ultimoContenidoProyectado.fontSize) {
+            ultimoContenidoProyectado.fontSize = getTamanoFuente();
+          }
+          if (ultimoContenidoProyectado && !ultimoContenidoProyectado.align) {
+            ultimoContenidoProyectado.align = getAlineacion();
+          }
+        } else if (msg.type === 'clear') {
+          ultimoContenidoProyectado = null;
+        } else if (msg.type === 'tema') {
+          ultimoTemaProyectado = msg;
+          if (msg.temaActualName) {
+            setGlobalTemaActual(msg.temaActualName);
+          }
+        } else if (msg.type === 'textoColor') {
+          ultimoColorProyectado = msg;
+        } else if (msg.type === 'fondoOpacidad') {
+          ultimaOpacidadProyectada = msg;
+        } else if (msg.type === 'fontSize') {
+          ultimoFontSizeProyectado = msg;
+          setGlobalTamanoFuente(msg.value);
+          if (ultimoContenidoProyectado) {
+            ultimoContenidoProyectado.fontSize = msg.value;
+          }
+        } else if (msg.type === 'align') {
+          ultimoAlignProyectado = msg;
+          setGlobalAlineacion(msg.value);
+          if (ultimoContenidoProyectado) {
+            ultimoContenidoProyectado.align = msg.value;
+          }
+        } else if (msg.type === 'black') {
+          ultimoBlackProyectado = msg;
+          setGlobalPantallaOscura(msg.black);
+        }
+      }
+
+      // Enviar de forma directa por ventana para saltar la restricción de storage partitioning (iframes)
+      if (window.proyeccionWin && !window.proyeccionWin.closed) {
+        try {
+          window.proyeccionWin.postMessage(msg, '*');
+        } catch (e) {
+          console.warn('Error postMessage directo a proyeccionWin:', e);
+        }
+      }
+      const miniIframe = document.getElementById('miniProyectorIframe');
+      if (miniIframe && miniIframe.contentWindow) {
+        try {
+          miniIframe.contentWindow.postMessage(msg, '*');
+        } catch (e) {
+          console.warn('Error postMessage directo a miniProyectorIframe:', e);
+        }
+      }
+
+      return originalPostMessage.apply(window.canal, arguments);
+    };
+
+    // Escuchar mensajes en el canal para sincronizar cuando llegue un ping o teleprompter-ping
+    const originalOnMessage = window.canal.onmessage;
+    window.canal.onmessage = function(e) {
+      const msg = e ? e.data : null;
+      if (msg) {
+        if (msg.type === 'ping') {
+          window.proyeccionAbierta = true;
+          if (typeof window.actualizarEstado === 'function') {
+            window.actualizarEstado(true);
+          }
+
+          // Re-sincronizar inmediatamente todo el estado usando window.canal.postMessage para enviar por todos los conductos
+          const TEMAS = {
+            dark:   { bg: 'radial-gradient(ellipse at 30% 40%, #0d1520 0%, #000 65%)', text: '#e8e2d5', accent: '#c9a84c' },
+            starry: { bg: 'radial-gradient(ellipse at center, #060918 0%, #000 80%)', text: '#e8e2d5', accent: '#7a9ecf' },
+            warm:   { bg: 'radial-gradient(ellipse at center, #1c1007 0%, #000 75%)', text: '#f3e5ab', accent: '#dca035' },
+            light:  { bg: '#fbfbf9', text: '#111', accent: '#8a6e2f' },
+            green:  { bg: 'radial-gradient(ellipse at center, #031407 0%, #000 75%)', text: '#e0ebd4', accent: '#4caf80' },
+            royal:  { bg: 'radial-gradient(ellipse at center, #0a061a 0%, #000 80%)', text: '#e5e2f5', accent: '#9b71e6' }
+          };
+          const currentThemeName = getTemaActual();
+          const currentThemeObj = TEMAS[currentThemeName];
+
+          if (ultimoTemaProyectado) {
+            window.canal.postMessage(ultimoTemaProyectado);
+          } else if (currentThemeObj) {
+            window.canal.postMessage({ type: 'tema', tema: currentThemeObj, temaActualName: currentThemeName });
+          }
+
+          if (ultimoColorProyectado) {
+            window.canal.postMessage(ultimoColorProyectado);
+          } else {
+            const picker = document.getElementById('textoColorPicker');
+            if (picker && picker.value) {
+              window.canal.postMessage({ type: 'textoColor', color: picker.value });
+            }
+          }
+
+          if (ultimaOpacidadProyectada) {
+            window.canal.postMessage(ultimaOpacidadProyectada);
+          } else {
+            const opSlider = document.getElementById('fondoOpacidad');
+            if (opSlider) {
+              window.canal.postMessage({ type: 'fondoOpacidad', value: parseInt(opSlider.value) / 100 });
+            }
+          }
+
+          if (ultimoFontSizeProyectado) {
+            window.canal.postMessage(ultimoFontSizeProyectado);
+          } else {
+            window.canal.postMessage({ type: 'fontSize', value: getTamanoFuente() });
+          }
+
+          if (ultimoAlignProyectado) {
+            window.canal.postMessage(ultimoAlignProyectado);
+          } else {
+            window.canal.postMessage({ type: 'align', value: getAlineacion() });
+          }
+
+          if (ultimoContenidoProyectado) {
+            window.canal.postMessage(ultimoContenidoProyectado);
+          } else {
+            window.canal.postMessage({ type: 'clear' });
+          }
+
+          if (ultimoBlackProyectado) {
+            window.canal.postMessage(ultimoBlackProyectado);
+          } else {
+            window.canal.postMessage({ type: 'black', black: !!getPantallaOscura() });
+          }
+        } else if (msg.type === 'closed') {
+          window.proyeccionAbierta = false;
+          if (typeof window.actualizarEstado === 'function') {
+            window.actualizarEstado(false);
+          }
+        } else if (msg.type === 'teleprompter-ping') {
+          // Responder al ping del teleprompter con el texto y la velocidad actuales
+          const txt = document.getElementById('textoLibre')?.value || document.getElementById('currentSlideContent')?.textContent || '';
+          const speed = Number(document.getElementById('teleSpeed')?.value || 30);
+          window.canal.postMessage({ type: 'teleprompter-update', text: txt });
+          window.canal.postMessage({ type: 'teleprompter-speed', speed });
+        }
+      }
+      if (typeof originalOnMessage === 'function') {
+        return originalOnMessage.apply(this, arguments);
+      }
+    };
+    
+    Logger.info('Sincronización automatizada de proyección inicializada');
+  }
+
+  function setupUsageStatistics() {
+    // Track active projections to compute precise usage time
+    window._activeProjection = null;
+
+    // Load active tracking from session if page is reloaded
+    try {
+      const activeSaved = localStorage.getItem('presencia_active_projection_session');
+      if (activeSaved) {
+        window._activeProjection = JSON.parse(activeSaved);
+        // Update startTime to avoid huge gap if they closed the browser
+        window._activeProjection.startTime = Date.now();
+      }
+    } catch(e){}
+
+    // Helper to commit current projection duration
+    function commitActiveProjection() {
+      if (window._activeProjection) {
+        const duration = Math.round((Date.now() - window._activeProjection.startTime) / 1000);
+        if (duration > 0) {
+          try {
+            const usage = JSON.parse(localStorage.getItem('presencia_uso_items') || '{}');
+            const id = window._activeProjection.id;
+            if (!usage[id]) {
+              usage[id] = {
+                id,
+                type: window._activeProjection.type,
+                title: window._activeProjection.title,
+                duration: 0,
+                count: 1
+              };
+            }
+            usage[id].duration += duration;
+            localStorage.setItem('presencia_uso_items', JSON.stringify(usage));
+          } catch(e) {
+            console.error('Error saving usage stats:', e);
+          }
+        }
+        window._activeProjection = null;
+        localStorage.removeItem('presencia_active_projection_session');
+      }
+    }
+
+    // Helper to start a new active projection
+    function startActiveProjection(type, id, displayTitle) {
+      commitActiveProjection(); // Commit previous first if any
+
+      // Increment count for new projection
+      try {
+        const usage = JSON.parse(localStorage.getItem('presencia_uso_items') || '{}');
+        if (!usage[id]) {
+          usage[id] = {
+            id,
+            type,
+            title: displayTitle,
+            duration: 0,
+            count: 0
+          };
+        }
+        usage[id].count += 1;
+        localStorage.setItem('presencia_uso_items', JSON.stringify(usage));
+      } catch(e) {
+        console.error('Error incrementing usage count:', e);
+      }
+
+      window._activeProjection = {
+        type,
+        id,
+        title: displayTitle,
+        startTime: Date.now()
+      };
+      
+      try {
+        localStorage.setItem('presencia_active_projection_session', JSON.stringify(window._activeProjection));
+      } catch(e){}
+    }
+
+    // Hook into window.canal.postMessage to detect projection events
+    if (window.canal) {
+      const originalPostMessage = window.canal.postMessage;
+      window.canal.postMessage = function(msg) {
+        if (msg) {
+          if (msg.type === 'content' && (msg.contentType === 'himno' || msg.contentType === 'cancion')) {
+            const isHimno = msg.contentType === 'himno';
+            let id = '';
+            let displayTitle = '';
+
+            if (isHimno) {
+              const num = msg.label ? msg.label.replace('HIMNO ', '') : '';
+              const baseTitle = msg.subtitle ? msg.subtitle.split(' — ')[0] : 'Himno sin título';
+              id = 'himno-' + num;
+              displayTitle = baseTitle;
+            } else {
+              const baseTitle = msg.subtitle ? msg.subtitle.split(' — ')[0] : 'Canción sin título';
+              // Try to find the song by title in cancionesLib
+              let songId = '';
+              if (Array.isArray(window.cancionesLib)) {
+                const found = window.cancionesLib.find(c => c.titulo === baseTitle);
+                if (found) songId = found.id;
+              }
+              id = 'cancion-' + (songId || baseTitle.replace(/\s+/g, '-').toLowerCase());
+              displayTitle = baseTitle;
+            }
+
+            // Only start new active projection session if different song/hymn is chosen
+            if (!window._activeProjection || window._activeProjection.id !== id) {
+              startActiveProjection(msg.contentType, id, displayTitle);
+            } else {
+              // Update subtitle/content but keep the same startTime
+              window._activeProjection.title = displayTitle;
+            }
+          } else if (msg.type === 'clear' || msg.type === 'black' || (msg.type === 'content' && msg.contentType !== 'himno' && msg.contentType !== 'cancion')) {
+            // Commit if clear, black, or another type like bible/anuncio is projected
+            commitActiveProjection();
+          }
+        }
+        return originalPostMessage.apply(window.canal, arguments);
+      };
+    }
+
+    // Also commit on window unload
+    window.addEventListener('beforeunload', () => {
+      commitActiveProjection();
+    });
+
+    // Add card to Config module
+    addConfigCard('📊 Tiempo de uso y frecuencia', `
+      <div style="font-size:12.5px;color:var(--text-dim);line-height:1.6;margin-bottom:12px;">
+        Análisis interactivo de la frecuencia y tiempo real acumulado de proyección de canciones e himnos.
+      </div>
+      <div style="display:flex;gap:8px;align-items:center;margin-bottom:14px;flex-wrap:wrap;">
+        <label style="font-size:12px;color:var(--text-dim);">Métrica:</label>
+        <select id="d3ChartMetric" style="background:var(--bg-input);color:var(--text);border:1px solid var(--border);padding:6px 10px;border-radius:8px;font-size:12.5px;" onchange="window.renderD3UsageChart()">
+          <option value="duration">⏱️ Tiempo de uso (Segundos)</option>
+          <option value="count">🔄 Frecuencia (Proyecciones)</option>
+        </select>
+        <button class="btn btn-secondary" style="padding:6px 12px;font-size:11.5px;margin-left:auto;" onclick="window.resetUsageStatistics()">Restablecer</button>
+      </div>
+      <div id="d3ChartContainer" style="width:100%; min-height:220px; position:relative; background:var(--bg-input); border:1px solid var(--border); border-radius:12px; overflow:hidden;"></div>
+    `);
+
+    // Define globally accessible render and reset functions
+    window.renderD3UsageChart = function() {
+      const container = document.getElementById('d3ChartContainer');
+      if (!container) return;
+      
+      container.innerHTML = '';
+      
+      let usageData = {};
+      try {
+        usageData = JSON.parse(localStorage.getItem('presencia_uso_items') || '{}');
+      } catch(e){
+        usageData = {};
+      }
+      
+      const data = Object.values(usageData);
+      
+      if (data.length === 0) {
+        container.innerHTML = `
+          <div style="display:flex; flex-direction:column; align-items:center; justify-content:center; height:220px; color:var(--text-muted); text-align:center; padding:16px;">
+            <span style="font-size:32px; margin-bottom:10px;">📊</span>
+            <p style="font-size:12.5px; line-height:1.5;">Aún no hay datos de uso acumulados.<br>Proyecta himnos o canciones para visualizar su tiempo de uso aquí.</p>
+          </div>
+        `;
+        return;
+      }
+      
+      const metric = document.getElementById('d3ChartMetric')?.value || 'duration';
+      if (metric === 'duration') {
+        data.sort((a, b) => b.duration - a.duration);
+      } else {
+        data.sort((a, b) => b.count - a.count);
+      }
+      
+      // Top 10 items for visual clarity
+      const topData = data.slice(0, 10);
+      
+      const width = container.clientWidth || 340;
+      const height = Math.max(220, topData.length * 35 + 40);
+      
+      const margin = { top: 15, right: 25, bottom: 40, left: 110 };
+      const innerWidth = width - margin.left - margin.right;
+      const innerHeight = height - margin.top - margin.bottom;
+      
+      const svg = d3.select('#d3ChartContainer')
+        .append('svg')
+        .attr('width', width)
+        .attr('height', height)
+        .append('g')
+        .attr('transform', `translate(${margin.left}, ${margin.top})`);
+        
+      // Scales
+      const yScale = d3.scaleBand()
+        .domain(topData.map(d => d.title))
+        .range([0, innerHeight])
+        .padding(0.25);
+        
+      const maxVal = d3.max(topData, d => metric === 'duration' ? d.duration : d.count) || 1;
+      const xScale = d3.scaleLinear()
+        .domain([0, maxVal])
+        .range([0, innerWidth]);
+        
+      // Soft Grid lines
+      svg.append('g')
+        .attr('class', 'grid')
+        .attr('transform', `translate(0, ${innerHeight})`)
+        .call(d3.axisBottom(xScale)
+          .ticks(5)
+          .tickSize(-innerHeight)
+          .tickFormat('')
+        )
+        .call(g => g.selectAll('.tick line')
+          .attr('stroke', 'var(--border)')
+          .attr('stroke-opacity', 0.6)
+          .attr('stroke-dasharray', '2,2')
+        )
+        .call(g => g.select('.domain').remove());
+        
+      // Axes formatting
+      const xAxis = d3.axisBottom(xScale)
+        .ticks(5)
+        .tickFormat(d => {
+          if (metric === 'duration') {
+            if (d >= 60) {
+              return Math.round(d / 60) + 'm';
+            }
+            return d + 's';
+          }
+          return d;
+        });
+        
+      const yAxis = d3.axisLeft(yScale);
+      
+      svg.append('g')
+        .attr('transform', `translate(0, ${innerHeight})`)
+        .call(xAxis)
+        .call(g => {
+          g.selectAll('.tick text')
+            .attr('fill', 'var(--text-dim)')
+            .attr('font-size', '10px')
+            .attr('font-family', 'inherit');
+          g.select('.domain')
+            .attr('stroke', 'var(--border)');
+          g.selectAll('.tick line')
+            .attr('stroke', 'var(--border)');
+        });
+        
+      const yAxisG = svg.append('g')
+        .call(yAxis);
+        
+      yAxisG.selectAll('.tick text')
+        .attr('fill', 'var(--text)')
+        .attr('font-size', '10.5px')
+        .attr('font-family', 'inherit')
+        .each(function(d) {
+          // Truncate long titles on Y-axis to prevent spill over
+          let text = d;
+          if (text.length > 14) {
+            text = text.substring(0, 12) + '...';
+          }
+          d3.select(this).text(text);
+        });
+        
+      yAxisG.select('.domain')
+        .attr('stroke', 'var(--border)');
+      yAxisG.selectAll('.tick line')
+        .attr('stroke', 'var(--border)');
+        
+      // Draw Bars with rounded corners and gradients or solid CSS variables
+      const bars = svg.selectAll('.bar')
+        .data(topData)
+        .enter()
+        .append('rect')
+        .attr('class', 'bar')
+        .attr('y', d => yScale(d.title))
+        .attr('x', 0)
+        .attr('height', yScale.bandwidth())
+        .attr('fill', 'var(--accent)')
+        .attr('rx', 4)
+        .attr('ry', 4)
+        .attr('opacity', 0.8)
+        .style('cursor', 'pointer')
+        .attr('width', 0); // Start width at 0 for animation
+        
+      // Animate transition width
+      bars.transition()
+        .duration(500)
+        .attr('width', d => Math.max(4, xScale(metric === 'duration' ? d.duration : d.count)));
+        
+      // Tooltip implementation matching design
+      let tooltip = d3.select('body').select('.d3-usage-tooltip');
+      if (tooltip.empty()) {
+        tooltip = d3.select('body').append('div')
+          .attr('class', 'd3-usage-tooltip')
+          .style('position', 'absolute')
+          .style('z-index', '9999')
+          .style('background', 'var(--bg-card)')
+          .style('border', '1px solid var(--border)')
+          .style('color', 'var(--text)')
+          .style('padding', '8px 12px')
+          .style('border-radius', '12px')
+          .style('font-size', '12px')
+          .style('box-shadow', '0 8px 24px rgba(0,0,0,0.18)')
+          .style('pointer-events', 'none')
+          .style('opacity', 0)
+          .style('transition', 'opacity 0.15s ease');
+      }
+        
+      bars.on('mouseover', function(event, d) {
+        d3.select(this)
+          .attr('opacity', 1)
+          .attr('fill', 'var(--accent-dim)');
+          
+        const isHimno = d.type === 'himno';
+        const icon = isHimno ? '🎵' : '🎤';
+        const typeStr = isHimno ? 'Himno' : 'Canción Libre';
+        const formattedTime = formatUsageTime(d.duration);
+        
+        tooltip.style('opacity', 1);
+        tooltip.html(`
+          <div style="font-weight:700; color:var(--accent); margin-bottom:3px;">${icon} ${d.title}</div>
+          <div style="font-size:11px; color:var(--text-muted); margin-bottom:5px;">${typeStr}</div>
+          <div>⏱️ Tiempo: <strong>${formattedTime}</strong></div>
+          <div>🔄 Proyecciones: <strong>${d.count} veces</strong></div>
+        `);
+      })
+      .on('mousemove', function(event) {
+        tooltip
+          .style('left', (event.pageX + 12) + 'px')
+          .style('top', (event.pageY - 12) + 'px');
+      })
+      .on('mouseout', function() {
+        d3.select(this)
+          .attr('opacity', 0.8)
+          .attr('fill', 'var(--accent)');
+        tooltip.style('opacity', 0);
+      });
+    };
+
+    window.resetUsageStatistics = function() {
+      if (confirm('¿Estás seguro de restablecer las estadísticas de uso de himnos y canciones? Se borrará todo el historial de tiempo de uso.')) {
+        localStorage.removeItem('presencia_uso_items');
+        localStorage.removeItem('presencia_active_projection_session');
+        window._activeProjection = null;
+        window.renderD3UsageChart();
+        if (typeof window.showToast === 'function') {
+          window.showToast('Estadísticas restablecidas', 'ok');
+        }
+      }
+    };
+
+    // Helper to format time strings nicely
+    function formatUsageTime(totalSecs) {
+      if (!totalSecs) return '0 seg';
+      if (totalSecs < 60) return totalSecs + ' seg';
+      const mins = Math.floor(totalSecs / 60);
+      const secs = totalSecs % 60;
+      if (secs === 0) return mins + ' min';
+      return mins + 'm ' + secs + 's';
+    }
+
+    // Trigger initial render
+    window.renderD3UsageChart();
+
+    // Hook into switchModule to redraw when config module becomes active
+    const originalSwitchModule = window.switchModule;
+    window.switchModule = function(id, el) {
+      const res = originalSwitchModule(id, el);
+      if (id === 'config') {
+        // Delay slightly to allow transition/rendering to complete
+        setTimeout(() => {
+          window.renderD3UsageChart();
+        }, 120);
+      }
+      return res;
+    };
+
+    // Redraw on window resize
+    window.addEventListener('resize', () => {
+      if (document.getElementById('mod-config')?.classList.contains('active')) {
+        window.renderD3UsageChart();
+      }
+    });
+  }
+
   document.addEventListener('DOMContentLoaded', async () => {
     StorageService.migrate();
     setupControlCenter();
@@ -644,9 +1224,11 @@
     setupTeleprompter();
     setupA11y();
     setupMetrics();
+    setupUsageStatistics();
     patchBibliaFetch();
     patchAnuncios();
     wireRemotosCounter();
+    setupProjectionSyncing();
     await migrateAnunciosToIDB();
     Logger.info('Enhancements inicializadas', { version: APP_VER });
   });

@@ -1,0 +1,8 @@
+{
+  "name": "Presencia",
+  "description": "Sistema de Presentación para Cultos",
+  "requestFramePermissions": [],
+  "majorCapabilities": [
+    "MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"
+  ]
+}

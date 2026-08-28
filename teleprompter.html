@@ -3,51 +3,451 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Presencia — Teleprompter</title>
+  <title>Presencia — Teleprompter Interactivo</title>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
   <style>
-    :root{--bg:#05070a;--text:#f4efe1;--accent:#c9a84c}
-    *{box-sizing:border-box}
-    body{margin:0;background:var(--bg);color:var(--text);font-family:Georgia,serif;overflow:hidden}
-    .hud{position:fixed;top:0;left:0;right:0;height:46px;background:rgba(0,0,0,.6);display:flex;align-items:center;gap:12px;padding:0 14px;border-bottom:1px solid rgba(255,255,255,.12);z-index:2}
-    .badge{font-size:12px;color:var(--accent);letter-spacing:1px;text-transform:uppercase}
-    .wrap{position:absolute;left:0;right:0;top:46px;bottom:0;overflow:hidden;padding:40px 60px}
-    #text{font-size:54px;line-height:1.45;white-space:pre-wrap;transform:translateY(0);will-change:transform}
-    .hint{opacity:.45;font-style:italic}
+    :root {
+      --bg: #09090b;
+      --text: #f4f4f5;
+      --accent: #dfc282;
+      --accent-dim: #b89851;
+      --border: rgba(223, 194, 130, 0.2);
+      --panel: rgba(17, 17, 20, 0.9);
+      --accent-alpha-05: rgba(223, 194, 130, 0.05);
+      --accent-alpha-12: rgba(223, 194, 130, 0.12);
+      --accent-alpha-15: rgba(223, 194, 130, 0.15);
+    }
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+      overflow: hidden;
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* ── HUD SUPERIOR PREMIUM ── */
+    .hud {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 54px;
+      background: var(--panel);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 20px;
+      border-bottom: 1px solid var(--border);
+      z-index: 10;
+      transition: opacity 0.3s ease, transform 0.3s ease;
+    }
+    .hud.hidden {
+      opacity: 0;
+      transform: translateY(-54px);
+      pointer-events: none;
+    }
+
+    .hud-left {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+    }
+    .badge {
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--accent);
+      letter-spacing: 0.5px;
+      text-transform: uppercase;
+    }
+
+    .hud-controls {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .btn {
+      background: rgba(255, 255, 255, 0.04);
+      border: 1px solid rgba(223, 194, 130, 0.15);
+      color: var(--text);
+      border-radius: 12px;
+      padding: 6px 14px;
+      font-size: 12px;
+      font-weight: 600;
+      letter-spacing: 0.5px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      transition: all 0.2s ease;
+      text-transform: uppercase;
+    }
+    .btn:hover {
+      background: var(--accent-alpha-12);
+      border-color: var(--accent);
+      color: var(--accent);
+    }
+    .btn:active {
+      transform: scale(0.96);
+    }
+    .btn.active {
+      background: var(--accent);
+      color: #000;
+      border-color: var(--accent);
+    }
+
+    .speed-ctrl {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      background: rgba(0, 0, 0, 0.3);
+      padding: 6px 12px;
+      border-radius: 12px;
+      border: 1px solid rgba(255, 255, 255, 0.05);
+    }
+    .speed-ctrl label {
+      font-size: 10px;
+      font-weight: 600;
+      letter-spacing: 1px;
+      color: rgba(255, 255, 255, 0.5);
+      text-transform: uppercase;
+    }
+    .speed-ctrl input[type="range"] {
+      width: 100px;
+      accent-color: var(--accent);
+      cursor: pointer;
+    }
+    .speed-val {
+      font-family: monospace;
+      font-size: 13px;
+      color: var(--accent);
+      width: 24px;
+      text-align: right;
+    }
+
+    /* ── CONTENEDOR DE TEXTO ── */
+    .wrap {
+      flex: 1;
+      position: relative;
+      margin-top: 54px;
+      padding: 60px 80px;
+      overflow: hidden;
+      cursor: grab;
+      user-select: none;
+    }
+    .wrap:active {
+      cursor: grabbing;
+    }
+
+    #text {
+      font-size: 56px;
+      line-height: 1.55;
+      font-weight: 400;
+      white-space: pre-wrap;
+      transform: translateY(0);
+      will-change: transform;
+      text-align: center;
+      max-width: 1200px;
+      margin: 0 auto;
+      text-shadow: 0 2px 10px rgba(0,0,0,0.5);
+      transition: transform 0.1s linear;
+    }
+    .hint {
+      display: block;
+      opacity: 0.35;
+      font-style: italic;
+      font-size: 32px;
+      text-align: center;
+      margin-top: 40px;
+      line-height: 1.6;
+    }
+
+    /* ── ENFOQUE DE LECTURA (LÍNEA GUÍA) ── */
+    .guide-line {
+      position: absolute;
+      top: 35%;
+      left: 15px;
+      right: 15px;
+      height: 40px;
+      border-top: 1px dashed var(--border);
+      border-bottom: 1px dashed var(--border);
+      background: var(--accent-alpha-05);
+      pointer-events: none;
+      z-index: 1;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .guide-arrow {
+      color: var(--accent);
+      font-size: 24px;
+      opacity: 0.4;
+    }
+    .guide-arrow.left { margin-left: 10px; }
+    .guide-arrow.right { margin-right: 10px; }
+
+    /* Indicador flotante de HUD oculto */
+    .hud-trigger-msg {
+      position: fixed;
+      bottom: 20px;
+      left: 50%;
+      transform: translateX(-50%);
+      font-size: 11px;
+      color: rgba(255, 255, 255, 0.25);
+      font-family: inherit;
+      letter-spacing: 0.5px;
+      background: rgba(0,0,0,0.6);
+      padding: 6px 14px;
+      border-radius: 12px;
+      backdrop-filter: blur(4px);
+      pointer-events: none;
+      opacity: 0;
+      transition: opacity 0.5s ease;
+      z-index: 5;
+    }
+    body:hover .hud-trigger-msg {
+      opacity: 1;
+    }
+    
+    @media (max-width: 900px) {
+      .wrap {
+        padding: 40px 24px;
+      }
+      #text {
+        font-size: 36px;
+      }
+      .hud-left {
+        display: none;
+      }
+    }
   </style>
 </head>
 <body>
-  <div class="hud">
-    <div class="badge">Teleprompter · Presencia</div>
-    <div id="speedLbl" style="font-size:12px;color:#aaa;">Velocidad: 30</div>
+
+  <!-- HUD SUPERIOR -->
+  <div class="hud" id="hud">
+    <div class="hud-left">
+      <svg width="24" height="24" viewBox="0 0 36 36" fill="none" style="opacity: 0.8;">
+        <path d="M18 3 L18 33" stroke="var(--accent)" stroke-width="2.5" stroke-linecap="round"/>
+        <path d="M10 10 L18 3 L26 10" stroke="var(--accent)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+      <div class="badge">Teleprompter</div>
+    </div>
+
+    <div class="hud-controls">
+      <!-- Play / Pause -->
+      <button class="btn" id="btnPlay" onclick="togglePlay()" title="Tecla Espacio">⏸ PAUSAR</button>
+      
+      <!-- Reiniciar -->
+      <button class="btn" onclick="reiniciarPosicion()" title="Tecla R o Retroceso">↺ REINICIAR</button>
+      
+      <!-- Velocidad -->
+      <div class="speed-ctrl">
+        <label for="speedRange">Velocidad</label>
+        <input type="range" id="speedRange" min="5" max="95" value="30" oninput="cambiarVelocidadLocal(this.value)">
+        <span class="speed-val" id="speedVal">30</span>
+      </div>
+
+      <!-- Ocultar HUD -->
+      <button class="btn" onclick="toggleHud()" title="Tecla H">✕ Ocultar</button>
+    </div>
   </div>
-  <div class="wrap"><div id="text"><span class="hint">Esperando texto...</span></div></div>
+
+  <!-- GUÍA DE LECTURA -->
+  <div class="guide-line">
+    <span class="guide-arrow left">▶</span>
+    <span class="guide-arrow right">◀</span>
+  </div>
+
+  <!-- TEXTO DEL TELEPROMPTER -->
+  <div class="wrap" id="dragWrap">
+    <div id="text"><span class="hint">Esperando texto desde el panel de control...<br><span style="font-size: 16px; margin-top: 15px; display: block; color: var(--accent);">Presiona "Enviar texto actual" en el menú de Teleprompter en Configuración</span></span></div>
+  </div>
+
+  <div class="hud-trigger-msg" id="hudMsg">Mueve el mouse arriba o presiona H para alternar controles</div>
 
   <script>
     const canal = new BroadcastChannel('presencia-channel');
     const textEl = document.getElementById('text');
-    const speedLbl = document.getElementById('speedLbl');
+    const speedVal = document.getElementById('speedVal');
+    const speedRange = document.getElementById('speedRange');
+    const btnPlay = document.getElementById('btnPlay');
+    const hud = document.getElementById('hud');
+    const dragWrap = document.getElementById('dragWrap');
+
     let speed = 30;
     let y = 0;
+    let isPaused = false;
+    let scrollAnimationFrame = null;
 
-    function loop(){
-      y -= speed / 100;
-      textEl.style.transform = `translateY(${y}px)`;
-      requestAnimationFrame(loop);
+    // Reportar presencia al panel inmediatamente
+    canal.postMessage({ type: 'teleprompter-ping' });
+    const pingInterval = setInterval(() => {
+      canal.postMessage({ type: 'teleprompter-ping' });
+    }, 3000);
+
+    // Animación continua del teleprompter
+    function animacionLoop() {
+      if (!isPaused) {
+        // Reducir la escala de velocidad para un deslizamiento fluido y milimétrico
+        y -= (speed / 120);
+        
+        // Evitar que suba indefinidamente si no hay contenido largo
+        const wrapHeight = dragWrap.offsetHeight;
+        const textHeight = textEl.offsetHeight;
+        if (textHeight > 100 && y < -(textHeight + 100)) {
+          y = wrapHeight / 2; // reiniciar en bucle suave si sobrepasa
+        }
+        
+        textEl.style.transform = `translateY(${y}px)`;
+      }
+      scrollAnimationFrame = requestAnimationFrame(animacionLoop);
     }
 
+    // Toggle Play / Pausa
+    function togglePlay() {
+      isPaused = !isPaused;
+      btnPlay.textContent = isPaused ? '▶ REANUDAR' : '⏸ PAUSAR';
+      btnPlay.classList.toggle('active', isPaused);
+    }
+
+    // Reiniciar posición
+    function reiniciarPosicion() {
+      y = 0;
+      textEl.style.transform = `translateY(${y}px)`;
+    }
+
+    // Cambiar velocidad localmente y sincronizar con panel
+    function cambiarVelocidadLocal(val) {
+      speed = Number(val);
+      speedRange.value = val;
+      speedVal.textContent = val;
+    }
+
+    // Alternar HUD superior
+    function toggleHud() {
+      hud.classList.toggle('hidden');
+    }
+
+    // ── GESTIÓN DE RATÓN & TACTO PARA CONTROL MANUAL ──
+    let isDragging = false;
+    let startY = 0;
+    let startScrollY = 0;
+
+    dragWrap.addEventListener('mousedown', (e) => {
+      isDragging = true;
+      isPaused = true;
+      btnPlay.textContent = '▶ REANUDAR';
+      btnPlay.classList.add('active');
+      startY = e.clientY;
+      startScrollY = y;
+    });
+
+    window.addEventListener('mousemove', (e) => {
+      if (!isDragging) return;
+      const deltaY = e.clientY - startY;
+      y = startScrollY + deltaY;
+      if (y > 200) y = 200; // permitir pequeño margen de rebote arriba
+      textEl.style.transform = `translateY(${y}px)`;
+    });
+
+    window.addEventListener('mouseup', () => {
+      isDragging = false;
+    });
+
+    // Rueda del mouse para scroll intuitivo
+    dragWrap.addEventListener('wheel', (e) => {
+      isPaused = true;
+      btnPlay.textContent = '▶ REANUDAR';
+      btnPlay.classList.add('active');
+      y -= e.deltaY * 0.4;
+      if (y > 200) y = 200;
+      textEl.style.transform = `translateY(${y}px)`;
+    });
+
+    // Eventos táctiles para dispositivos móviles
+    dragWrap.addEventListener('touchstart', (e) => {
+      if (e.touches.length === 1) {
+        isDragging = true;
+        isPaused = true;
+        btnPlay.textContent = '▶ REANUDAR';
+        btnPlay.classList.add('active');
+        startY = e.touches[0].clientY;
+        startScrollY = y;
+      }
+    });
+
+    dragWrap.addEventListener('touchmove', (e) => {
+      if (!isDragging || e.touches.length !== 1) return;
+      const deltaY = e.touches[0].clientY - startY;
+      y = startScrollY + deltaY;
+      if (y > 200) y = 200;
+      textEl.style.transform = `translateY(${y}px)`;
+    });
+
+    dragWrap.addEventListener('touchend', () => {
+      isDragging = false;
+    });
+
+    // ── ATAJOS DE TECLADO ──
+    document.addEventListener('keydown', (e) => {
+      if (e.key === ' ' || e.code === 'Space') {
+        e.preventDefault();
+        togglePlay();
+      }
+      if (e.key === 'r' || e.key === 'R' || e.key === 'Backspace') {
+        e.preventDefault();
+        reiniciarPosicion();
+      }
+      if (e.key === 'ArrowUp') {
+        e.preventDefault();
+        cambiarVelocidadLocal(Math.max(5, speed - 5));
+      }
+      if (e.key === 'ArrowDown') {
+        e.preventDefault();
+        cambiarVelocidadLocal(Math.min(95, speed + 5));
+      }
+      if (e.key === 'h' || e.key === 'H') {
+        e.preventDefault();
+        toggleHud();
+      }
+    });
+
+    // Auto-mostrar HUD si el cursor se acerca al borde superior
+    document.addEventListener('mousemove', (e) => {
+      if (e.clientY < 60) {
+        hud.classList.remove('hidden');
+      }
+    });
+
+    // ── RECIBIR MENSAJES DE BROADCAST ──
     canal.onmessage = (e) => {
       const msg = e.data || {};
       if (msg.type === 'teleprompter-update') {
         textEl.textContent = msg.text || '';
-        y = 0;
+        // Si hay una guía de ayuda visual vacía
+        if (!msg.text) {
+          textEl.innerHTML = `<span class="hint">Esperando texto desde el panel de control...<br><span style="font-size: 16px; margin-top: 15px; display: block; color: var(--accent);">Presiona "Enviar texto actual" en el menú de Teleprompter en Configuración</span></span>`;
+        }
+        y = 40; // iniciar un poco más abajo para que de tiempo a leer
       }
       if (msg.type === 'teleprompter-speed') {
-        speed = Number(msg.speed || 30);
-        speedLbl.textContent = 'Velocidad: ' + speed;
+        const remoteSpeed = Number(msg.speed || 30);
+        cambiarVelocidadLocal(remoteSpeed);
       }
     };
 
-    requestAnimationFrame(loop);
+    // Iniciar el loop
+    animacionLoop();
   </script>
 </body>
 </html>

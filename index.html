@@ -4,155 +4,235 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Presencia — Panel de Control</title>
+  <script>
+    (function() {
+      try {
+        const saved = localStorage.getItem('presencia_ui_theme') || 'dark';
+        let effective = saved;
+        if (saved === 'auto') {
+          effective = (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) ? 'dark' : 'light';
+        }
+        document.documentElement.setAttribute('data-ui-theme', effective);
+        document.documentElement.setAttribute('data-ui-preference', saved);
+      } catch(e) {}
+    })();
+  </script>
   <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&family=Crimson+Pro:ital,wght@0,300;0,400;0,600;1,300;1,400&display=swap" rel="stylesheet">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
   <style>
-    :root {
-      --bg-deep:#0a0c10; --bg-panel:#111318; --bg-card:#181c24; --bg-input:#1e2330;
-      --border:#2a3045; --accent:#c9a84c; --accent-dim:#8a6e2f;
-      --text:#e8e2d5; --text-dim:#7a7468; --text-muted:#4a4840;
-      --success:#4caf80; --danger:#c94c4c;
+    :root, [data-ui-theme="light"] {
+      --bg-deep: #f8fafc;
+      --bg-panel: #ffffff;
+      --bg-card: #ffffff;
+      --bg-input: #f8fafc;
+      --border: #e2e8f0;
+      --border-subtle: #edf2f7;
+      --accent: #2563eb;
+      --accent-dim: #1d4ed8;
+      --accent-alpha-05: rgba(37,99,235,0.05);
+      --accent-alpha-08: rgba(37,99,235,0.08);
+      --accent-alpha-10: rgba(37,99,235,0.1);
+      --accent-alpha-12: rgba(37,99,235,0.12);
+      --accent-alpha-15: rgba(37,99,235,0.15);
+      --accent-alpha-20: rgba(37,99,235,0.2);
+      --text: #0f172a;
+      --text-dim: #475569;
+      --text-muted: #94a3b8;
+      --success: #10b981;
+      --danger: #ef4444;
+      --header-bg: rgba(255, 255, 255, 0.9);
+      --header-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+      --card-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+      --dock-bg: rgba(255, 255, 255, 0.88);
+      --dock-shadow: 0 12px 32px rgba(15, 23, 42, 0.08);
+      --glass-bg: rgba(255, 255, 255, 0.88);
+      --search-match-bg: rgba(37, 99, 235, 0.15);
+      --search-match-text: #1d4ed8;
+      color-scheme: light;
+    }
+
+    [data-ui-theme="dark"] {
+      --bg-deep: #090d16;
+      --bg-panel: #101726;
+      --bg-card: #151d30;
+      --bg-input: #0c121e;
+      --border: #222d42;
+      --border-subtle: #192233;
+      --accent: #3b82f6;
+      --accent-dim: #60a5fa;
+      --accent-alpha-05: rgba(59,130,246,0.08);
+      --accent-alpha-08: rgba(59,130,246,0.12);
+      --accent-alpha-10: rgba(59,130,246,0.16);
+      --accent-alpha-12: rgba(59,130,246,0.20);
+      --accent-alpha-15: rgba(59,130,246,0.25);
+      --accent-alpha-20: rgba(59,130,246,0.32);
+      --text: #f1f5f9;
+      --text-dim: #94a3b8;
+      --text-muted: #64748b;
+      --success: #10b981;
+      --danger: #f87171;
+      --header-bg: rgba(16, 23, 38, 0.92);
+      --header-shadow: 0 1px 4px rgba(0, 0, 0, 0.4);
+      --card-shadow: 0 4px 16px rgba(0, 0, 0, 0.28);
+      --dock-bg: rgba(16, 23, 38, 0.92);
+      --dock-shadow: 0 12px 32px rgba(0, 0, 0, 0.55);
+      --glass-bg: rgba(16, 23, 38, 0.9);
+      --search-match-bg: rgba(59, 130, 246, 0.28);
+      --search-match-text: #93c5fd;
+      color-scheme: dark;
     }
     *{margin:0;padding:0;box-sizing:border-box;}
-    body{background:var(--bg-deep);color:var(--text);font-family:'Crimson Pro',serif;font-size:16px;min-height:100vh;overflow-x:hidden;}
-    header{background:linear-gradient(135deg,#0e1018,#151a24);border-bottom:1px solid var(--border);padding:14px 28px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100;}
+    body{background:var(--bg-deep);color:var(--text);font-family:'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;font-size:14px;min-height:100vh;overflow-x:hidden;-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale;}
+    header{background:var(--bg-panel);border-bottom:1px solid var(--border);padding:14px 28px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100;}
     .logo{display:flex;align-items:center;gap:12px;}
     .logo-icon{width:36px;height:36px;}
     .logo-icon svg{width:100%;height:100%;}
-    .logo-text{font-family:'Cinzel',serif;font-size:22px;font-weight:700;letter-spacing:4px;color:var(--accent);text-transform:uppercase;}
-    .logo-sub{font-size:10px;color:var(--text-dim);letter-spacing:2px;text-transform:uppercase;margin-top:1px;}
+    .logo-text{font-size:18px;font-weight:700;letter-spacing:0.5px;color:var(--accent);text-transform:none;}
+    .logo-sub{font-size:11px;color:var(--text-dim);letter-spacing:0.5px;text-transform:none;margin-top:1px;}
     .header-actions{display:flex;gap:10px;align-items:center;}
     .status-dot{width:8px;height:8px;border-radius:50%;background:var(--text-muted);transition:all .3s;}
     .status-dot.connected{background:var(--success);box-shadow:0 0 8px var(--success);}
-    .status-label{font-size:12px;color:var(--text-dim);letter-spacing:1px;}
-    .app{display:grid;grid-template-columns:260px 1fr 300px;height:calc(100vh - 65px);}
+    .status-label{font-size:11px;color:var(--text-dim);letter-spacing:0.5px;}
+    .app{display:grid;grid-template-columns:260px 1fr 300px;height:calc(100vh - 65px);transition:grid-template-columns 0.25s cubic-bezier(0.4, 0, 0.2, 1);}
+    .app.focus-mode-active{grid-template-columns:0px 1fr 300px !important;}
+    .app.focus-mode-active .sidebar{display:none !important;}
+    @media (max-width:1024px) {
+      .app.focus-mode-active{grid-template-columns:1fr !important;}
+    }
     .sidebar{background:var(--bg-panel);border-right:1px solid var(--border);display:flex;flex-direction:column;padding:20px 0;overflow-y:auto;}
-    .sidebar-section{padding:6px 16px;font-size:10px;letter-spacing:2px;color:var(--text-muted);text-transform:uppercase;margin-top:12px;font-family:'Cinzel',serif;}
-    .nav-item{display:flex;align-items:center;gap:12px;padding:11px 20px;cursor:pointer;transition:all .2s;border-left:3px solid transparent;font-size:15px;color:var(--text-dim);user-select:none;}
-    .nav-item:hover{background:var(--bg-card);color:var(--text);}
-    .nav-item.active{background:rgba(201,168,76,.08);border-left-color:var(--accent);color:var(--accent);}
-    .nav-item .nav-icon{font-size:18px;width:22px;text-align:center;}
-    .nav-item .nav-badge{margin-left:auto;background:var(--accent);color:var(--bg-deep);font-size:10px;font-weight:700;padding:2px 6px;border-radius:10px;font-family:'Cinzel',serif;}
-    .nav-item .badge-nuevo{margin-left:auto;background:var(--success);color:#000;font-size:9px;font-family:'Cinzel',serif;font-weight:700;padding:2px 6px;border-radius:8px;}
+    .sidebar-section{padding:6px 16px;font-size:11px;font-weight:600;letter-spacing:0.5px;color:var(--text-muted);text-transform:uppercase;margin-top:12px;}
+    .nav-item{display:flex;align-items:center;gap:12px;padding:12px 20px;cursor:pointer;transition:all .25s cubic-bezier(0.4, 0, 0.2, 1);border-left:3px solid transparent;font-size:14px;color:var(--text-dim);user-select:none;}
+    .nav-item:hover{background:var(--accent-alpha-05);color:var(--accent);}
+    .nav-item.active{background:var(--accent-alpha-08);border-left-color:var(--accent);color:var(--accent);}
+    .nav-item .nav-icon{display:inline-flex;align-items:center;justify-content:center;width:24px;height:24px;flex-shrink:0;}
+    .nav-svg {width:20px;height:20px;stroke:var(--text-dim);fill:none;transition:stroke .25s ease, transform .25s ease;}
+    .nav-item:hover .nav-svg {stroke:var(--text);transform:scale(1.06);}
+    .nav-item.active .nav-svg {stroke:var(--accent);transform:scale(1.06);}
+    .nav-item .nav-badge{margin-left:auto;background:var(--accent);color:var(--bg-deep);font-size:11px;font-weight:700;padding:2px 6px;border-radius:12px;}
+    .nav-item .badge-nuevo{margin-left:auto;background:var(--accent-alpha-15);color:var(--accent);border:1px solid var(--accent-alpha-20);font-size:11px;font-weight:700;padding:1px 6px;border-radius:12px;letter-spacing:0.5px;}
     .main{background:var(--bg-deep);overflow-y:auto;display:flex;flex-direction:column;}
-    .module-header{padding:24px 28px 16px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:14px;}
+    .module-header{padding:32px 32px 16px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:14px;}
     .module-icon{font-size:24px;}
-    .module-title{font-family:'Cinzel',serif;font-size:18px;font-weight:600;color:var(--text);letter-spacing:1px;}
-    .module-desc{font-size:13px;color:var(--text-dim);margin-top:2px;}
-    .module-body{padding:24px 28px;flex:1;}
-    .card{background:var(--bg-card);border:1px solid var(--border);border-radius:10px;padding:20px;margin-bottom:16px;animation:fadeIn .3s ease;}
-    .card-title{font-family:'Cinzel',serif;font-size:13px;letter-spacing:1.5px;color:var(--accent);text-transform:uppercase;margin-bottom:14px;}
-    textarea,input[type="text"],input[type="number"]{width:100%;background:var(--bg-input);border:1px solid var(--border);border-radius:8px;color:var(--text);font-family:'Crimson Pro',serif;font-size:17px;padding:14px 16px;resize:vertical;transition:border-color .2s;outline:none;}
-    textarea:focus,input[type="text"]:focus,input[type="number"]:focus{border-color:var(--accent);box-shadow:0 0 0 3px rgba(201,168,76,.1);}
+    .module-title{font-size:18px;font-weight:700;color:var(--text);letter-spacing:0.5px;}
+    .module-desc{font-size:14px;color:var(--text-dim);margin-top:2px;}
+    .module-body{padding:32px;flex:1;}
+    .card{background:var(--bg-card);border:1px solid var(--border);border-radius:12px;padding:24px;margin-bottom:24px;animation:fadeIn .3s ease;}
+    .card-title{font-size:11px;font-weight:600;letter-spacing:0.5px;color:var(--accent);text-transform:uppercase;margin-bottom:16px;}
+    textarea,input[type="text"],input[type="number"]{width:100%;background:var(--bg-input);border:1px solid var(--border);border-radius:12px;color:var(--text);font-family:inherit;font-size:14px;padding:12px 14px;resize:vertical;transition:border-color .2s;outline:none;}
+    textarea:focus,input[type="text"]:focus,input[type="number"]:focus{border-color:var(--accent);box-shadow:0 0 0 3px rgba(223,194,130,.15);}
     textarea{min-height:80px;}
-    .btn{display:inline-flex;align-items:center;gap:8px;padding:10px 20px;border-radius:8px;border:none;cursor:pointer;font-family:'Cinzel',serif;font-size:13px;font-weight:600;letter-spacing:1px;transition:all .2s;text-transform:uppercase;}
-    .btn-primary{background:var(--accent);color:var(--bg-deep);}
-    .btn-primary:hover{background:#dbb85a;transform:translateY(-1px);}
+    .btn{display:inline-flex;align-items:center;gap:8px;padding:8px 16px;border-radius:12px;border:none;cursor:pointer;font-family:inherit;font-size:14px;font-weight:500;transition:all .2s;}
+    .btn-primary{background:var(--accent);color:var(--bg-deep);font-weight:600;}
+    .btn-primary:hover{background:var(--accent);filter:brightness(1.08);transform:translateY(-1px);}
     .btn-secondary{background:var(--bg-input);color:var(--text);border:1px solid var(--border);}
     .btn-secondary:hover{border-color:var(--accent);color:var(--accent);}
     .btn-full{width:100%;justify-content:center;}
     .btn-row{display:flex;gap:10px;margin-top:14px;flex-wrap:wrap;}
-    .font-control{display:flex;align-items:center;gap:12px;background:var(--bg-input);border:1px solid var(--border);border-radius:8px;padding:8px 14px;}
-    .font-control label{font-size:12px;color:var(--text-dim);letter-spacing:1px;white-space:nowrap;}
+    .font-control{display:flex;align-items:center;gap:12px;background:var(--bg-input);border:1px solid var(--border);border-radius:12px;padding:8px 14px;}
+    .font-control label{font-size:11px;color:var(--text-dim);letter-spacing:0.5px;white-space:nowrap;}
     .font-control input[type="range"]{flex:1;accent-color:var(--accent);background:none;border:none;padding:0;}
-    .font-size-val{font-family:'Cinzel',serif;font-size:14px;color:var(--accent);min-width:36px;text-align:right;}
+    .font-size-val{font-size:14px;font-weight:600;color:var(--accent);min-width:36px;text-align:right;}
     .preview-panel{background:var(--bg-panel);border-left:1px solid var(--border);display:flex;flex-direction:column;padding:20px;overflow-y:auto;}
-    .preview-title{font-family:'Cinzel',serif;font-size:11px;letter-spacing:2px;color:var(--text-muted);text-transform:uppercase;margin-bottom:14px;}
-    .preview-screen{background:#000;border-radius:8px;border:2px solid var(--border);aspect-ratio:16/9;display:flex;align-items:center;justify-content:center;padding:14px;position:relative;overflow:hidden;margin-bottom:16px;}
+    .preview-title{font-size:11px;font-weight:600;letter-spacing:1px;color:var(--text-muted);text-transform:uppercase;margin-bottom:14px;}
+    .preview-screen{background:#000;border-radius:12px;border:2px solid var(--border);aspect-ratio:16/9;display:flex;align-items:center;justify-content:center;padding:14px;position:relative;overflow:hidden;margin-bottom:16px;}
     .preview-screen.black-screen::after{content:'';position:absolute;inset:0;background:#000;z-index:2;}
-    .preview-text{color:#fff;text-align:center;font-family:'Crimson Pro',serif;font-size:13px;line-height:1.6;word-break:break-word;}
-    .preview-label{position:absolute;bottom:6px;right:8px;font-size:9px;color:rgba(255,255,255,.2);letter-spacing:1px;font-family:'Cinzel',serif;}
+    .preview-text{color:#fff;text-align:center;font-family:inherit;font-size:14px;line-height:1.6;word-break:break-word;}
+    .preview-label{position:absolute;bottom:6px;right:8px;font-size:11px;color:rgba(255,255,255,.2);letter-spacing:0.5px;}
     .quick-controls{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:auto;}
-    .qbtn{padding:12px 8px;border-radius:8px;border:1px solid var(--border);background:var(--bg-card);color:var(--text-dim);cursor:pointer;font-family:'Cinzel',serif;font-size:10px;letter-spacing:1px;text-align:center;transition:all .2s;text-transform:uppercase;}
+    .qbtn{padding:10px 8px;border-radius:12px;border:1px solid var(--border);background:var(--bg-card);color:var(--text-dim);cursor:pointer;font-family:inherit;font-size:11px;font-weight:500;text-align:center;transition:all .2s;}
     .qbtn:hover{border-color:var(--accent);color:var(--accent);}
-    .qbtn.active-black{background:rgba(201,76,76,.1);border-color:var(--danger);color:var(--danger);}
-    .open-btn{display:flex;align-items:center;gap:8px;background:linear-gradient(135deg,var(--accent),#dbb85a);color:var(--bg-deep);border:none;border-radius:8px;padding:12px 16px;width:100%;justify-content:center;cursor:pointer;font-family:'Cinzel',serif;font-size:12px;font-weight:700;letter-spacing:1.5px;margin-bottom:16px;transition:all .2s;text-transform:uppercase;}
-    .open-btn:hover{transform:translateY(-1px);box-shadow:0 4px 20px rgba(201,168,76,.3);}
-    .current-slide{background:var(--bg-card);border:1px solid var(--border);border-radius:8px;padding:12px;margin-bottom:12px;}
-    .current-slide .cs-label{color:var(--text-muted);font-size:10px;letter-spacing:1.5px;text-transform:uppercase;font-family:'Cinzel',serif;margin-bottom:6px;}
+    .qbtn.active-black{background:rgba(239,68,68,.1);border-color:var(--danger);color:var(--danger);}
+    .open-btn{display:flex;align-items:center;gap:8px;background:var(--accent);color:var(--bg-deep);border:none;border-radius:12px;padding:12px 16px;width:100%;justify-content:center;cursor:pointer;font-family:inherit;font-size:14px;font-weight:600;letter-spacing:0.5px;margin-bottom:16px;transition:all .2s;}
+    .open-btn:hover{transform:translateY(-1px);box-shadow:0 4px 20px rgba(223,194,130,.25);filter:brightness(1.08);}
+    .current-slide{background:var(--bg-card);border:1px solid var(--border);border-radius:12px;padding:12px;margin-bottom:12px;}
+    .current-slide .cs-label{color:var(--text-muted);font-size:11px;letter-spacing:1px;text-transform:uppercase;margin-bottom:6px;}
     .current-slide .cs-content{color:var(--text);font-size:14px;line-height:1.5;max-height:60px;overflow:hidden;}
     .module-view{display:none;}
     .module-view.active{display:flex;flex-direction:column;flex:1;}
     .coming-soon{display:flex;flex-direction:column;align-items:center;justify-content:center;flex:1;color:var(--text-muted);gap:12px;padding:60px;text-align:center;}
     .coming-soon .cs-icon{font-size:48px;opacity:.4;}
-    .coming-soon .cs-text{font-family:'Cinzel',serif;font-size:14px;letter-spacing:2px;text-transform:uppercase;}
-    .coming-soon .cs-sub{font-size:13px;color:var(--text-muted);max-width:280px;line-height:1.6;}
+    .coming-soon .cs-text{font-size:11px;font-weight:600;letter-spacing:1px;text-transform:uppercase;}
+    .coming-soon .cs-sub{font-size:14px;color:var(--text-muted);max-width:280px;line-height:1.6;}
     /* HIMNARIO */
     .search-row{display:flex;gap:10px;margin-bottom:16px;}
     .search-row input{flex:1;}
     .search-row input[type="number"]{width:80px;flex:none;}
     .himno-lista{display:flex;flex-direction:column;gap:6px;max-height:260px;overflow-y:auto;}
-    .himno-item{background:var(--bg-input);border:1px solid var(--border);border-radius:8px;padding:12px 16px;cursor:pointer;transition:all .2s;display:flex;align-items:center;gap:12px;}
-    .himno-item:hover{border-color:var(--accent);background:rgba(201,168,76,.05);}
-    .himno-item.selected{border-color:var(--accent);background:rgba(201,168,76,.1);}
-    .himno-num{font-family:'Cinzel',serif;font-size:13px;color:var(--accent);min-width:32px;font-weight:700;}
-    .himno-titulo{font-size:15px;color:var(--text);}
+    .himno-item{background:var(--bg-input);border:1px solid var(--border);border-radius:12px;padding:12px 16px;cursor:pointer;transition:all .2s;display:flex;align-items:center;gap:12px;}
+    .himno-item:hover{border-color:var(--accent);background:var(--accent-alpha-05);}
+    .himno-item.selected{border-color:var(--accent);background:var(--accent-alpha-10);}
+    .himno-num{font-size:14px;color:var(--accent);min-width:32px;font-weight:700;}
+    .himno-titulo{font-size:14px;color:var(--text);font-weight:500;}
+    .himno-snippet,.cancion-snippet{font-size:12px;color:var(--text-dim);margin-top:4px;line-height:1.4;word-break:break-word;}
+    .search-match{background:var(--accent-alpha-20);color:var(--accent);font-weight:700;border-radius:4px;padding:1px 3px;box-shadow:inset 0 0 0 1px var(--accent-alpha-20);text-decoration:none;}
+    .estrofa-btn .search-match{background:rgba(223,194,130,0.3);color:var(--accent);font-weight:700;border-radius:3px;padding:1px 2px;}
     .estrofa-nav{display:flex;flex-direction:column;gap:8px;}
-    .estrofa-btn{background:var(--bg-input);border:1px solid var(--border);border-radius:8px;padding:14px 16px;cursor:pointer;transition:all .2s;text-align:left;color:var(--text);font-family:'Crimson Pro',serif;font-size:14px;line-height:1.5;white-space:pre-wrap;}
+    .estrofa-btn{background:var(--bg-input);border:1px solid var(--border);border-radius:12px;padding:14px 16px;cursor:pointer;transition:all .2s;text-align:left;color:var(--text);font-family:inherit;font-size:14px;line-height:1.5;white-space:pre-wrap;}
     .estrofa-btn:hover{border-color:var(--accent);}
-    .estrofa-btn.proyectada{border-color:var(--success);background:rgba(76,175,128,.08);}
-    .estrofa-label{font-family:'Cinzel',serif;font-size:10px;color:var(--accent);letter-spacing:1.5px;text-transform:uppercase;margin-bottom:4px;}
-    .coro-btn{background:rgba(201,168,76,.06);border:1px solid rgba(201,168,76,.25);}
-    .coro-btn:hover{border-color:var(--accent);background:rgba(201,168,76,.12);}
-    .himno-activo-info{background:rgba(201,168,76,.08);border:1px solid rgba(201,168,76,.2);border-radius:8px;padding:10px 14px;margin-bottom:14px;display:flex;align-items:center;justify-content:space-between;}
-    .himno-activo-titulo{font-family:'Cinzel',serif;font-size:14px;color:var(--accent);}
-    .himno-activo-num{font-size:12px;color:var(--text-dim);}
+    .estrofa-btn.proyectada{border-color:var(--success);background:rgba(16,185,129,.08);}
+    .estrofa-label{font-size:11px;color:var(--accent);letter-spacing:1px;text-transform:uppercase;margin-bottom:4px;}
+    .coro-btn{background:var(--accent-alpha-05);border:1px solid rgba(223,194,130,.25);}
+    .coro-btn:hover{border-color:var(--accent);background:var(--accent-alpha-10);}
+    .himno-activo-info{background:var(--accent-alpha-08);border:1px solid rgba(223,194,130,.2);border-radius:12px;padding:10px 14px;margin-bottom:14px;display:flex;align-items:center;justify-content:space-between;}
+    .himno-activo-titulo{font-size:14px;color:var(--accent);font-weight:600;}
+    .himno-activo-num{font-size:11px;color:var(--text-dim);}
     .divider{height:1px;background:var(--border);margin:16px 0;}
     /* BIBLIA */
-    .btn-ver{padding:8px 16px;border-radius:20px;border:1px solid var(--border);background:var(--bg-input);color:var(--text-dim);cursor:pointer;font-family:'Cinzel',serif;font-size:11px;letter-spacing:1px;transition:all .2s;text-transform:uppercase;}
+    .btn-ver{padding:8px 16px;border-radius:12px;border:1px solid var(--border);background:var(--bg-input);color:var(--text-dim);cursor:pointer;font-size:11px;letter-spacing:0.5px;transition:all .2s;text-transform:none;}
     .btn-ver:hover{border-color:var(--accent);color:var(--accent);}
-    .btn-ver.active-ver{background:rgba(201,168,76,.12);border-color:var(--accent);color:var(--accent);}
-    .versiculo-item{background:var(--bg-input);border:1px solid var(--border);border-radius:8px;padding:12px 14px;cursor:pointer;transition:all .2s;display:flex;align-items:flex-start;gap:10px;}
-    .versiculo-item:hover{border-color:var(--accent);background:rgba(201,168,76,.05);}
-    .versiculo-item.proyectado{border-color:var(--success);background:rgba(76,175,128,.08);}
-    .ver-num{font-family:'Cinzel',serif;font-size:11px;color:var(--accent);min-width:22px;padding-top:3px;font-weight:700;}
-    .ver-texto{font-size:15px;color:var(--text);line-height:1.6;flex:1;}
+    .btn-ver.active-ver{background:var(--accent-alpha-10);border-color:var(--accent);color:var(--accent);}
+    .versiculo-item{background:var(--bg-input);border:1px solid var(--border);border-radius:12px;padding:12px 14px;cursor:pointer;transition:all .2s;display:flex;align-items:flex-start;gap:10px;}
+    .versiculo-item:hover{border-color:var(--accent);background:var(--accent-alpha-05);}
+    .versiculo-item.proyectado{border-color:var(--success);background:rgba(16,185,129,.08);}
+    .ver-num{font-size:11px;color:var(--accent);min-width:22px;padding-top:3px;font-weight:700;}
+    .ver-texto{font-size:14px;color:var(--text);line-height:1.6;flex:1;}
     .ver-fav{background:none;border:none;cursor:pointer;font-size:14px;padding:2px 4px;opacity:.4;transition:opacity .2s;flex-shrink:0;}
     .ver-fav:hover,.ver-fav.activo{opacity:1;}
-    .fav-item{background:var(--bg-input);border:1px solid var(--border);border-radius:8px;padding:10px 12px;cursor:pointer;transition:all .2s;display:flex;align-items:flex-start;gap:8px;}
+    .fav-item{background:var(--bg-input);border:1px solid var(--border);border-radius:12px;padding:10px 12px;cursor:pointer;transition:all .2s;display:flex;align-items:flex-start;gap:8px;}
     .fav-item:hover{border-color:var(--accent);}
-    .fav-ref{font-family:'Cinzel',serif;font-size:10px;color:var(--accent);min-width:80px;padding-top:2px;letter-spacing:.5px;}
-    .fav-txt{font-size:13px;color:var(--text-dim);line-height:1.5;flex:1;overflow:hidden;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;}
+    .fav-ref{font-size:11px;color:var(--accent);min-width:80px;padding-top:2px;font-weight:600;}
+    .fav-txt{font-size:14px;color:var(--text-dim);line-height:1.5;flex:1;overflow:hidden;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;}
     .fav-del{background:none;border:none;cursor:pointer;color:var(--text-muted);font-size:13px;padding:2px 4px;flex-shrink:0;}
     .fav-del:hover{color:var(--danger);}
     /* ORDEN DEL CULTO */
-    .btn-tipo{padding:8px 14px;border-radius:20px;border:1px solid var(--border);background:var(--bg-input);color:var(--text-dim);cursor:pointer;font-family:'Cinzel',serif;font-size:11px;letter-spacing:1px;transition:all .2s;text-transform:uppercase;}
+    .btn-tipo{padding:8px 14px;border-radius:12px;border:1px solid var(--border);background:var(--bg-input);color:var(--text-dim);cursor:pointer;font-size:11px;letter-spacing:0.5px;transition:all .2s;text-transform:none;}
     .btn-tipo:hover{border-color:var(--accent);color:var(--accent);}
-    .btn-tipo.active-tipo{background:rgba(201,168,76,.12);border-color:var(--accent);color:var(--accent);}
-    .orden-item{background:var(--bg-input);border:1px solid var(--border);border-radius:8px;padding:12px 14px;display:flex;align-items:center;gap:10px;transition:all .2s;}
-    .orden-item.activo-pres{border-color:var(--success);background:rgba(76,175,128,.08);}
-    .orden-item.es-seccion{background:rgba(201,168,76,.05);border-color:rgba(201,168,76,.2);}
+    .btn-tipo.active-tipo{background:var(--accent-alpha-10);border-color:var(--accent);color:var(--accent);}
+    .orden-item{background:var(--bg-input);border:1px solid var(--border);border-radius:12px;padding:12px 14px;display:flex;align-items:center;gap:10px;transition:all .2s;}
+    .orden-item.activo-pres{border-color:var(--success);background:rgba(16,185,129,.08);}
+    .orden-item.es-seccion{background:var(--accent-alpha-05);border-color:rgba(223,194,130,.2);}
     .orden-drag{cursor:grab;color:var(--text-muted);font-size:16px;padding:2px 4px;}
     .orden-icono{font-size:18px;width:24px;text-align:center;flex-shrink:0;}
     .orden-info{flex:1;}
-    .orden-etiqueta{font-family:'Cinzel',serif;font-size:11px;color:var(--accent);letter-spacing:1px;text-transform:uppercase;}
+    .orden-etiqueta{font-size:11px;color:var(--accent);font-weight:600;letter-spacing:0.5px;text-transform:uppercase;}
     .orden-detalle{font-size:14px;color:var(--text);margin-top:2px;line-height:1.4;}
     .orden-acciones{display:flex;gap:4px;flex-shrink:0;}
-    .orden-btn{background:none;border:1px solid var(--border);border-radius:6px;color:var(--text-muted);cursor:pointer;padding:4px 8px;font-size:12px;transition:all .2s;}
+    .orden-btn{background:none;border:1px solid var(--border);border-radius:12px;color:var(--text-muted);cursor:pointer;padding:4px 8px;font-size:12px;transition:all .2s;}
     .orden-btn:hover{border-color:var(--accent);color:var(--accent);}
     .orden-btn.del:hover{border-color:var(--danger);color:var(--danger);}
-    .orden-saved{background:var(--bg-input);border:1px solid var(--border);border-radius:8px;padding:10px 14px;display:flex;align-items:center;gap:10px;cursor:pointer;transition:all .2s;}
+    .orden-saved{background:var(--bg-input);border:1px solid var(--border);border-radius:12px;padding:10px 14px;display:flex;align-items:center;gap:10px;cursor:pointer;transition:all .2s;}
     .orden-saved:hover{border-color:var(--accent);}
-    .btn-success{background:rgba(76,175,128,.15);color:var(--success);border:1px solid rgba(76,175,128,.3);}
-    .btn-success:hover{background:rgba(76,175,128,.25);}
-    .btn-danger{background:rgba(201,76,76,.15);color:var(--danger);border:1px solid rgba(201,76,76,.3);}
-    .btn-danger:hover{background:rgba(201,76,76,.25);}
+    .btn-success{background:rgba(16,185,129,.15);color:var(--success);border:1px solid rgba(16,185,129,.3);}
+    .btn-success:hover{background:rgba(16,185,129,.25);}
+    .btn-danger{background:rgba(239,68,68,.15);color:var(--danger);border:1px solid rgba(239,68,68,.3);}
+    .btn-danger:hover{background:rgba(239,68,68,.25);}
     /* TEMAS */
-    .tema-btn{background:var(--bg-input);border:1px solid var(--border);border-radius:8px;padding:10px;cursor:pointer;transition:all .2s;text-align:center;color:var(--text-dim);font-family:'Cinzel',serif;font-size:11px;letter-spacing:.5px;}
+    .tema-btn{background:var(--bg-input);border:1px solid var(--border);border-radius:12px;padding:10px;cursor:pointer;transition:all .2s;text-align:center;color:var(--text-dim);font-size:11px;font-weight:500;}
     .tema-btn:hover{border-color:var(--accent);}
-    .tema-btn.active-tema{border-color:var(--accent);background:rgba(201,168,76,.08);color:var(--accent);}
+    .tema-btn.active-tema{border-color:var(--accent);background:var(--accent-alpha-08);color:var(--accent);}
     /* ANUNCIOS */
-    .anuncio-item{background:var(--bg-input);border:1px solid var(--border);border-radius:8px;padding:12px 14px;display:flex;align-items:center;gap:12px;transition:all .2s;}
+    .anuncio-item{background:var(--bg-input);border:1px solid var(--border);border-radius:12px;padding:12px 14px;display:flex;align-items:center;gap:12px;transition:all .2s;}
     .anuncio-item:hover{border-color:var(--accent);}
-    .anuncio-item.proyectado{border-color:var(--success);background:rgba(76,175,128,.08);}
+    .anuncio-item.proyectado{border-color:var(--success);background:rgba(16,185,129,.08);}
     .anuncio-thumb{width:48px;height:36px;border-radius:6px;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:18px;overflow:hidden;}
     .anuncio-thumb img{width:100%;height:100%;object-fit:cover;}
     .anuncio-info{flex:1;min-width:0;}
-    .anuncio-nombre{font-size:14px;color:var(--text);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
-    .anuncio-tipo{font-family:'Cinzel',serif;font-size:10px;color:var(--text-muted);letter-spacing:1px;text-transform:uppercase;margin-top:2px;}
-    .fondo-btn{padding:6px 12px;border-radius:16px;border:1px solid var(--border);background:var(--bg-input);color:var(--text-dim);cursor:pointer;font-family:'Cinzel',serif;font-size:10px;letter-spacing:1px;transition:all .2s;text-transform:uppercase;}
+    .anuncio-nombre{font-size:13.5px;color:var(--text);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+    .anuncio-tipo{font-size:10px;color:var(--text-muted);letter-spacing:0.5px;text-transform:uppercase;margin-top:2px;}
+    .fondo-btn{padding:6px 12px;border-radius:16px;border:1px solid var(--border);background:var(--bg-input);color:var(--text-dim);cursor:pointer;font-size:10px;letter-spacing:0.5px;transition:all .2s;text-transform:none;}
     .fondo-btn:hover{border-color:var(--accent);color:var(--accent);}
-    .fondo-btn.active-fondo{border-color:var(--accent);background:rgba(201,168,76,.12);color:var(--accent);}
+    .fondo-btn.active-fondo{border-color:var(--accent);background:var(--accent-alpha-12);color:var(--accent);}
     ::-webkit-scrollbar{width:5px;}
     ::-webkit-scrollbar-track{background:transparent;}
     ::-webkit-scrollbar-thumb{background:var(--border);border-radius:4px;}
@@ -177,58 +257,81 @@
       .logo-icon { width:28px; height:28px; }
       .status-label { display:none; }
 
-      /* App: columna única, espacio para nav inferior */
+      /* App: columna única, espacio para nav inferior flotante */
       .app {
         grid-template-columns: 1fr;
         grid-template-rows: 1fr;
-        height: calc(100vh - 56px - 64px);
+        height: calc(100vh - 56px);
       }
 
-      /* Sidebar: convertir en nav inferior fija */
+      /* Sidebar: convertir en nav inferior flotante premium (Dock) */
       .sidebar {
         position: fixed;
-        bottom: 0; left: 0; right: 0;
-        height: 64px;
+        bottom: 16px; left: 16px; right: 16px;
+        height: 68px;
         flex-direction: row;
-        padding: 0;
+        padding: 6px;
         border-right: none;
-        border-top: 1px solid var(--border);
-        z-index: 200;
+        border: 1px solid var(--border);
+        border-radius: 12px;
+        z-index: 2000;
         overflow-x: auto;
         overflow-y: hidden;
-        background: var(--bg-panel);
-        align-items: stretch;
+        background: var(--dock-bg);
+        backdrop-filter: blur(20px);
+        -webkit-backdrop-filter: blur(20px);
+        align-items: center;
         justify-content: flex-start;
+        box-shadow: var(--dock-shadow);
+        scrollbar-width: none;
+        -webkit-overflow-scrolling: touch;
+        mask-image: linear-gradient(to right, transparent, #000 12px, #000 calc(100% - 12px), transparent);
+        -webkit-mask-image: linear-gradient(to right, transparent, #000 12px, #000 calc(100% - 12px), transparent);
       }
+      .sidebar::-webkit-scrollbar { display: none; }
 
       /* Ocultar secciones y badges en nav móvil */
       .sidebar-section { display:none; }
       .nav-badge, .badge-nuevo { display:none; }
 
-      /* Nav items: columna vertical centrada */
+      /* Nav items: columna vertical compacta y de excelente touch-target */
       .nav-item {
         flex-direction: column;
-        padding: 8px 12px;
-        gap: 3px;
+        padding: 6px 12px;
+        gap: 4px;
         border-left: none;
-        border-top: 3px solid transparent;
+        border-top: none;
         font-size: 10px;
-        min-width: 64px;
+        font-weight: 600;
+        min-width: 72px;
         justify-content: center;
         align-items: center;
         white-space: nowrap;
-        letter-spacing: 0;
+        letter-spacing: 0.3px;
+        border-radius: 12px !important;
+        margin: 0 4px !important;
+        color: var(--text-dim);
+        background: transparent;
+        transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
       }
       .nav-item.active {
-        border-left-color: transparent;
-        border-top-color: var(--accent);
+        background: var(--accent-alpha-12) !important;
+        color: var(--accent) !important;
+        border-top: none;
+        box-shadow: inset 0 0 0 1px var(--accent-alpha-20);
       }
-      .nav-item .nav-icon { font-size:20px; width:auto; }
+      .nav-item.active .nav-svg {
+        stroke: var(--accent);
+        transform: translateY(-2px);
+      }
+      .nav-item .nav-icon { display: flex; align-items: center; justify-content: center; }
+      .nav-item .nav-svg { width: 20px; height: 20px; }
 
-      /* Panel principal: scroll completo */
+      /* Panel principal: scroll completo dejando espacio abajo para el Dock */
       .main {
         grid-column: 1;
-        height: calc(100vh - 56px - 64px);
+        height: calc(100vh - 56px);
+        padding-bottom: 100px !important;
         overflow-y: auto;
       }
 
@@ -277,34 +380,34 @@
       .search-row { flex-direction:row; gap:8px; }
       .search-row input[type="number"] { width:65px; }
 
-      /* Quick bar flotante en lugar de sidebar */
+      /* Quick bar flotante premium en móvil */
       .quick-bar {
         display: flex !important;
         position: fixed;
-        top: 60px;
-        right: 12px;
+        top: 76px;
+        right: 16px;
         flex-direction: column;
-        gap: 6px;
-        z-index: 150;
+        gap: 10px;
+        z-index: 1000;
       }
 
       .qbar-btn {
-        width: 44px;
-        height: 44px;
-        border-radius: 50%;
+        width: 48px;
+        height: 48px;
+        border-radius: 12px;
         border: 1px solid var(--border);
-        background: var(--bg-card);
+        background: var(--glass-bg);
+        backdrop-filter: blur(10px);
+        -webkit-backdrop-filter: blur(10px);
         color: var(--text-dim);
-        cursor: pointer;
-        font-size: 16px;
         display: flex;
         align-items: center;
         justify-content: center;
-        box-shadow: 0 2px 10px rgba(0,0,0,.4);
-        transition: all .2s;
+        box-shadow: var(--card-shadow);
+        transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
       }
-      .qbar-btn:active { transform:scale(.92); }
-      .qbar-btn.black { background:rgba(201,76,76,.15); color:var(--danger); border-color:rgba(201,76,76,.4); }
+      .qbar-btn:active { transform:scale(.92); background: var(--accent-alpha-15); color: var(--accent); }
+      .qbar-btn.black { background:rgba(239,68,68,.15); color:var(--danger); border-color:rgba(239,68,68,.35); }
 
       /* Formulario de agregar himno */
       #formAgregar { padding-top:4px; }
@@ -329,30 +432,155 @@
     /* ══════════════════════════════════════
        V12 — PROFESSIONAL POLISH
     ══════════════════════════════════════ */
-    :focus-visible{outline:2px solid var(--accent);outline-offset:2px;border-radius:8px;}
-    header{backdrop-filter:blur(8px);box-shadow:0 6px 24px rgba(0,0,0,.25);} 
-    .sidebar{background:linear-gradient(180deg,#121620,#0f1218);} 
+    :focus-visible{outline:2px solid var(--accent);outline-offset:2px;border-radius:12px;}
+    header{backdrop-filter:blur(12px); -webkit-backdrop-filter:blur(12px); background:var(--header-bg); box-shadow:var(--header-shadow); border-bottom:1px solid var(--border);} 
+    .sidebar{background:var(--bg-panel); border-right:1px solid var(--border);} 
     .nav-item{border-radius:0 12px 12px 0;margin-right:10px;position:relative;}
-    .nav-item.active{box-shadow:inset 0 0 0 1px rgba(201,168,76,.2),0 8px 18px rgba(0,0,0,.2);} 
-    .module-header{background:linear-gradient(180deg,rgba(255,255,255,.02),transparent);} 
-    .card{border-radius:14px;box-shadow:0 10px 22px rgba(0,0,0,.20);}
-    textarea,input[type="text"],input[type="number"],select{border-radius:10px;}
-    .btn{border-radius:10px;box-shadow:0 3px 10px rgba(0,0,0,.16);} 
+    .nav-item.active{background:var(--accent-alpha-08); box-shadow:inset 0 0 0 1px var(--accent-alpha-15), 0 2px 6px rgba(0,0,0,0.02);} 
+    .module-header{background:linear-gradient(180deg,rgba(0,0,0,.005),transparent);} 
+    .card{background:var(--bg-card);border:1px solid var(--border);border-radius:12px;box-shadow:var(--card-shadow); transition: border-color .2s, background .2s;}
+    textarea,input[type="text"],input[type="number"],select{background:var(--bg-input);border:1px solid var(--border);color:var(--text);border-radius:12px;}
+    select option{background:var(--bg-card);color:var(--text);}
+    .btn{border-radius:12px;box-shadow:0 2px 6px rgba(0,0,0,.03);} 
     .btn:active{transform:translateY(1px) scale(.99);} 
-    .preview-panel{background:linear-gradient(180deg,#131824,#0f131d);} 
-    .preview-screen{border-radius:12px;box-shadow:0 12px 30px rgba(0,0,0,.35);} 
-    .open-btn{box-shadow:0 8px 18px rgba(201,168,76,.12);} 
+    .btn-secondary{background:var(--bg-input);color:var(--text);border:1px solid var(--border);}
+    .btn-secondary:hover{border-color:var(--accent);color:var(--accent);}
+    .preview-panel{background:var(--bg-panel); border-left:1px solid var(--border);} 
+    .preview-screen{border-radius:12px;box-shadow:0 4px 16px rgba(0,0,0,.08);} 
+    .open-btn{box-shadow:0 4px 12px rgba(37,99,235,.15);} 
     .card-title{display:flex;align-items:center;gap:8px;}
 
+    /* Historial Proyecciones */
+    .historial-item {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 10px 14px;
+      background: var(--bg-input);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      cursor: pointer;
+      transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+      gap: 10px;
+    }
+    .historial-item:hover {
+      border-color: var(--accent);
+      background: var(--accent-alpha-05);
+      transform: translateY(-1px);
+    }
+    .historial-item:active {
+      transform: scale(0.98);
+    }
+
     .toast-stack{position:fixed;right:18px;bottom:18px;display:flex;flex-direction:column;gap:8px;z-index:9999;pointer-events:none;}
-    .toast{background:#121723;border:1px solid var(--border);color:var(--text);padding:10px 12px;border-radius:10px;font-size:13px;box-shadow:0 8px 20px rgba(0,0,0,.28);opacity:0;transform:translateY(8px);transition:all .25s ease;max-width:300px;}
+    .toast{background:var(--bg-card);border:1px solid var(--border);color:var(--text);padding:10px 12px;border-radius:12px;font-size:13px;box-shadow:0 8px 20px rgba(0,0,0,.18);opacity:0;transform:translateY(8px);transition:all .25s ease;max-width:300px;}
     .toast.show{opacity:1;transform:translateY(0);} 
-    .toast.ok{border-color:rgba(76,175,128,.45);} .toast.warn{border-color:rgba(240,168,48,.45);} .toast.err{border-color:rgba(201,76,76,.45);} 
+    .toast.ok{border-color:rgba(16,185,129,.45);} .toast.warn{border-color:rgba(223,194,130,.45);} .toast.err{border-color:rgba(239,68,68,.45);} 
 
     @media (max-width:768px){
       .toast-stack{left:10px;right:10px;bottom:74px;}
       .toast{max-width:none;}
       .card{padding:14px;border-radius:12px;}
+    }
+
+    /* Mini Proyector Flotante */
+    .mini-proyector {
+      position: fixed;
+      right: 12px;
+      top: 110px;
+      width: 240px;
+      height: 159px;
+      z-index: 2000;
+      background: var(--glass-bg);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      box-shadow: var(--dock-shadow);
+      overflow: hidden;
+      display: none;
+      transition: opacity 0.2s ease, transform 0.2s ease;
+    }
+    .mini-proyector-header {
+      background: var(--bg-deep);
+      height: 28px;
+      padding: 0 10px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-bottom: 1px solid var(--border);
+      font-family: inherit;
+      font-weight: 700;
+      font-size: 10.5px;
+      color: var(--accent);
+      cursor: move;
+      user-select: none;
+      letter-spacing: 0.5px;
+    }
+    .mini-proyector-btn {
+      background: none;
+      border: none;
+      color: var(--text-dim);
+      font-size: 13px;
+      cursor: pointer;
+      padding: 2px;
+      line-height: 1;
+      transition: color 0.2s;
+    }
+    .mini-proyector-btn:hover {
+      color: var(--accent);
+    }
+    .mini-proyector-btn.close:hover {
+      color: var(--danger);
+    }
+    .mini-proyector-iframe {
+      width: 100%;
+      height: calc(100% - 28px);
+      border: none;
+      background: #000;
+    }
+
+    /* Tarjetas selectoras de tema del dashboard */
+    .ui-theme-card {
+      background: var(--bg-input);
+      border: 2px solid var(--border);
+      border-radius: 12px;
+      padding: 12px;
+      cursor: pointer;
+      transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+      text-align: left;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      position: relative;
+    }
+    .ui-theme-card:hover {
+      border-color: var(--accent);
+      transform: translateY(-1px);
+    }
+    .ui-theme-card.active-ui-theme {
+      border-color: var(--accent);
+      background: var(--accent-alpha-08);
+      box-shadow: 0 0 0 1px var(--accent-alpha-20);
+    }
+    .ui-theme-preview {
+      height: 44px;
+      border-radius: 6px;
+      overflow: hidden;
+      margin-bottom: 4px;
+    }
+    .ui-theme-card-title {
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--text);
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .ui-theme-card-desc {
+      font-size: 11px;
+      color: var(--text-dim);
+      line-height: 1.3;
     }
 
   </style>
@@ -363,10 +591,10 @@
   <div class="logo">
     <div class="logo-icon">
       <svg viewBox="0 0 36 36" fill="none">
-        <path d="M18 3 L18 33" stroke="#c9a84c" stroke-width="2.5" stroke-linecap="round"/>
-        <path d="M10 10 L18 3 L26 10" stroke="#c9a84c" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-        <ellipse cx="18" cy="20" rx="10" ry="6" stroke="#c9a84c" stroke-width="1.5" fill="none" opacity=".5"/>
-        <circle cx="18" cy="20" r="3" fill="#c9a84c" opacity=".8"/>
+        <path d="M18 3 L18 33" stroke="var(--accent)" stroke-width="2.5" stroke-linecap="round"/>
+        <path d="M10 10 L18 3 L26 10" stroke="var(--accent)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+        <ellipse cx="18" cy="20" rx="10" ry="6" stroke="var(--accent)" stroke-width="1.5" fill="none" opacity=".5"/>
+        <circle cx="18" cy="20" r="3" fill="var(--accent)" opacity=".8"/>
       </svg>
     </div>
     <div>
@@ -375,6 +603,13 @@
     </div>
   </div>
   <div class="header-actions">
+    <button class="btn btn-secondary" id="btnTemaUI" onclick="alternarTemaUI()" style="padding: 6px 12px; font-size: 11.5px; height: 32px; display: inline-flex; align-items: center; justify-content: center; gap: 6px;" title="Cambiar tema de la interfaz (Ctrl + Shift + D)">
+      <span id="btnTemaUIIcon">🌙</span>
+      <span id="btnTemaUIText">Tema</span>
+    </button>
+    <button class="btn btn-secondary" id="btnFoco" onclick="toggleFocusMode()" style="padding: 6px 14px; font-size: 11px; height: 32px; display: inline-flex; align-items: center; justify-content: center; gap: 6px;" title="Atajo: Ctrl + I">
+      <span class="foco-icon">🔍</span> Modo Foco
+    </button>
     <div class="status-dot" id="statusDot"></div>
     <span class="status-label" id="statusLabel">Sin proyección</span>
   </div>
@@ -382,9 +617,35 @@
 
 <!-- QUICK BAR FLOTANTE (solo móvil) -->
 <div class="quick-bar" id="quickBar">
-  <button class="qbar-btn" id="qbarBlack" onclick="toggleBlackScreen()" title="Pantalla negra">⬛</button>
-  <button class="qbar-btn" onclick="limpiarPantalla()" title="Limpiar">🗑</button>
-  <button class="qbar-btn" onclick="abrirProyeccion()" title="Proyección">🖥️</button>
+  <button class="qbar-btn" id="qbarTheme" onclick="alternarTemaUI()" title="Alternar tema de interfaz">
+    <span id="qbarThemeIcon" style="font-size: 16px;">🌙</span>
+  </button>
+  <button class="qbar-btn" id="qbarBlack" onclick="toggleBlackScreen()" title="Pantalla negra">
+    <svg class="qbar-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <rect x="2" y="3" width="20" height="14" rx="2" ry="2"></rect>
+      <line x1="8" y1="21" x2="16" y2="21"></line>
+      <line x1="12" y1="17" x2="12" y2="21"></line>
+    </svg>
+  </button>
+  <button class="qbar-btn" onclick="limpiarPantalla()" title="Limpiar">
+    <svg class="qbar-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <polyline points="3 6 5 6 21 6"></polyline>
+      <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
+    </svg>
+  </button>
+  <button class="qbar-btn" onclick="abrirProyeccion()" title="Proyección en ventana">
+    <svg class="qbar-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path>
+      <polyline points="15 3 21 3 21 9"></polyline>
+      <line x1="10" y1="14" x2="21" y2="3"></line>
+    </svg>
+  </button>
+  <button class="qbar-btn" id="btnToggleMini" onclick="toggleMiniProyector()" title="Mini Proyector Flotante (Móvil)" style="background:var(--accent-alpha-10); border-color:var(--accent); color:var(--accent);">
+    <svg class="qbar-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <rect x="5" y="2" width="14" height="20" rx="2" ry="2"></rect>
+      <line x1="12" y1="18" x2="12.01" y2="18"></line>
+    </svg>
+  </button>
 </div>
 <div class="toast-stack" id="toastStack" aria-live="polite"></div>
 
@@ -392,32 +653,76 @@
   <nav class="sidebar">
     <div class="sidebar-section">Contenido</div>
     <div class="nav-item active" data-module="texto" onclick="switchModule('texto',this)">
-      <span class="nav-icon">✏️</span> Texto Libre
+      <span class="nav-icon">
+        <svg class="nav-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+          <path d="M18.5 2.5a2.121 2.121 0 1 1 3 3L12 15l-4 1 1-4z"></path>
+        </svg>
+      </span>
+      <span class="nav-label-text">Texto Libre</span>
     </div>
     <div class="nav-item" data-module="himnario" onclick="switchModule('himnario',this)">
-      <span class="nav-icon">🎵</span> Himnario
-      <span class="badge-nuevo">NUEVO</span>
+      <span class="nav-icon">
+        <svg class="nav-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M9 18V5l12-2v13"></path>
+          <circle cx="6" cy="18" r="3"></circle>
+          <circle cx="18" cy="16" r="3"></circle>
+        </svg>
+      </span>
+      <span class="nav-label-text">Himnario</span>
+      <span class="badge-nuevo">HIMNOS</span>
     </div>
+
     <div class="nav-item" data-module="canciones" onclick="switchModule('canciones',this)">
-      <span class="nav-icon">🎤</span> Canciones Libres
-      <span class="badge-nuevo">NUEVO</span>
+      <span class="nav-icon">
+        <svg class="nav-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M12 2a3 3 0 0 0-3 3v7a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3z"></path>
+          <path d="M19 10v2a7 7 0 0 1-14 0v-2"></path>
+          <line x1="12" y1="19" x2="12" y2="22"></line>
+        </svg>
+      </span>
+      <span class="nav-label-text">Canciones Libres</span>
     </div>
     <div class="nav-item" data-module="biblia" onclick="switchModule('biblia',this)">
-      <span class="nav-icon">📖</span> Biblia
-      <span class="badge-nuevo">NUEVO</span>
+      <span class="nav-icon">
+        <svg class="nav-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"></path>
+          <path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"></path>
+        </svg>
+      </span>
+      <span class="nav-label-text">Biblia</span>
     </div>
     <div class="sidebar-section">Presentación</div>
     <div class="nav-item" data-module="orden" onclick="switchModule('orden',this)">
-      <span class="nav-icon">📅</span> Orden del Culto
-      <span class="badge-nuevo">NUEVO</span>
+      <span class="nav-icon">
+        <svg class="nav-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
+          <line x1="16" y1="2" x2="16" y2="6"></line>
+          <line x1="8" y1="2" x2="8" y2="6"></line>
+          <line x1="3" y1="10" x2="21" y2="10"></line>
+        </svg>
+      </span>
+      <span class="nav-label-text">Orden del Culto</span>
     </div>
     <div class="nav-item" data-module="anuncios" onclick="switchModule('anuncios',this)">
-      <span class="nav-icon">🖼️</span> Anuncios e Imágenes
-      <span class="badge-nuevo">NUEVO</span>
+      <span class="nav-icon">
+        <svg class="nav-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
+          <circle cx="8.5" cy="8.5" r="1.5"></circle>
+          <polyline points="21 15 16 10 5 21"></polyline>
+        </svg>
+      </span>
+      <span class="nav-label-text">Anuncios e Img</span>
     </div>
     <div class="sidebar-section">Sistema</div>
     <div class="nav-item" data-module="config" onclick="switchModule('config',this)">
-      <span class="nav-icon">⚙️</span> Configuración
+      <span class="nav-icon">
+        <svg class="nav-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="12" cy="12" r="3"></circle>
+          <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"></path>
+        </svg>
+      </span>
+      <span class="nav-label-text">Configuración</span>
     </div>
   </nav>
 
@@ -475,7 +780,7 @@
           <div class="card-title">Buscar himno</div>
           <div class="search-row">
             <input type="number" id="buscarNumero" placeholder="Nº" min="1" max="329" oninput="buscarPorNumero(this.value)">
-            <input type="text" id="buscarTitulo" placeholder="Buscar por título..." oninput="buscarPorTitulo(this.value)">
+            <input type="text" id="buscarTitulo" placeholder="Buscar por título o letra..." oninput="buscarPorTitulo(this.value)">
           </div>
           <div class="himno-lista" id="himnoLista"></div>
         </div>
@@ -637,13 +942,13 @@
         <div class="card">
           <div class="card-title">Navegar por libro, capítulo y versículo</div>
           <div class="biblia-selector-grid" style="display:grid;grid-template-columns:1fr 80px 80px;gap:10px;margin-bottom:12px;">
-            <select id="bibliaLibro" onchange="onLibroCambio()" style="background:var(--bg-input);border:1px solid var(--border);border-radius:8px;color:var(--text);font-family:'Crimson Pro',serif;font-size:15px;padding:10px 12px;outline:none;">
+            <select id="bibliaLibro" onchange="onLibroCambio()" style="background:var(--bg-input);border:1px solid var(--border);border-radius:8px;color:var(--text);font-family:inherit;font-size:14.5px;padding:10px 12px;outline:none;">
               <option value="">— Libro —</option>
             </select>
-            <select id="bibliaCap" onchange="onCapCambio()" style="background:var(--bg-input);border:1px solid var(--border);border-radius:8px;color:var(--text);font-family:'Crimson Pro',serif;font-size:15px;padding:10px 12px;outline:none;">
+            <select id="bibliaCap" onchange="onCapCambio()" style="background:var(--bg-input);border:1px solid var(--border);border-radius:8px;color:var(--text);font-family:inherit;font-size:14.5px;padding:10px 12px;outline:none;">
               <option value="">Cap</option>
             </select>
-            <select id="bibliaVer" style="background:var(--bg-input);border:1px solid var(--border);border-radius:8px;color:var(--text);font-family:'Crimson Pro',serif;font-size:15px;padding:10px 12px;outline:none;">
+            <select id="bibliaVer" style="background:var(--bg-input);border:1px solid var(--border);border-radius:8px;color:var(--text);font-family:inherit;font-size:14.5px;padding:10px 12px;outline:none;">
               <option value="">Ver</option>
             </select>
           </div>
@@ -708,6 +1013,14 @@
             <button class="btn btn-primary" onclick="agregarElementoOrden()">➕ Agregar al orden</button>
           </div>
         </div>
+        <div class="card" id="ultimosProyectadosPanel">
+          <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;">
+            <div class="card-title" style="margin-bottom:0;display:flex;align-items:center;gap:6px;">⏱️ Últimos 5 Proyectados</div>
+            <button class="btn btn-secondary" style="padding:4px 8px;font-size:10px;" onclick="limpiarHistorialProyecciones()">Limpiar</button>
+          </div>
+          <div id="ultimosProyectadosLista" style="display:flex;flex-direction:column;gap:6px;"></div>
+          <div id="ultimosProyectadosVacio" style="font-size:12px;color:var(--text-muted);padding:4px 0;">No se ha proyectado ningún elemento aún.</div>
+        </div>
         <div class="card">
           <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;flex-wrap:wrap;gap:8px;">
             <div class="card-title" style="margin-bottom:0;">Orden actual <span id="ordenItemCount" style="color:var(--text-muted);font-size:11px;">(0 elementos)</span></div>
@@ -717,10 +1030,10 @@
             </div>
           </div>
           <div id="presentacionControles" style="display:none;background:rgba(201,168,76,.06);border:1px solid rgba(201,168,76,.2);border-radius:8px;padding:12px;margin-bottom:14px;">
-            <div style="font-family:'Cinzel',serif;font-size:11px;color:var(--accent);letter-spacing:1.5px;text-transform:uppercase;margin-bottom:10px;">Modo presentación</div>
+            <div style="font-family:inherit;font-weight:600;font-size:11px;color:var(--accent);letter-spacing:1px;text-transform:uppercase;margin-bottom:10px;">Modo presentación</div>
             <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap;">
               <button class="btn btn-secondary" style="padding:8px 14px;font-size:12px;" onclick="anteriorElemento()">⬅ Anterior</button>
-              <span id="presentacionPos" style="font-family:'Cinzel',serif;font-size:13px;color:var(--accent);min-width:60px;text-align:center;">0 / 0</span>
+              <span id="presentacionPos" style="font-family:inherit;font-weight:600;font-size:13px;color:var(--accent);min-width:60px;text-align:center;">0 / 0</span>
               <button class="btn btn-primary" style="padding:8px 14px;font-size:12px;" onclick="siguienteElemento()">Siguiente ➡</button>
               <button class="btn btn-danger" style="padding:8px 14px;font-size:12px;margin-left:auto;" onclick="detenerPresentacion()">⏹ Detener</button>
             </div>
@@ -760,7 +1073,7 @@
             </div>
             <!-- Carrusel controles -->
             <div id="carruselControles" style="display:none;background:rgba(201,168,76,.06);border:1px solid rgba(201,168,76,.2);border-radius:8px;padding:12px;margin-top:12px;">
-              <div style="font-family:'Cinzel',serif;font-size:11px;color:var(--accent);letter-spacing:1.5px;margin-bottom:10px;">🔄 CARRUSEL ACTIVO</div>
+              <div style="font-family:inherit;font-weight:600;font-size:11px;color:var(--accent);letter-spacing:1px;margin-bottom:10px;">🔄 CARRUSEL ACTIVO</div>
               <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap;">
                 <label style="font-size:12px;color:var(--text-dim);">Intervalo:</label>
                 <select id="carruselIntervalo" style="background:var(--bg-input);border:1px solid var(--border);border-radius:6px;color:var(--text);padding:4px 8px;font-size:13px;outline:none;">
@@ -770,7 +1083,7 @@
                   <option value="10000">10 seg</option>
                   <option value="15000">15 seg</option>
                 </select>
-                <span id="carruselPos" style="font-family:'Cinzel',serif;font-size:12px;color:var(--accent);margin-left:auto;"></span>
+                <span id="carruselPos" style="font-family:inherit;font-weight:600;font-size:12px;color:var(--accent);margin-left:auto;"></span>
                 <button class="btn btn-danger" style="padding:6px 12px;font-size:11px;" onclick="detenerCarrusel()">⏹ Detener</button>
               </div>
             </div>
@@ -846,9 +1159,74 @@
           <button class="btn btn-primary btn-full" onclick="abrirProyeccion()">🖥️ Abrir ventana de proyección</button>
         </div>
 
-        <!-- TEMAS VISUALES -->
+        <!-- TEMA DEL PANEL DE CONTROL (DASHBOARD) -->
         <div class="card">
-          <div class="card-title">🎨 Tema de proyección</div>
+          <div class="card-title">
+            <span>🌓 Tema del Panel de Control (Dashboard)</span>
+            <span style="font-size:10px;text-transform:none;color:var(--text-muted);font-weight:normal;margin-left:auto;">Pantalla del operador</span>
+          </div>
+          <p style="font-size:13.5px;color:var(--text-dim);line-height:1.6;margin-bottom:14px;">
+            Personaliza el tema visual del panel de control para reducir el cansancio visual durante los cultos o en cabinas de audio y video oscuras. <strong style="color:var(--text)">Este ajuste es independiente del tema de proyección</strong>.
+          </p>
+          <div style="display:grid;grid-template-columns:repeat(auto-fit, minmax(130px, 1fr));gap:10px;margin-bottom:10px;" id="uiThemeSelectorGrid">
+            <button class="ui-theme-card" data-uitheme="dark" onclick="setDashboardTheme('dark')">
+              <div class="ui-theme-preview" style="background:#090d16;border:1px solid #222d42;">
+                <div style="width:100%;height:7px;background:#101726;border-bottom:1px solid #222d42;display:flex;align-items:center;padding:0 4px;gap:2px;">
+                  <div style="width:3px;height:3px;border-radius:50%;background:#3b82f6;"></div>
+                  <div style="width:14px;height:2px;border-radius:1px;background:#334155;"></div>
+                </div>
+                <div style="padding:4px;display:flex;gap:3px;height:calc(100% - 7px);">
+                  <div style="width:14px;height:100%;background:#101726;border-radius:2px;"></div>
+                  <div style="flex:1;height:100%;background:#151d30;border-radius:2px;border:1px solid #222d42;"></div>
+                </div>
+              </div>
+              <div class="ui-theme-card-title">🌙 Modo Oscuro</div>
+              <div class="ui-theme-card-desc">Anti-fatiga visual para cabina</div>
+            </button>
+
+            <button class="ui-theme-card" data-uitheme="light" onclick="setDashboardTheme('light')">
+              <div class="ui-theme-preview" style="background:#f8fafc;border:1px solid #e2e8f0;">
+                <div style="width:100%;height:7px;background:#ffffff;border-bottom:1px solid #e2e8f0;display:flex;align-items:center;padding:0 4px;gap:2px;">
+                  <div style="width:3px;height:3px;border-radius:50%;background:#2563eb;"></div>
+                  <div style="width:14px;height:2px;border-radius:1px;background:#cbd5e1;"></div>
+                </div>
+                <div style="padding:4px;display:flex;gap:3px;height:calc(100% - 7px);">
+                  <div style="width:14px;height:100%;background:#ffffff;border-radius:2px;"></div>
+                  <div style="flex:1;height:100%;background:#ffffff;border-radius:2px;border:1px solid #e2e8f0;"></div>
+                </div>
+              </div>
+              <div class="ui-theme-card-title">☀️ Modo Claro</div>
+              <div class="ui-theme-card-desc">Luminosidad diurna clásica</div>
+            </button>
+
+            <button class="ui-theme-card" data-uitheme="auto" onclick="setDashboardTheme('auto')">
+              <div class="ui-theme-preview" style="background:linear-gradient(135deg,#090d16 50%,#f8fafc 50%);border:1px solid var(--border);">
+                <div style="width:100%;height:7px;background:linear-gradient(135deg,#101726 50%,#ffffff 50%);border-bottom:1px solid var(--border);display:flex;align-items:center;padding:0 4px;gap:2px;">
+                  <div style="width:3px;height:3px;border-radius:50%;background:var(--accent);"></div>
+                </div>
+                <div style="padding:4px;display:flex;gap:3px;height:calc(100% - 7px);">
+                  <div style="width:14px;height:100%;background:linear-gradient(135deg,#101726 50%,#ffffff 50%);border-radius:2px;"></div>
+                  <div style="flex:1;height:100%;background:linear-gradient(135deg,#151d30 50%,#ffffff 50%);border-radius:2px;border:1px solid var(--border);"></div>
+                </div>
+              </div>
+              <div class="ui-theme-card-title">💻 Automático</div>
+              <div class="ui-theme-card-desc">Sigue el tema del sistema (SO)</div>
+            </button>
+          </div>
+          <div style="font-size:11.5px;color:var(--text-muted);display:flex;align-items:center;gap:6px;">
+            <span>💡 Atajo rápido:</span> <kbd style="background:var(--bg-input);padding:2px 6px;border-radius:4px;border:1px solid var(--border);font-family:inherit;font-size:11px;color:var(--accent);">Ctrl + Shift + D</kbd>
+          </div>
+        </div>
+
+        <!-- TEMAS VISUALES DE PROYECCIÓN -->
+        <div class="card">
+          <div class="card-title">
+            <span>🎨 Tema de proyección (Pantalla del Público)</span>
+            <span style="font-size:10px;text-transform:none;color:var(--text-muted);font-weight:normal;margin-left:auto;">Se envía al proyector</span>
+          </div>
+          <p style="font-size:13.5px;color:var(--text-dim);line-height:1.6;margin-bottom:14px;">
+            Fondo y colores visibles para la congregación o público en la ventana de proyección secundaria.
+          </p>
           <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:12px;" id="temasGrid">
             <button class="tema-btn active-tema" data-tema="dark" onclick="selTema('dark',this)">
               <div style="background:#0a0c10;height:36px;border-radius:6px;margin-bottom:6px;border:1px solid #2a3045;"></div>
@@ -922,14 +1300,14 @@
           <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:14px;">
             <!-- Reloj -->
             <div style="background:var(--bg-input);border:1px solid var(--border);border-radius:8px;padding:14px;text-align:center;">
-              <div style="font-family:'Cinzel',serif;font-size:10px;color:var(--text-muted);letter-spacing:1.5px;text-transform:uppercase;margin-bottom:8px;">Reloj</div>
-              <div id="relojDisplay" style="font-family:'Cinzel',serif;font-size:22px;color:var(--accent);margin-bottom:8px;">00:00:00</div>
+              <div style="font-family:inherit;font-weight:600;font-size:10px;color:var(--text-muted);letter-spacing:1px;text-transform:uppercase;margin-bottom:8px;">Reloj</div>
+              <div id="relojDisplay" style="font-family:inherit;font-weight:600;font-size:22px;color:var(--accent);margin-bottom:8px;">00:00:00</div>
               <button id="btnRelojProyectar" class="btn btn-secondary btn-full" style="font-size:11px;padding:7px;" onclick="toggleRelojProyeccion()">Proyectar reloj</button>
             </div>
             <!-- Cuenta atrás -->
             <div style="background:var(--bg-input);border:1px solid var(--border);border-radius:8px;padding:14px;text-align:center;">
-              <div style="font-family:'Cinzel',serif;font-size:10px;color:var(--text-muted);letter-spacing:1.5px;text-transform:uppercase;margin-bottom:8px;">Cuenta atrás</div>
-              <div id="cuentaAtrasDisplay" style="font-family:'Cinzel',serif;font-size:22px;color:var(--success);margin-bottom:8px;">05:00</div>
+              <div style="font-family:inherit;font-weight:600;font-size:10px;color:var(--text-muted);letter-spacing:1px;text-transform:uppercase;margin-bottom:8px;">Cuenta atrás</div>
+              <div id="cuentaAtrasDisplay" style="font-family:inherit;font-weight:600;font-size:22px;color:var(--success);margin-bottom:8px;">05:00</div>
               <div style="display:flex;gap:4px;margin-bottom:6px;justify-content:center;">
                 <input type="number" id="cuentaAtrasMin" value="5" min="0" max="99" style="width:50px;padding:4px;font-size:14px;text-align:center;">
                 <span style="color:var(--text-dim);padding:4px 2px;font-size:18px;">:</span>
@@ -962,7 +1340,7 @@
               <div id="qrContainer" style="background:#fff;padding:10px;border-radius:8px;flex-shrink:0;"></div>
               <div>
                 <div style="font-size:12px;color:var(--text-dim);margin-bottom:4px;">Código de acceso:</div>
-                <div id="codigoDisplay" style="font-family:'Cinzel',serif;font-size:28px;letter-spacing:6px;color:var(--accent);"></div>
+                <div id="codigoDisplay" style="font-family:inherit;font-weight:700;font-size:28px;letter-spacing:6px;color:var(--accent);"></div>
                 <div style="font-size:12px;color:var(--text-muted);margin-top:4px;">Ingresa este código en <strong style="color:var(--text)">remote.html</strong></div>
               </div>
             </div>
@@ -997,7 +1375,7 @@
       <div class="cs-content" id="currentSlideContent">— Pantalla vacía —</div>
     </div>
     <div class="divider"></div>
-    <div style="font-family:'Cinzel',serif;font-size:10px;letter-spacing:1.5px;color:var(--text-muted);text-transform:uppercase;margin-bottom:10px;">Control rápido</div>
+    <div style="font-family:inherit;font-weight:600;font-size:11px;letter-spacing:1px;color:var(--text-muted);text-transform:uppercase;margin-bottom:10px;">Control rápido</div>
     <div class="quick-controls">
       <button class="qbtn" id="btnBlack" onclick="toggleBlackScreen()">⬛ Pantalla<br>negra</button>
       <button class="qbtn" onclick="limpiarPantalla()">🗑 Limpiar<br>pantalla</button>
@@ -1014,6 +1392,7 @@
 
 // ── VARIABLES GLOBALES (declaradas primero) ──
 const canal = new BroadcastChannel('presencia-channel');
+window.canal = canal;
 let pantallaOscura = false;
 let alineacion = 'center';
 let tamanoFuente = 60;
@@ -1031,7 +1410,8 @@ let cancionActual = null;
 let estrofasFormCount = 0;
 
 // Biblia
-const BIBLE_API = 'https://bible-api.deno.dev/api';
+window.BIBLE_API = 'https://bible-api.deno.dev/api';
+const BIBLE_API = window.BIBLE_API;
 const LIBROS = [
   {n:'Génesis',a:'GN',c:50},{n:'Éxodo',a:'EX',c:40},{n:'Levítico',a:'LV',c:27},
   {n:'Números',a:'NM',c:36},{n:'Deuteronomio',a:'DT',c:34},{n:'Josué',a:'JOS',c:24},
@@ -1057,7 +1437,7 @@ const LIBROS = [
   {n:'2 Juan',a:'2JN',c:1},{n:'3 Juan',a:'3JN',c:1},{n:'Judas',a:'JUD',c:1},
   {n:'Apocalipsis',a:'AP',c:22}
 ];
-let bibliaVersion = 'rv1960';
+window.bibliaVersion = 'rv1960';
 let bibliaFavoritos = [];
 const OFFLINE_BIBLE_VERSIONS = ['rv1960','tla','dhh'];
 const BIBLE_LABELS = { rv1960:'RVR60', rv1995:'RVR95', nvi:'NVI', dhh:'DHH', pdt:'PDT', tla:'TLA' };
@@ -1081,12 +1461,21 @@ canal.onmessage = (e) => {
   if(e.data.type==='ping'){proyeccionAbierta=true;actualizarEstado(true);}
   if(e.data.type==='closed'){proyeccionAbierta=false;actualizarEstado(false);}
 };
+window.addEventListener('message', (e) => {
+  if (e.data && typeof e.data === 'object' && e.data.type) {
+    if (e.data.type === 'ping' || e.data.type === 'closed') {
+      if (typeof canal.onmessage === 'function') {
+        canal.onmessage({ data: e.data });
+      }
+    }
+  }
+});
 function actualizarEstado(c){
   document.getElementById('statusDot').className='status-dot'+(c?' connected':'');
   document.getElementById('statusLabel').textContent=c?'Proyección activa':'Sin proyección';
 }
 function abrirProyeccion(){
-  window.open('proyeccion.html','presencia-proyeccion','width=1280,height=720,menubar=no,toolbar=no,location=no,status=no');
+  window.proyeccionWin = window.open('proyeccion.html','presencia-proyeccion','width=1280,height=720,menubar=no,toolbar=no,location=no,status=no');
   setTimeout(()=>{proyeccionAbierta=true;actualizarEstado(true);},1000);
 }
 function switchModule(id,el){
@@ -1170,63 +1559,152 @@ async function cargarHimnario(){
   if(el)el.textContent=himnarioCompleto.length+' himnos';
 }
 function fusionarHimnario(){
-  // Solo se muestran himnos con letra disponible. Las entradas de relleno
-  // no deben llegar a la pantalla de proyección.
-  const tieneLetra = h => Array.isArray(h?.estrofas) && h.estrofas.some(estrofa =>
-    typeof estrofa === 'string' && estrofa.trim() &&
-    !estrofa.includes('[Letra pendiente de cargar')
-  );
-
-  // Las canciones añadidas por el operador sustituyen el número original.
-  const porNumero = new Map();
-  [...himnarioBase, ...himnarioExtra].forEach(h => {
-    if (tieneLetra(h)) porNumero.set(Number(h.numero), h);
-  });
-  himnarioCompleto = [...porNumero.values()].sort((a,b) => a.numero - b.numero);
+  himnarioCompleto=[...himnarioBase,...himnarioExtra];
+  himnarioCompleto.sort((a,b)=>a.numero-b.numero);
 }
-function renderizarLista(lista){
+
+// ── UTILIDADES DE BÚSQUEDA Y RESALTADO ──
+function escapeHTML(str){
+  if(!str) return '';
+  return String(str)
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#039;');
+}
+
+function normalizarTexto(txt){
+  return (txt || '').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+}
+
+function getAccentInsensitiveRegexPattern(str){
+  if(!str) return '';
+  const accentMap = {
+    'a': '[aáàäâAÁÀÄÂ]', 'á': '[aáàäâAÁÀÄÂ]', 'à': '[aáàäâAÁÀÄÂ]', 'ä': '[aáàäâAÁÀÄÂ]', 'â': '[aáàäâAÁÀÄÂ]',
+    'e': '[eéèëêEÉÈËÊ]', 'é': '[eéèëêEÉÈËÊ]', 'è': '[eéèëêEÉÈËÊ]', 'ë': '[eéèëêEÉÈËÊ]', 'ê': '[eéèëêEÉÈËÊ]',
+    'i': '[iíìïîIÍÌÏÎ]', 'í': '[iíìïîIÍÌÏÎ]', 'ì': '[iíìïîIÍÌÏÎ]', 'ï': '[iíìïîIÍÌÏÎ]', 'î': '[iíìïîIÍÌÏÎ]',
+    'o': '[oóòöôOÓÒÖÔ]', 'ó': '[oóòöôOÓÒÖÔ]', 'ò': '[oóòöôOÓÒÖÔ]', 'ö': '[oóòöôOÓÒÖÔ]', 'ô': '[oóòöôOÓÒÖÔ]',
+    'u': '[uúùüûUÚÙÜÛ]', 'ú': '[uúùüûUÚÙÜÛ]', 'ù': '[uúùüûUÚÙÜÛ]', 'ü': '[uúùüûUÚÙÜÛ]', 'û': '[uúùüûUÚÙÜÛ]',
+    'n': '[nñNÑ]', 'ñ': '[nñNÑ]'
+  };
+  return str.split('').map(char => {
+    const lower = char.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+    if (accentMap[lower]) {
+      return accentMap[lower];
+    }
+    return char.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+  }).join('');
+}
+
+function resaltarTexto(texto, query){
+  if(!texto) return '';
+  const str = String(texto);
+  if(!query || !query.trim()) return escapeHTML(str);
+  const pattern = getAccentInsensitiveRegexPattern(query.trim());
+  if(!pattern) return escapeHTML(str);
+  const escaped = escapeHTML(str);
+  try {
+    const regex = new RegExp(`(${pattern})`, 'gi');
+    return escaped.replace(regex, '<mark class="search-match">$1</mark>');
+  } catch(e) {
+    return escaped;
+  }
+}
+
+function obtenerSnippetCoincidencia(letrasArray, query){
+  if(!query || !query.trim() || !Array.isArray(letrasArray) || !letrasArray.length) return null;
+  const pattern = getAccentInsensitiveRegexPattern(query.trim());
+  if(!pattern) return null;
+  try {
+    const regex = new RegExp(pattern, 'i');
+    for(const letra of letrasArray){
+      if(!letra || typeof letra !== 'string') continue;
+      const match = letra.match(regex);
+      if(match && typeof match.index === 'number'){
+        const idx = match.index;
+        const matchLen = match[0].length;
+        const start = Math.max(0, idx - 25);
+        const end = Math.min(letra.length, idx + matchLen + 55);
+        let snippet = letra.substring(start, end).replace(/\r?\n+/g, ' ');
+        if(start > 0) snippet = '…' + snippet;
+        if(end < letra.length) snippet = snippet + '…';
+        return snippet;
+      }
+    }
+  } catch(e){}
+  return null;
+}
+
+function renderizarLista(lista, query = ''){
   const cont=document.getElementById('himnoLista');
   if(!cont)return;
   cont.innerHTML='';
   if(!lista.length){cont.innerHTML='<div style="color:var(--text-muted);font-size:13px;padding:12px;text-align:center;">No se encontraron himnos</div>';return;}
+  const cleanQ = (query || '').trim();
   lista.slice(0,60).forEach(h=>{
     const div=document.createElement('div');
     div.className='himno-item'+(himnoActual&&himnoActual.numero===h.numero?' selected':'');
-    div.innerHTML=`<span class="himno-num">${h.numero}</span><span class="himno-titulo">${h.titulo}</span>`;
-    div.onclick=()=>seleccionarHimno(h);
+    
+    const numHtml = cleanQ && !isNaN(cleanQ) ? resaltarTexto(String(h.numero), cleanQ) : String(h.numero);
+    const titHtml = resaltarTexto(h.titulo, cleanQ);
+    
+    let snippetHtml = '';
+    if (cleanQ && isNaN(cleanQ)) {
+      const allLyrics = [...(h.estrofas || []), h.coro].filter(Boolean);
+      const snippet = obtenerSnippetCoincidencia(allLyrics, cleanQ);
+      if (snippet) {
+        snippetHtml = `<div class="himno-snippet">🎶 ${resaltarTexto(snippet, cleanQ)}</div>`;
+      }
+    }
+
+    div.innerHTML=`<span class="himno-num">${numHtml}</span><div style="flex:1;min-width:0;"><div class="himno-titulo">${titHtml}</div>${snippetHtml}</div>`;
+    div.onclick=()=>seleccionarHimno(h, cleanQ);
     cont.appendChild(div);
   });
   if(lista.length>60)cont.innerHTML+=`<div style="color:var(--text-muted);font-size:12px;padding:8px;text-align:center;">...y ${lista.length-60} más.</div>`;
 }
 function buscarPorNumero(val){
   document.getElementById('buscarTitulo').value='';
-  if(!val){renderizarLista(himnarioCompleto);return;}
-  renderizarLista(himnarioCompleto.filter(h=>String(h.numero).startsWith(val)));
+  const q = String(val || '').trim();
+  if(!q){renderizarLista(himnarioCompleto);return;}
+  renderizarLista(himnarioCompleto.filter(h=>String(h.numero).startsWith(q)), q);
 }
 function buscarPorTitulo(val){
   document.getElementById('buscarNumero').value='';
-  if(!val.trim()){renderizarLista(himnarioCompleto);return;}
-  const q=val.toLowerCase();
-  renderizarLista(himnarioCompleto.filter(h=>h.titulo.toLowerCase().includes(q)));
+  const rawQ = (val || '').trim();
+  if(!rawQ){renderizarLista(himnarioCompleto);return;}
+  const q=normalizarTexto(rawQ);
+  renderizarLista(himnarioCompleto.filter(h => {
+    const titNorm = normalizarTexto(h.titulo);
+    if (titNorm.includes(q)) return true;
+    if (h.coro && normalizarTexto(h.coro).includes(q)) return true;
+    if (h.estrofas && h.estrofas.some(e => normalizarTexto(e).includes(q))) return true;
+    return false;
+  }), rawQ);
 }
-function seleccionarHimno(h){
+function seleccionarHimno(h, query = ''){
   himnoActual=h;
+  const activeQuery = query || document.getElementById('buscarTitulo')?.value || '';
   document.querySelectorAll('.himno-item').forEach(el=>{
-    el.classList.toggle('selected',el.querySelector('.himno-num')&&el.querySelector('.himno-num').textContent==h.numero);
+    const numEl = el.querySelector('.himno-num');
+    el.classList.toggle('selected', numEl && numEl.textContent.trim() == h.numero);
   });
   document.getElementById('himnoDetalle').style.display='block';
-  document.getElementById('himnoActivoTitulo').textContent=h.titulo;
+  document.getElementById('himnoActivoTitulo').innerHTML=resaltarTexto(h.titulo, activeQuery);
   document.getElementById('himnoActivoNum').textContent='Himno #'+h.numero;
   const nav=document.getElementById('estrofaNav');
   nav.innerHTML='';
   h.estrofas.forEach((est,i)=>{
     const lbl=document.createElement('div');lbl.className='estrofa-label';lbl.textContent='Estrofa '+(i+1);nav.appendChild(lbl);
-    const btn=document.createElement('button');btn.className='estrofa-btn';btn.id='estrofa-btn-'+i;btn.textContent=est;
+    const btn=document.createElement('button');btn.className='estrofa-btn';btn.id='estrofa-btn-'+i;
+    btn.innerHTML=resaltarTexto(est, activeQuery);
     btn.onclick=()=>proyectarEstrofa(est,i,h);nav.appendChild(btn);
   });
   if(h.coro){
     const lbl=document.createElement('div');lbl.className='estrofa-label';lbl.style.color='#c9a84c';lbl.textContent='🎵 Coro';nav.appendChild(lbl);
-    const btn=document.createElement('button');btn.className='estrofa-btn coro-btn';btn.id='coro-btn';btn.textContent=h.coro;
+    const btn=document.createElement('button');btn.className='estrofa-btn coro-btn';btn.id='coro-btn';
+    btn.innerHTML=resaltarTexto(h.coro, activeQuery);
     btn.onclick=()=>proyectarCoro(h.coro,h);nav.appendChild(btn);
   }
   document.getElementById('himnoDetalle').scrollIntoView({behavior:'smooth',block:'nearest'});
@@ -1291,7 +1769,7 @@ function guardarCancionesStorage(){
   localStorage.setItem('presencia_canciones',JSON.stringify(cancionesLib));
   actualizarContadorCanciones();
 }
-function renderizarCanciones(lista){
+function renderizarCanciones(lista, query = ''){
   const cont=document.getElementById('cancionLista');
   if(!cont)return;
   cont.innerHTML='';
@@ -1299,49 +1777,77 @@ function renderizarCanciones(lista){
     cont.innerHTML='<div style="color:var(--text-muted);font-size:13px;padding:16px;text-align:center;line-height:1.7;">Aún no hay canciones.<br>Presiona <strong style="color:var(--accent)">Nueva canción</strong> para agregar la primera.</div>';
     return;
   }
+  const cleanQ = (query || '').trim();
   lista.forEach(c=>{
     const div=document.createElement('div');
     div.className='himno-item'+(cancionActual&&cancionActual.id===c.id?' selected':'');
-    div.innerHTML=`<span class="himno-num">🎤</span><div style="flex:1"><div class="himno-titulo">${c.titulo}</div>${c.autor?`<div style="font-size:12px;color:var(--text-muted);margin-top:2px;">${c.autor}</div>`:''}</div>`;
-    div.onclick=()=>abrirDetalleCancion(c);
+    
+    const titHtml = resaltarTexto(c.titulo, cleanQ);
+    const autorHtml = c.autor ? resaltarTexto(c.autor, cleanQ) : '';
+    
+    let snippetHtml = '';
+    if (cleanQ) {
+      const allLyrics = [...(c.estrofas || []), c.coro, c.puente].filter(Boolean);
+      const snippet = obtenerSnippetCoincidencia(allLyrics, cleanQ);
+      if (snippet) {
+        snippetHtml = `<div class="cancion-snippet">🎵 ${resaltarTexto(snippet, cleanQ)}</div>`;
+      }
+    }
+
+    div.innerHTML=`<span class="himno-num">🎤</span><div style="flex:1;min-width:0;"><div class="himno-titulo">${titHtml}</div>${c.autor?`<div style="font-size:12px;color:var(--text-muted);margin-top:2px;">${autorHtml}</div>`:''}${snippetHtml}</div>`;
+    div.onclick=()=>abrirDetalleCancion(c, cleanQ);
     cont.appendChild(div);
   });
 }
 function buscarCancion(val){
-  if(!val.trim()){renderizarCanciones(cancionesLib);return;}
-  const q=val.toLowerCase();
+  const rawQ = (val || '').trim();
+  if(!rawQ){renderizarCanciones(cancionesLib);return;}
+  const q=normalizarTexto(rawQ);
   renderizarCanciones(cancionesLib.filter(c=>
-    c.titulo.toLowerCase().includes(q)||
-    (c.autor&&c.autor.toLowerCase().includes(q))||
-    c.estrofas.some(e=>e.toLowerCase().includes(q))||
-    (c.coro&&c.coro.toLowerCase().includes(q))
-  ));
+    normalizarTexto(c.titulo).includes(q)||
+    (c.autor&&normalizarTexto(c.autor).includes(q))||
+    (c.estrofas&&c.estrofas.some(e=>normalizarTexto(e).includes(q)))||
+    (c.coro&&normalizarTexto(c.coro).includes(q))||
+    (c.puente&&normalizarTexto(c.puente).includes(q))
+  ), rawQ);
 }
 function mostrarVista(vista){
   ['lista','detalle','form'].forEach(v=>{
     document.getElementById('cancionesVista-'+v).style.display=v===vista?'block':'none';
   });
 }
-function volverListaCanciones(){renderizarCanciones(cancionesLib);mostrarVista('lista');}
-function abrirDetalleCancion(c){
+function volverListaCanciones(){
+  const query = document.getElementById('buscarCancion')?.value || '';
+  if (query.trim()) {
+    buscarCancion(query);
+  } else {
+    renderizarCanciones(cancionesLib);
+  }
+  mostrarVista('lista');
+}
+function abrirDetalleCancion(c, query = ''){
   cancionActual=c;
-  document.getElementById('cancionActivaTitulo').textContent=c.titulo;
-  document.getElementById('cancionActivaAutor').textContent=c.autor||'';
+  const activeQuery = query || document.getElementById('buscarCancion')?.value || '';
+  document.getElementById('cancionActivaTitulo').innerHTML=resaltarTexto(c.titulo, activeQuery);
+  document.getElementById('cancionActivaAutor').innerHTML=c.autor ? resaltarTexto(c.autor, activeQuery) : '';
   const nav=document.getElementById('cancionEstrofaNav');
   nav.innerHTML='';
   c.estrofas.forEach((est,i)=>{
     const lbl=document.createElement('div');lbl.className='estrofa-label';lbl.textContent='Estrofa '+(i+1);nav.appendChild(lbl);
-    const btn=document.createElement('button');btn.className='estrofa-btn';btn.id='cest-btn-'+i;btn.textContent=est;
+    const btn=document.createElement('button');btn.className='estrofa-btn';btn.id='cest-btn-'+i;
+    btn.innerHTML=resaltarTexto(est, activeQuery);
     btn.onclick=()=>proyectarCancionEstrofa(est,i,c);nav.appendChild(btn);
   });
   if(c.coro){
     const lbl=document.createElement('div');lbl.className='estrofa-label';lbl.style.color='#c9a84c';lbl.textContent='🎵 Coro';nav.appendChild(lbl);
-    const btn=document.createElement('button');btn.className='estrofa-btn coro-btn';btn.id='cest-coro';btn.textContent=c.coro;
+    const btn=document.createElement('button');btn.className='estrofa-btn coro-btn';btn.id='cest-coro';
+    btn.innerHTML=resaltarTexto(c.coro, activeQuery);
     btn.onclick=()=>proyectarCancionSeccion(c.coro,'Coro',c);nav.appendChild(btn);
   }
   if(c.puente){
     const lbl=document.createElement('div');lbl.className='estrofa-label';lbl.style.color='#7a9ecf';lbl.textContent='🌉 Puente';nav.appendChild(lbl);
-    const btn=document.createElement('button');btn.className='estrofa-btn';btn.style.borderColor='rgba(76,138,201,.3)';btn.id='cest-puente';btn.textContent=c.puente;
+    const btn=document.createElement('button');btn.className='estrofa-btn';btn.style.borderColor='rgba(76,138,201,.3)';btn.id='cest-puente';
+    btn.innerHTML=resaltarTexto(c.puente, activeQuery);
     btn.onclick=()=>proyectarCancionSeccion(c.puente,'Puente',c);nav.appendChild(btn);
   }
   mostrarVista('detalle');
@@ -1541,14 +2047,20 @@ async function obtenerVersosConFallback(version,ref){
     const url=`${BIBLE_API}/read/${version}/${ref.toLowerCase()}`;
     const resp=await fetch(url);
     if(resp.ok){
-      const data=await resp.json();
+      let data=await resp.json();
+      if(data && !Array.isArray(data) && typeof data === 'object'){
+        data = [data];
+      }
       if(Array.isArray(data)&&data.length){
         // cachear capítulo completo para offline
         try {
           const chapterUrl=`${BIBLE_API}/read/${version}/${abrev.toLowerCase()}/${cap}/1-176`;
           const cResp=await fetch(chapterUrl);
           if(cResp.ok){
-            const chapterData=await cResp.json();
+            let chapterData=await cResp.json();
+            if(chapterData && !Array.isArray(chapterData) && typeof chapterData === 'object'){
+              chapterData = [chapterData];
+            }
             if(Array.isArray(chapterData)&&chapterData.length) await guardarCapituloOffline(version,abrev,cap,chapterData);
           }
         } catch(e){}
@@ -1749,11 +2261,11 @@ function renderizarFormTipo(tipo){
     cont.innerHTML=`<input type="text" id="oTexto" placeholder="Texto a proyectar (ej: Bienvenidos)" style="margin-bottom:0;">`;
   }else if(tipo==='himno'){
     const opts=himnarioCompleto.map(h=>`<option value="${h.numero}">${h.numero} — ${h.titulo}</option>`).join('');
-    cont.innerHTML=`<select id="oHimno" style="width:100%;background:var(--bg-input);border:1px solid var(--border);border-radius:8px;color:var(--text);font-family:'Crimson Pro',serif;font-size:15px;padding:10px 12px;outline:none;"><option value="">— Selecciona un himno —</option>${opts}</select>`;
+    cont.innerHTML=`<select id="oHimno" style="width:100%;background:var(--bg-input);border:1px solid var(--border);border-radius:8px;color:var(--text);font-family:inherit;font-size:14.5px;padding:10px 12px;outline:none;"><option value="">— Selecciona un himno —</option>${opts}</select>`;
   }else if(tipo==='cancion'){
     if(!cancionesLib.length){cont.innerHTML='<div style="color:var(--text-muted);font-size:13px;">No hay canciones libres guardadas aún.</div>';return;}
     const opts=cancionesLib.map(c=>`<option value="${c.id}">${c.titulo}${c.autor?' · '+c.autor:''}</option>`).join('');
-    cont.innerHTML=`<select id="oCancion" style="width:100%;background:var(--bg-input);border:1px solid var(--border);border-radius:8px;color:var(--text);font-family:'Crimson Pro',serif;font-size:15px;padding:10px 12px;outline:none;"><option value="">— Selecciona una canción —</option>${opts}</select>`;
+    cont.innerHTML=`<select id="oCancion" style="width:100%;background:var(--bg-input);border:1px solid var(--border);border-radius:8px;color:var(--text);font-family:inherit;font-size:14.5px;padding:10px 12px;outline:none;"><option value="">— Selecciona una canción —</option>${opts}</select>`;
   }else if(tipo==='biblia'){
     cont.innerHTML=`<input type="text" id="oBiblia" placeholder="Referencia bíblica (ej: Juan 3:16-17)" style="margin-bottom:0;">`;
   }else if(tipo==='seccion'){
@@ -1927,11 +2439,188 @@ function eliminarOrdenGuardado(id,e){
 }
 
 // ══════════════════════════════════════════
+// HISTORIAL DE ÚLTIMOS PROYECTADOS
+// ══════════════════════════════════════════
+let historialProyecciones = [];
+
+function iniciarHistorialProyecciones() {
+  try {
+    historialProyecciones = JSON.parse(localStorage.getItem('presencia_historial_proyecciones') || '[]');
+  } catch(e) {
+    historialProyecciones = [];
+  }
+  renderizarHistorialProyecciones();
+  
+  if (window.canal) {
+    const originalPostMessage = window.canal.postMessage.bind(window.canal);
+    window.canal.postMessage = function(message) {
+      if (message && message.type === 'content') {
+        registrarElementoProyectado(message);
+      }
+      originalPostMessage(message);
+    };
+  }
+}
+
+function registrarElementoProyectado(message) {
+  if (!message || !message.contentType || ['reloj', 'cuentaAtras'].includes(message.contentType)) return;
+  
+  const text = message.text || '';
+  const subtitle = message.subtitle || '';
+  const contentType = message.contentType;
+  const label = message.label || '';
+  const font = message.fontSize || 55;
+  const align = message.align || 'center';
+  const imagen = message.imagen || null;
+  const fondo = message.fondo || null;
+  
+  if (!text && !imagen) return;
+
+  const ahora = new Date();
+  const horaStr = ahora.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+
+  const nuevoItem = {
+    text,
+    subtitle,
+    contentType,
+    label,
+    fontSize: font,
+    align,
+    imagen,
+    fondo,
+    hora: horaStr,
+    timestamp: Date.now()
+  };
+
+  historialProyecciones = historialProyecciones.filter(item => {
+    if (contentType === 'anuncio' && item.contentType === 'anuncio') {
+      return item.imagen !== imagen || item.text !== text;
+    }
+    return item.text !== text || item.subtitle !== subtitle || item.contentType !== contentType;
+  });
+
+  historialProyecciones.unshift(nuevoItem);
+
+  if (historialProyecciones.length > 5) {
+    historialProyecciones = historialProyecciones.slice(0, 5);
+  }
+
+  localStorage.setItem('presencia_historial_proyecciones', JSON.stringify(historialProyecciones));
+  renderizarHistorialProyecciones();
+}
+
+function renderizarHistorialProyecciones() {
+  const cont = document.getElementById('ultimosProyectadosLista');
+  const vacio = document.getElementById('ultimosProyectadosVacio');
+  if (!cont) return;
+  
+  cont.innerHTML = '';
+  
+  if (!historialProyecciones || historialProyecciones.length === 0) {
+    if (vacio) vacio.style.display = 'block';
+    return;
+  }
+  
+  if (vacio) vacio.style.display = 'none';
+  
+  historialProyecciones.forEach((item, index) => {
+    let icono = '📋';
+    let titulo = '';
+    
+    if (item.contentType === 'biblia') {
+      icono = '📖';
+      titulo = item.subtitle || 'Pasaje Bíblico';
+    } else if (item.contentType === 'himno') {
+      icono = '🎵';
+      titulo = item.subtitle || 'Himno';
+    } else if (item.contentType === 'cancion') {
+      icono = '🎤';
+      titulo = item.subtitle || 'Canción';
+    } else if (item.contentType === 'texto') {
+      icono = '✏️';
+      titulo = item.subtitle || 'Texto Libre';
+    } else if (item.contentType === 'anuncio') {
+      icono = '🖼️';
+      titulo = item.subtitle || 'Diapositiva';
+    } else if (item.contentType === 'seccion') {
+      icono = '📌';
+      titulo = item.text || 'Sección';
+    } else {
+      icono = item.label || '📋';
+      titulo = item.subtitle || 'Contenido';
+    }
+
+    let textoCorto = item.text || '';
+    if (item.imagen) {
+      textoCorto = '🖼️ [Imagen] ' + (textoCorto ? '- ' + textoCorto : '');
+    }
+    if (textoCorto.length > 65) {
+      textoCorto = textoCorto.substring(0, 62) + '...';
+    }
+
+    const div = document.createElement('div');
+    div.className = 'historial-item';
+    div.onclick = () => reproyectarHistorial(index);
+
+    div.innerHTML = `
+      <div style="display:flex; align-items:center; gap:10px; flex:1; min-width:0;">
+        <span style="font-size:16px; flex-shrink:0;">${icono}</span>
+        <div style="display:flex; flex-direction:column; min-width:0; flex:1;">
+          <span style="font-weight:600; font-size:12.5px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; color:var(--accent);">${titulo}</span>
+          <span style="font-size:11.5px; color:var(--text); white-space:nowrap; overflow:hidden; text-overflow:ellipsis; opacity:0.85;">${textoCorto}</span>
+        </div>
+      </div>
+      <span style="font-size:10px; color:var(--text-muted); margin-left:4px; flex-shrink:0;">${item.hora}</span>
+    `;
+    cont.appendChild(div);
+  });
+}
+
+function reproyectarHistorial(index) {
+  const item = historialProyecciones[index];
+  if (!item) return;
+
+  actualizarPreview(item.text || (item.imagen ? '🖼️ Imagen' : ''));
+  
+  pantallaOscura = false;
+  const btnB = document.getElementById('btnBlack');
+  const qbarB = document.getElementById('qbarBlack');
+  if(btnB) btnB.classList.remove('active-black');
+  if(qbarB) qbarB.classList.remove('black');
+  const ps = document.getElementById('previewScreen');
+  if(ps) ps.classList.remove('black-screen');
+
+  const msg = {
+    type: 'content',
+    contentType: item.contentType,
+    text: item.text,
+    subtitle: item.subtitle,
+    label: item.label,
+    fontSize: item.fontSize,
+    align: item.align,
+    imagen: item.imagen,
+    fondo: item.fondo
+  };
+  
+  canal.postMessage(msg);
+  registrarElementoProyectado(msg);
+}
+
+function limpiarHistorialProyecciones() {
+  if (confirm('¿Limpiar el historial de los últimos proyectados?')) {
+    historialProyecciones = [];
+    localStorage.setItem('presencia_historial_proyecciones', JSON.stringify(historialProyecciones));
+    renderizarHistorialProyecciones();
+  }
+}
+
+// ══════════════════════════════════════════
 // INICIALIZACIÓN
 // ══════════════════════════════════════════
 setInterval(()=>{if(proyeccionAbierta)canal.postMessage({type:'heartbeat'});},3000);
 
 document.addEventListener('DOMContentLoaded', async ()=>{
+  initDashboardTheme();
   await cargarHimnario();
   iniciarCanciones();
   iniciarBiblia();
@@ -1939,6 +2628,7 @@ document.addEventListener('DOMContentLoaded', async ()=>{
   iniciarAnuncios();
   iniciarReloj();
   cargarNotas();
+  iniciarHistorialProyecciones();
   // Restaurar tema guardado
   const temaGuardado = localStorage.getItem("presencia_tema");
   if (temaGuardado) { const btn = document.querySelector(`[data-tema="${temaGuardado}"]`); if(btn) selTema(temaGuardado, btn); }
@@ -2205,6 +2895,80 @@ function importarAnuncios(input) {
   };
   reader.readAsText(file);
   input.value = '';
+}
+
+// ══════════════════════════════════════════
+// TEMA DEL PANEL DE CONTROL (DASHBOARD)
+// ══════════════════════════════════════════
+let dashboardThemePref = 'dark';
+
+function initDashboardTheme() {
+  try {
+    dashboardThemePref = localStorage.getItem('presencia_ui_theme') || 'dark';
+  } catch(e) {
+    dashboardThemePref = 'dark';
+  }
+  aplicarDashboardTheme(dashboardThemePref, false);
+
+  if (window.matchMedia) {
+    window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', () => {
+      if (dashboardThemePref === 'auto') {
+        aplicarDashboardTheme('auto', false);
+      }
+    });
+  }
+}
+
+function getEffectiveDashboardTheme(pref) {
+  if (pref === 'auto') {
+    return (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) ? 'dark' : 'light';
+  }
+  return pref;
+}
+
+function setDashboardTheme(pref, showNotification = true) {
+  dashboardThemePref = pref;
+  try {
+    localStorage.setItem('presencia_ui_theme', pref);
+  } catch(e) {}
+  aplicarDashboardTheme(pref, showNotification);
+}
+
+function aplicarDashboardTheme(pref, notify = false) {
+  const effective = getEffectiveDashboardTheme(pref);
+  document.documentElement.setAttribute('data-ui-theme', effective);
+  document.documentElement.setAttribute('data-ui-preference', pref);
+
+  // Actualizar tarjetas en Configuración
+  document.querySelectorAll('.ui-theme-card').forEach(c => {
+    c.classList.toggle('active-ui-theme', c.dataset.uitheme === pref);
+  });
+
+  // Actualizar botones de cambio rápido (Header y QuickBar)
+  const iconEl = document.getElementById('btnTemaUIIcon');
+  const textEl = document.getElementById('btnTemaUIText');
+  const qbarIconEl = document.getElementById('qbarThemeIcon');
+
+  if (effective === 'dark') {
+    if (iconEl) iconEl.textContent = '☀️';
+    if (textEl) textEl.textContent = 'Modo Claro';
+    if (qbarIconEl) qbarIconEl.textContent = '☀️';
+  } else {
+    if (iconEl) iconEl.textContent = '🌙';
+    if (textEl) textEl.textContent = 'Modo Oscuro';
+    if (qbarIconEl) qbarIconEl.textContent = '🌙';
+  }
+
+  if (notify && typeof showToast === 'function') {
+    const nombres = { dark: 'Modo Oscuro (Anti-fatiga visual)', light: 'Modo Claro', auto: 'Automático (según el sistema)' };
+    showToast('Tema del panel: ' + (nombres[pref] || pref), 'ok');
+  }
+}
+
+function alternarTemaUI() {
+  const current = document.documentElement.getAttribute('data-ui-theme') || 'dark';
+  const next = current === 'dark' ? 'light' : 'dark';
+  setDashboardTheme(next, true);
 }
 
 // ══════════════════════════════════════════
@@ -2542,36 +3306,14 @@ function difundirEstado() {
 function generarQR(codigo) {
   const cont = document.getElementById('qrContainer');
   if (!cont) return;
-
-  const remoteUrl = new URL('remote.html', window.location.href);
-  remoteUrl.searchParams.set('code', codigo);
-  cont.replaceChildren();
-
-  const canvas = document.createElement('canvas');
-  canvas.width = canvas.height = 128;
-  canvas.style.cssText = 'background:#fff;border-radius:8px;padding:6px;';
-  cont.appendChild(canvas);
-
-  if (window.QRCode?.toCanvas) {
-    QRCode.toCanvas(canvas, remoteUrl.toString(), {
-      width: 128,
-      margin: 1,
-      errorCorrectionLevel: 'M'
-    }, err => {
-      if (err) mostrarEnlaceRemoto();
-    });
-  } else {
-    mostrarEnlaceRemoto();
-  }
-
-  function mostrarEnlaceRemoto() {
-    cont.replaceChildren();
-    const link = document.createElement('a');
-    link.href = remoteUrl.toString();
-    link.textContent = 'Abrir control remoto';
-    link.style.cssText = 'font-size:12px;color:var(--accent);text-align:center;';
-    cont.appendChild(link);
-  }
+  // QR simple: mostrar código grande en un cuadro blanco
+  // Para QR real usaríamos qrcode.js, pero lo hacemos sin dependencias
+  cont.innerHTML = `
+    <div style="width:90px;height:90px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;">
+      <div style="font-size:9px;color:#333;font-family:monospace;letter-spacing:1px;text-align:center;">Código:</div>
+      <div style="font-family:monospace;font-size:18px;font-weight:bold;color:#000;letter-spacing:3px;">${codigo}</div>
+      <div style="font-size:8px;color:#666;text-align:center;line-height:1.3;">Abre<br>remote.html</div>
+    </div>`;
 }
 
 
@@ -2589,20 +3331,201 @@ function showToast(msg,tipo='ok'){
   setTimeout(()=>{t.classList.remove('show');setTimeout(()=>t.remove(),220);},2200);
 }
 
+function toggleFocusMode() {
+  const appEl = document.querySelector('.app');
+  const btn = document.getElementById('btnFoco');
+  if (!appEl || !btn) return;
+  
+  const isCurrentlyActive = appEl.classList.toggle('focus-mode-active');
+  
+  if (isCurrentlyActive) {
+    btn.innerHTML = '<span class="foco-icon">👁️</span> Mostrar Menú';
+    btn.classList.add('btn-focus-active');
+    btn.style.borderColor = 'var(--accent)';
+    btn.style.color = 'var(--accent)';
+    btn.style.background = 'rgba(201,168,76,0.15)';
+    showToast('Modo Foco activado', 'ok');
+  } else {
+    btn.innerHTML = '<span class="foco-icon">🔍</span> Modo Foco';
+    btn.classList.remove('btn-focus-active');
+    btn.style.borderColor = '';
+    btn.style.color = '';
+    btn.style.background = '';
+    showToast('Modo Foco desactivado', 'ok');
+  }
+}
+
+// Mini Proyector Flotante JS
+let miniProyectorActivo = false;
+let miniProyectorMinimizado = false;
+
+function toggleMiniProyector() {
+  let cont = document.getElementById('miniProyectorContenedor');
+  if (!cont) {
+    cont = document.createElement('div');
+    cont.id = 'miniProyectorContenedor';
+    cont.className = 'mini-proyector';
+    cont.innerHTML = `
+      <div class="mini-proyector-header" id="miniProyectorHeader">
+        <span style="font-weight:600; letter-spacing:1px;">🖥️ PROYECCIÓN EN VIVO</span>
+        <div style="display:flex; gap:8px; align-items:center;">
+          <button class="mini-proyector-btn" onclick="minimizarMiniProyector()" title="Minimizar">–</button>
+          <button class="mini-proyector-btn close" onclick="toggleMiniProyector()" title="Cerrar">✕</button>
+        </div>
+      </div>
+      <iframe id="miniProyectorIframe" class="mini-proyector-iframe" src="about:blank"></iframe>
+    `;
+    document.body.appendChild(cont);
+  }
+
+  const iframe = document.getElementById('miniProyectorIframe');
+  const btn = document.getElementById('btnToggleMini');
+  if (!cont || !iframe) return;
+
+  miniProyectorActivo = !miniProyectorActivo;
+
+  if (miniProyectorActivo) {
+    cont.style.display = 'block';
+    iframe.src = 'proyeccion.html';
+    if (btn) {
+      btn.style.background = 'var(--accent)';
+      btn.style.borderColor = 'var(--accent)';
+      btn.style.color = '#ffffff';
+    }
+    showToast('Mini Proyector activado', 'ok');
+    makeElementDraggable(cont);
+  } else {
+    cont.style.display = 'none';
+    iframe.src = 'about:blank';
+    if (btn) {
+      btn.style.background = 'var(--accent-alpha-10)';
+      btn.style.borderColor = 'var(--accent)';
+      btn.style.color = 'var(--accent)';
+    }
+    showToast('Mini Proyector desactivado', 'ok');
+  }
+}
+
+function minimizarMiniProyector() {
+  const cont = document.getElementById('miniProyectorContenedor');
+  const iframe = document.getElementById('miniProyectorIframe');
+  if (!cont || !iframe) return;
+
+  miniProyectorMinimizado = !miniProyectorMinimizado;
+  if (miniProyectorMinimizado) {
+    cont.style.height = '28px';
+    iframe.style.display = 'none';
+  } else {
+    cont.style.height = '159px';
+    iframe.style.display = 'block';
+  }
+}
+
+function makeElementDraggable(elmnt) {
+  const header = document.getElementById('miniProyectorHeader');
+  let pos1 = 0, pos2 = 0, pos3 = 0, pos4 = 0;
+  
+  if (header) {
+    header.onmousedown = dragMouseDown;
+    header.ontouchstart = dragTouchStart;
+  }
+
+  function dragMouseDown(e) {
+    e = e || window.event;
+    if (e.target.classList.contains('mini-proyector-btn')) return;
+    e.preventDefault();
+    pos3 = e.clientX;
+    pos4 = e.clientY;
+    document.onmouseup = closeDragElement;
+    document.onmousemove = elementDrag;
+  }
+
+  function dragTouchStart(e) {
+    if (e.target.classList.contains('mini-proyector-btn')) return;
+    if (e.touches.length === 1) {
+      pos3 = e.touches[0].clientX;
+      pos4 = e.touches[0].clientY;
+      document.ontouchend = closeDragElement;
+      document.ontouchmove = elementTouchDrag;
+    }
+  }
+
+  function elementDrag(e) {
+    e = e || window.event;
+    e.preventDefault();
+    pos1 = pos3 - e.clientX;
+    pos2 = pos4 - e.clientY;
+    pos3 = e.clientX;
+    pos4 = e.clientY;
+    
+    let newTop = elmnt.offsetTop - pos2;
+    let newLeft = elmnt.offsetLeft - pos1;
+    
+    elmnt.style.top = Math.max(0, Math.min(window.innerHeight - 50, newTop)) + "px";
+    elmnt.style.left = Math.max(0, Math.min(window.innerWidth - 100, newLeft)) + "px";
+  }
+
+  function elementTouchDrag(e) {
+    if (e.touches.length === 1) {
+      pos1 = pos3 - e.touches[0].clientX;
+      pos2 = pos4 - e.touches[0].clientY;
+      pos3 = e.touches[0].clientX;
+      pos4 = e.touches[0].clientY;
+      
+      let newTop = elmnt.offsetTop - pos2;
+      let newLeft = elmnt.offsetLeft - pos1;
+      
+      elmnt.style.top = Math.max(0, Math.min(window.innerHeight - 50, newTop)) + "px";
+      elmnt.style.left = Math.max(0, Math.min(window.innerWidth - 100, newLeft)) + "px";
+    }
+  }
+
+  function closeDragElement() {
+    document.onmouseup = null;
+    document.onmousemove = null;
+    document.ontouchend = null;
+    document.ontouchmove = null;
+  }
+}
+
 (function setupUsabilityEnhancements(){
-  const _proyectarTexto = window.proyectarTexto;
-  window.proyectarTexto = function(){ _proyectarTexto(); showToast('Contenido proyectado','ok'); };
+  setTimeout(() => {
+    const _proyectarTexto = window.proyectarTexto;
+    if (typeof _proyectarTexto === 'function') {
+      window.proyectarTexto = function(){ 
+        _proyectarTexto(); 
+        showToast('Contenido proyectado','ok'); 
+      };
+    }
 
-  const _toggleBlackScreen = window.toggleBlackScreen;
-  window.toggleBlackScreen = function(){ _toggleBlackScreen(); showToast('Pantalla negra '+(document.getElementById('btnBlack')?.classList.contains('active-black')?'activada':'desactivada'),'warn'); };
+    const _toggleBlackScreen = window.toggleBlackScreen;
+    if (typeof _toggleBlackScreen === 'function') {
+      window.toggleBlackScreen = function(){ 
+        _toggleBlackScreen(); 
+        showToast('Pantalla negra '+(document.getElementById('btnBlack')?.classList.contains('active-black')?'activada':'desactivada'),'warn'); 
+      };
+    }
 
-  const _limpiarPantalla = window.limpiarPantalla;
-  window.limpiarPantalla = function(){ _limpiarPantalla(); showToast('Pantalla limpiada','ok'); };
+    const _limpiarPantalla = window.limpiarPantalla;
+    if (typeof _limpiarPantalla === 'function') {
+      window.limpiarPantalla = function(){ 
+        _limpiarPantalla(); 
+        showToast('Pantalla limpiada','ok'); 
+      };
+    }
 
-  const _switchModule = window.switchModule;
-  window.switchModule = function(id,el){ _switchModule(id,el); showToast('Módulo: '+id,'ok'); };
+    const _switchModule = window.switchModule;
+    if (typeof _switchModule === 'function') {
+      window.switchModule = function(id,el){ 
+        _switchModule(id,el); 
+        showToast('Módulo: '+id,'ok'); 
+      };
+    }
+  }, 100);
 
   document.addEventListener('keydown',(e)=>{
+    if(e.ctrlKey && (e.key==='i' || e.key==='I')){ e.preventDefault(); toggleFocusMode(); return; }
+    if((e.ctrlKey && e.shiftKey && (e.key==='d' || e.key==='D')) || (e.ctrlKey && e.altKey && (e.key==='d' || e.key==='D'))){ e.preventDefault(); alternarTemaUI(); return; }
     if(e.target && ['INPUT','TEXTAREA'].includes(e.target.tagName) && !(e.ctrlKey && e.key==='Enter')) return;
     if(e.ctrlKey && e.key==='Enter'){ e.preventDefault(); if(typeof proyectarTexto==='function')proyectarTexto(); }
     if(e.ctrlKey && (e.key==='b' || e.key==='B')){ e.preventDefault(); if(typeof toggleBlackScreen==='function')toggleBlackScreen(); }
@@ -2616,8 +3539,7 @@ function showToast(msg,tipo='ok'){
 })();
 
 </script>
-<script src="https://cdn.jsdelivr.net/npm/qrcode@1.5.4/build/qrcode.min.js"></script>
-<script src="runtime-bridge.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/d3/7.9.0/d3.min.js"></script>
 <script src="enhancements.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/peerjs/1.5.2/peerjs.min.js"></script>
 </body>
